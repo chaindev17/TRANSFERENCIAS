@@ -21,13 +21,15 @@ histórico y archivado) que puedes subir y bajar desde cualquier dispositivo.
 3. Debe decir `Success`. Esto crea `public.gestor_snapshots` con Row Level Security:
    cada cuenta solo puede leer/escribir su propia fila.
 
-## 3 · Activar el login por correo
+## 3 · Activar el login por correo (opcional)
+
+Solo si quieres sincronizar entre dispositivos. Los perfiles locales no necesitan nada de esto.
 
 1. Menú lateral → **Authentication → Providers**.
-2. **Email**: activado por defecto.
-   - Para probar rápido: desactiva **Confirm email** (entra al instante), o
-   - déjala activada y confirma la cuenta desde el correo que recibirás al registrarte.
-3. (Opcional) **Authentication → URL Configuration**: añade la URL pública de la app en *Site URL*.
+2. **Email**: activado por defecto. Para que el alta entre **directo sin verificación**:
+   desactiva **Confirm email** → **Save**.
+3. (Opcional) Si prefieres confirmación por correo, déjala activada y confirma la cuenta desde el email recibido.
+4. (Opcional) **Authentication → URL Configuration**: añade la URL pública de la app en *Site URL*.
 
 ## 4 · Obtener las claves públicas
 
@@ -40,25 +42,37 @@ histórico y archivado) que puedes subir y bajar desde cualquier dispositivo.
 > pública. Lo que protege tus datos es RLS (paso 2) + tu sesión.
 > ⚠️ Nunca uses ni pegues aquí la `service_role key`: esa sí es secreta.
 
-## 5 · Crear tu cuenta y entrar
+## 5 · Crear tu cuenta (sin verificación de correo)
 
-1. Abre la app (local o el sitio de GitHub Pages).
-2. Menú lateral → **👤 Mi cuenta y nube**.
-3. Pestaña **Crear cuenta** (primera vez):
-   - Despliega **Configuración avanzada** y pega la **Project URL** y la **anon public key** (una sola vez por dispositivo/navegador).
-   - Nombre (opcional), correo y contraseña (mín. 8 caracteres) → **Crear cuenta y enviar verificación**.
-   - Abre el correo que te llega y confirma la cuenta (enlace de verificación). Si no lo ves, **Reenviar confirmación** (revisa el spam).
-4. Vuelve a la app → pestaña **Iniciar sesión** → correo + contraseña → **Entrar**.
-5. Verás tu avatar y tu nombre. Aparecen **⬆ Subir copia a la nube**, **⬇ Traer copia de la nube** y la casilla para subir automáticamente tras cada cambio.
-6. En tu otro dispositivo/navegador: misma app → pestaña **Iniciar sesión** (la configuración avanzada también solo la primera vez) → **Entrar** → **⬇ Traer copia de la nube** → elige *Combinar* o *Reemplazar*.
+**Lo habitual: perfiles locales** (no requiere Supabase ni correo):
 
-**¿Olvidaste la contraseña?** → **Olvidé mi contraseña**: recibes un enlace de recuperación.
-**Sesión caducada:** la app renueva el token automáticamente cuando puede; si no, basta con **Entrar** de nuevo.
+1. Abre la app → menú lateral → **👤 Mi cuenta** → **＋ Crear una cuenta nueva**.
+2. Ponle nombre y un PIN de 4–8 dígitos → **Crear cuenta y entrar**. Entras directo.
+3. Cada persona del navegador crea su propia cuenta: la app **bloquea al inicio** y pide
+   el PIN de cada quien. Cada cuenta ve únicamente su información.
+4. Cambiar de cuenta: **👤 Mi cuenta** → **🔒 Bloquear** → elige otra cuenta.
+   Borrar una cuenta: la papelera junto a su nombre (borra también sus datos del dispositivo).
+5. La primera vez en un navegador con datos previos, el aviso ofrece
+   **«Adoptar datos de este dispositivo»** (copia explícita; el original se conserva).
 
-> **Registro abierto, datos aislados:** cualquier persona puede crear cuenta, pero cada cuenta
-> solo ve sus propias filas en la nube (RLS con `auth.uid()`) y sus datos locales viven en un
-> espacio por cuenta dentro del navegador. La base adjunta cifrada sigue protegida por su
-> propia contraseña, aparte del login.
+**Opcional · sincronizar entre dispositivos (Supabase):**
+
+1. Crea el proyecto y corre `supabase/schema.sql` (pasos 1–4 de esta guía).
+2. En **Authentication → Sign In / Providers → Email**: desactiva **Confirm email**
+   para que el alta entre directo (recomendado). Si lo dejas activo, confirma el correo
+   una sola vez tras crear la cuenta.
+3. Abre la app → **👤 Mi cuenta** → **☁️ Nube opcional**: pega URL + anon key,
+   **Crear cuenta y entrar** (o **Iniciar sesión**) y verás tu avatar; ahí puedes
+   **⬆ Subir copia** / **⬇ Traer copia** o activar la subida automática.
+4. **¿Olvidaste la contraseña?** → **Olvidé mi contraseña** (requiere que el correo
+   salga del SMTP de Supabase; si no llega, restablece desde el dashboard).
+5. En tu otro dispositivo: la misma app → misma nube → **⬇ Traer copia de la nube** →
+   *Combinar* o *Reemplazar*.
+
+> **Registro abierto, datos aislados:** con la nube, cada cuenta solo ve sus propias filas
+> (RLS con `auth.uid()`). Con perfiles locales, la separación es por espacio de almacenamiento
+> en el navegador + PIN. La base adjunta cifrada sigue protegida por su propia contraseña,
+> aparte del login.
 
 ## 6 · Qué esperar / límites honestos
 

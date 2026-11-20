@@ -13,9 +13,10 @@ negocio de transferencias del día a día. Sin backend propio y sin dependencias
 - **Historial en tarjetas**: recibos y transferencias con badge por tipo, cliente, `#op`, monto grande,
   saldo restante (o comisión · neto), chip 💳 Tarjeta/👛 Monedero con el número **enmascarado**
   (toca para verlo u ocultarlo; 📋 copia el número o el resumen) y fecha + acciones ✎ 📋 🗑.
-- **Cuentas con verificación por correo**: registro abierto vía Supabase Auth; cada usuario ve
-  únicamente sus datos (RLS + espacio local separado por cuenta). Modo local disponible sin cuenta,
-  con opción de **adoptar** los datos ya guardados en el navegador.
+- **Cuentas sin verificación**: crea tu cuenta con solo un nombre y un PIN — cada persona ve únicamente
+  su información en este dispositivo (espacio separado `p:<id>:gestor_*` + bloqueo con PIN).
+  Sin correo ni contraseña. La nube (Supabase) sigue disponible como opción avanzada para
+  sincronizar entre dispositivos; con «Confirm email» desactivado, la entrada es directa.
 - **Finanzas**: ingresos, egresos y ajustes con saldo base y libro mayor.
 - **Histórico general**: todo en un solo libro, con buscador, filtros, export CSV/JSON.
 - **Base de datos**: importa/combina la base adjunta o tu propio `.json`, detecta el formato,
@@ -48,11 +49,12 @@ por eso viaja **cifrada**:
 - `private/` (con la base en claro y la contraseña) está en `.gitignore`: **nunca se sube**.
 - El identificador `97cc5e…` en `ATTACHED_META.sha256` es solo una firma para no
   re-importar dos veces la misma base; no es una clave ni un secreto.
-- **Multi-cuenta**: los datos locales viven en un espacio por cuenta (`u:<id>:gestor_*`).
-  Al iniciar sesión por primera vez en un navegador que tenía la versión anterior,
-  los datos se **copian** automáticamente a tu cuenta (el original se conserva).
-  En **modo local** (sin sesión) la app no toca los datos de ninguna cuenta; si detecta
-  datos previos, ofrece **«Adoptar datos de este dispositivo»** explícitamente.
+- **Multi-cuenta**: los datos viven en un espacio por cuenta (`p:<id>:gestor_*` para perfiles locales,
+  `u:<id>:gestor_*` para cuentas de nube). El PIN protege el acceso casual en este dispositivo
+  (privacidad casual, no cifrado fuerte); los datos en claro siguen visibles fuera de la app.
+  Los perfiles nuevos **no** copian datos en silencio: si hay datos guardados en el navegador,
+  el aviso ofrece **«Adoptar datos de este dispositivo»** explícitamente. En **modo local** sin
+  cuenta la app funciona igual, separada de cualquier perfil.
 
 ## Estructura
 
