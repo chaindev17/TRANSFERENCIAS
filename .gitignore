@@ -1,0 +1,13 @@
+# Datos privados — NUNCA subir al repositorio público
+private/
+*.local
+.env
+.env.*
+
+# Sistema / tooling
+.DS_Store
+Thumbs.db
+node_modules/
+*.log
+.vscode/
+.idea/
