@@ -19,7 +19,7 @@ negocio de transferencias del día a día. Sin backend propio y sin dependencias
   sincronizar entre dispositivos; con «Confirm email» desactivado, la entrada es directa.
 - **Finanzas**: ingresos, egresos y ajustes con saldo base y libro mayor.
 - **Histórico general**: todo en un solo libro, con buscador, filtros, export CSV/JSON.
-- **Base de datos**: importa/combina la base adjunta o tu propio `.json`, detecta el formato,
+- **Base de datos**: importa/combina tu propio `.json`, detecta el formato,
   combina sin duplicados o reemplaza, respaldos automáticos locales, export/import con un clic.
 - **Tema claro/oscuro**, atajos de teclado (`Alt+1…5`, `Ctrl/⌘+K`, `Alt+T`), diseño responsive.
 - **Los datos viven en tu navegador** (localStorage): cada dispositivo tiene su copia hasta
@@ -39,8 +39,7 @@ npx serve .
 npx http-server -p 8080 .
 ```
 
-Abre <http://localhost:8080>. (También funciona abriendo el archivo directamente,
-aunque `crypto.subtle` de la base cifrada requiere HTTPS o `localhost`.)
+Abre <http://localhost:8080>. (También funciona abriendo el archivo directamente.)
 
 > **Service Worker y PWA**: solo se activan sobre **HTTPS o localhost** (por diseño del navegador).
 > Probando en `http://192.168.x.x` la app funciona igual, pero sin caché offline ni instalación.
@@ -48,16 +47,11 @@ aunque `crypto.subtle` de la base cifrada requiere HTTPS o `localhost`.)
 
 ## Privacidad y seguridad — léelo si clonas o publicas
 
-El repositorio es **público** y la base adjunta contiene información financiera real,
-por eso viaja **cifrada**:
+El repositorio es **público** y **no contiene datos financieros reales**: la base cifrada
+que antes iba embebida en `index.html` se eliminó por completo (la app trabaja solo con lo
+que guardes tú en el navegador y con los `.json` que importes). Las copias vitales:
 
-- `index.html` incluye la base adjunta como **AES-256-GCM** con KDF **PBKDF2-SHA-256**
-  (250 000 iteraciones, sal e IV aleatorios). Sin la contraseña es ruido.
-- El descifrado ocurre **en el navegador** (WebCrypto) al pulsar
-  *«Desbloquear base adjunta»*. La contraseña nunca se envía a ningún servidor ni se guarda.
 - `private/` (con la base en claro y la contraseña) está en `.gitignore`: **nunca se sube**.
-- El identificador `97cc5e…` en `ATTACHED_META.sha256` es solo una firma para no
-  re-importar dos veces la misma base; no es una clave ni un secreto.
 - **Multi-cuenta**: los datos viven en un espacio por cuenta (`p:<id>:gestor_*` para perfiles locales,
   `u:<id>:gestor_*` para cuentas de nube). El PIN protege el acceso casual en este dispositivo
   (privacidad casual, no cifrado fuerte); los datos en claro siguen visibles fuera de la app.
@@ -69,7 +63,7 @@ por eso viaja **cifrada**:
 
 ```
 index.html                  La app completa (HTML+CSS+JS, sin build)
-private/                    SOLO local y gitignored: base en claro + contraseña
+private/                    SOLO local y gitignored: base en claro + contraseña (si existe)
 supabase/schema.sql         Tabla gestor_snapshots + políticas RLS (para la nube)
 docs/supabase-setup.md      Paso a paso para activar la sincronización en la nube
 .github/workflows/deploy.yml  Despliegue automático a GitHub Pages
