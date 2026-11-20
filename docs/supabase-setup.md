@@ -71,8 +71,7 @@ Solo si quieres sincronizar entre dispositivos. Los perfiles locales no necesita
 
 > **Registro abierto, datos aislados:** con la nube, cada cuenta solo ve sus propias filas
 > (RLS con `auth.uid()`). Con perfiles locales, la separación es por espacio de almacenamiento
-> en el navegador + PIN. La base adjunta cifrada sigue protegida por su propia contraseña,
-> aparte del login.
+> en el navegador + PIN.
 
 ## 6 · Qué esperar / límites honestos
 
