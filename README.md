@@ -24,6 +24,11 @@ negocio de transferencias del día a día. Sin backend propio y sin dependencias
 - **Tema claro/oscuro**, atajos de teclado (`Alt+1…5`, `Ctrl/⌘+K`, `Alt+T`), diseño responsive.
 - **Los datos viven en tu navegador** (localStorage): cada dispositivo tiene su copia hasta
   que actives la [sincronización opcional con Supabase](docs/supabase-setup.md).
+- **Funciona sin conexión (PWA)**: al abrirla una vez con internet, un Service Worker guarda
+  la app completa en tu navegador; después abre y guarda **sin necesidad de conexión**.
+  Puedes instalarla como app: en **Android/Chrome** → ⋮ → *Instalar app* (o el botón de instalar
+  en la barra de direcciones); en **iPhone/iPad** → Compartir → *Añadir a pantalla de inicio*;
+  en **escritorio (Chrome/Edge)** → icono de instalación en la barra de direcciones.
 
 ## Probarla en tu máquina
 
@@ -36,6 +41,10 @@ npx http-server -p 8080 .
 
 Abre <http://localhost:8080>. (También funciona abriendo el archivo directamente,
 aunque `crypto.subtle` de la base cifrada requiere HTTPS o `localhost`.)
+
+> **Service Worker y PWA**: solo se activan sobre **HTTPS o localhost** (por diseño del navegador).
+> Probando en `http://192.168.x.x` la app funciona igual, pero sin caché offline ni instalación.
+> Con GitHub Pages (HTTPS) funciona todo: abre una vez con internet y queda disponible offline.
 
 ## Privacidad y seguridad — léelo si clonas o publicas
 

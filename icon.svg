@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Gestor Integral">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1cc684"/>
+      <stop offset="1" stop-color="#14a16e"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#g)"/>
+  <path d="M 352.4 370.9 A 150 150 0 1 0 352.4 141.1" fill="none" stroke="#06110c" stroke-width="46" stroke-linecap="round"/>
+  <rect x="248" y="234" width="156" height="44" rx="22" fill="#06110c"/>
+</svg>
