@@ -142,20 +142,23 @@ main{padding:26px 0 60px}
 /* Cada módulo funciona como una pantalla independiente */
 .app-view{display:none}
 .app-view.active{display:block;animation:viewIn .28s ease-out both}
-.op-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:8px;margin-bottom:20px;border:1px solid var(--line);background:var(--surface3);border-radius:16px}
-.op-tab{display:flex;align-items:center;gap:10px;text-align:left;padding:12px 14px;border-radius:12px;border:1px solid transparent;background:transparent;color:var(--mut);cursor:pointer;transition:.18s}
+.op-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:6px;margin-bottom:12px;border:1px solid var(--line);background:var(--surface3);border-radius:14px}
+.op-tab{display:flex;align-items:center;gap:8px;text-align:left;padding:8px 9px;border-radius:11px;border:1px solid transparent;background:transparent;color:var(--mut);cursor:pointer;transition:.18s;min-width:0}
 .op-tab:hover{background:var(--surface2);color:var(--tx)}
-.op-tab .t-ico{width:34px;height:34px;flex:0 0 34px;border-radius:10px;display:grid;place-items:center;font-size:16px;color:var(--accent-ink)}
-.op-tab b{display:block;font-size:13.5px;color:inherit}
-.op-tab small{display:block;font-size:11px;color:var(--faint);margin-top:2px}
+.op-tab .t-ico{width:26px;height:26px;flex:0 0 26px;border-radius:8px;display:grid;place-items:center;font-size:13px;color:var(--accent-ink)}
+.op-tab b{display:block;font-size:12px;color:inherit;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.op-tab small{display:none;font-size:10px;color:var(--faint);margin-top:1px}
+@media(min-width:1100px){.op-tab small{display:block}}
 .op-tab[aria-selected="true"]{background:var(--mint-bg);border-color:var(--mint-accent);color:var(--tx);box-shadow:0 6px 18px var(--mint-shadow)}
 .op-tab[aria-selected="true"] small{color:var(--mut)}
 .op-tab:focus-visible{outline:2px solid var(--mint);outline-offset:2px}
 .op-pane{display:none}
 .op-pane.active{display:block;animation:viewIn .24s ease-out both}
-@media(max-width:780px){.op-tabs{grid-template-columns:1fr}.op-tab{padding:10px 12px}}
+@media(max-width:780px){.op-tabs{gap:5px;padding:5px;margin-bottom:10px;border-radius:12px}.op-tab{flex-direction:column;justify-content:center;align-items:center;gap:4px;padding:7px 4px;text-align:center}.op-tab b{font-size:10.5px;white-space:normal;line-height:1.15;overflow:visible;text-overflow:clip}.op-tab .t-ico{width:24px;height:24px;flex-basis:24px;font-size:12px}}
 @keyframes viewIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-.hero{min-height:104px}
+.hero{min-height:0;margin:2px 0 10px}
+.hero h2{margin:2px 0 0;font-size:21px;letter-spacing:-.02em}
+.view-kicker{margin-bottom:2px}
 .view-kicker{display:flex;align-items:center;gap:8px}
 .view-kicker::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--mint);box-shadow:0 0 9px var(--mint)}
 .shead{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;margin-bottom:20px}
@@ -264,10 +267,6 @@ tbody tr:hover{background:var(--surface3)}
 .alertkpis .ak strong{display:block;font-size:16px;margin-top:4px;letter-spacing:-.02em}
 .alertwarn{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;background:var(--coral-bg);border:1px solid var(--coral-line);color:var(--coral-text);border-radius:12px;padding:10px 13px;font-size:12px;font-weight:700}
 .alertwarn .btn{padding:6px 10px;font-size:11px}
-.quickchips{display:flex;gap:7px;flex-wrap:wrap;margin-top:14px}
-.quickchips button{border:1px solid var(--line);background:var(--surface2);color:var(--mut);border-radius:999px;padding:7px 12px;font-size:11px;font-weight:700;cursor:pointer;transition:.18s}
-.quickchips button:hover{color:var(--tx);background:var(--surface-hover)}
-.quickchips button.active{color:var(--mint-text);background:var(--mint-bg);border-color:var(--mint-accent)}
 .today-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:0 0 18px}
 .today-grid .tg{background:var(--surface3);border:1px solid var(--line);border-radius:12px;padding:12px}
 .today-grid .tg span{display:block;color:var(--faint);font-size:9px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
@@ -488,15 +487,7 @@ body{overflow-x:clip}
   <div class="hero" aria-live="polite">
     <span class="eyebrow view-kicker" id="viewKicker">SECCIÓN ACTIVA · CLIENTES</span>
     <h2 id="viewTitle">Gestión de clientes</h2>
-    <p id="viewDescription">Ingresa, edita o elimina clientes y administra su comisión y saldo. Usa el menú ☰ para cambiar de sección.</p>
     <div id="alertBar" class="alertbar"></div>
-    <div class="quickchips" id="quickChips">
-      <button type="button" data-go="clientes" class="active">👥 Clientes</button>
-      <button type="button" data-go="operaciones">🔁 Operaciones</button>
-      <button type="button" data-go="finanzas">💰 Finanzas</button>
-      <button type="button" data-go="historico">🕘 Histórico</button>
-      <button type="button" data-go="basedatos">💾 Base de datos</button>
-    </div>
   </div>
 
   <section id="clientes" class="panel app-view active" aria-label="Clientes">
@@ -1533,9 +1524,9 @@ function paintOp(sub){curOp=OPS[sub]?sub:'recibo';document.querySelectorAll('.op
 function showView(id,updateHash){
  var sub=null;if(OPS[id]){sub=id;id='operaciones';}if(!VIEW_INFO[id])id='clientes';if(id==='operaciones')paintOp(sub||curOp);
  document.querySelectorAll('.app-view').forEach(function(v){var on=v.id===id;v.classList.toggle('active',on);v.setAttribute('aria-hidden',on?'false':'true');});
- document.querySelectorAll('#drawerNav .mlink, .quickchips [data-go]').forEach(function(b){b.classList.toggle('active',b.getAttribute('data-go')===id);});
- var info=(id==='operaciones')?OPS[curOp]:VIEW_INFO[id],tip=(id==='operaciones')?' Cambia entre Recibo, Transferencia y Saldo con las pestañas de arriba.':' Usa el menú ☰ o los atajos para cambiar de sección.';
- $('viewKicker').textContent=info.kicker;$('viewTitle').textContent=info.title;$('viewDescription').textContent=info.description+tip;document.title=info.title+' · Gestor Integral';
+ document.querySelectorAll('#drawerNav .mlink').forEach(function(b){b.classList.toggle('active',b.getAttribute('data-go')===id);});
+ var info=(id==='operaciones')?OPS[curOp]:VIEW_INFO[id];
+ $('viewKicker').textContent=info.kicker;$('viewTitle').textContent=info.title;document.title=info.title+' · Gestor Integral';
  setMenu(false);window.scrollTo({top:0,behavior:'smooth'});
  var hash='#'+(id==='operaciones'?curOp:id);if(updateHash!==false&&window.location.hash!==hash){try{history.pushState({view:id,op:curOp},'',hash);}catch(e){window.location.hash=hash.slice(1);}}
 }
