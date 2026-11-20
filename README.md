@@ -9,7 +9,7 @@ negocio de transferencias del día a día. Sin backend propio y sin dependencias
 ## Qué hace
 
 - **Clientes**: alta/edición/baja, comisión %, saldo, saldo mínimo y alertas.
-- **Operaciones**: recibo (monto → comisión → neto), transferencia (banco, cuenta, tipo) y ajuste de saldo, con numeración de operación.
+- **Operaciones**: recibo (monto → comisión → neto), transferencia (banco, cuenta, tipo) y ajuste de saldo, con numeración de operación. Montos solo dígitos (coma o punto para centavos); cuenta solo números con **detección en vivo e iconos por banco** (Metropolitano / BPA / BANDEC / monedero), también visibles en las tarjetas del histórico.
 - **Historial en tarjetas**: recibos y transferencias con badge por tipo, cliente, `#op`, monto grande,
   saldo restante (o comisión · neto), chip 💳 Tarjeta/👛 Monedero con el número **enmascarado**
   (toca para verlo u ocultarlo; 📋 copia el número o el resumen) y fecha + acciones ✎ 📋 🗑.
