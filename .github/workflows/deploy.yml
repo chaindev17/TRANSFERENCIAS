@@ -25,6 +25,9 @@ jobs:
 
       - name: Configurar Pages
         uses: actions/configure-pages@v5
+        with:
+          # Intenta habilitar Pages con el token del workflow si aún no está activo
+          enablement: true
 
       # Artefacto = contenido público del repo (private/ está gitignored y no existe en el checkout de CI)
       - name: Subir artefacto
