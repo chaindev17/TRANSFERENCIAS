@@ -400,6 +400,12 @@ body{overflow-x:clip}
 @media(max-width:640px){.wrap{width:calc(100% - 20px)}.brand h1{font-size:16px}.logo{width:38px;height:38px;flex-basis:38px;border-radius:11px;font-size:17px}.burger{width:40px;height:40px;flex-basis:40px}.top-in{gap:8px}.top-in .btn-s{padding:8px 10px;font-size:12px}#resetLbl{display:none}.cards{grid-template-columns:1fr}.today-grid{grid-template-columns:1fr 1fr;gap:8px}.stitle h2{font-size:19px}.sico{width:36px;height:36px;flex-basis:36px;border-radius:11px}.shead{flex-direction:column;align-items:stretch;gap:12px;margin-bottom:14px}.grid4{grid-template-columns:1fr 1fr}.gsearch{max-width:none}.twrap table{font-size:12px}.finline input{max-width:none;flex:1 1 100%}.res-top{flex-direction:column;align-items:stretch}.rgrid{gap:16px}.mcard{padding:18px 16px;border-radius:16px}.mhead h3{font-size:17px}}
 @media(max-width:480px){.grid4{grid-template-columns:1fr}.db-stats{grid-template-columns:1fr!important}.rgrid{gap:12px}}
 @media(prefers-contrast:more){:focus-visible{outline-width:3px}}
+/* ===== iconos de banco / monedero (SVG inline) ===== */
+.bankico{display:inline-flex;align-items:center;flex:0 0 auto;border-radius:4px;vertical-align:-3px}
+.abadge{gap:9px}
+.accountchip .bankico{vertical-align:0}
+.cardbank{display:inline-flex;align-items:center;gap:6px}
+.res-sub .bankico{margin-right:2px}
 </style>
 </head>
 <body>
@@ -505,7 +511,7 @@ body{overflow-x:clip}
     <form id="receiptForm" class="grid4" autocomplete="off">
       <input type="hidden" id="receiptEditId" />
       <div class="field"><label for="receiptClient">Cliente</label><select id="receiptClient" required><option value="">Seleccionar cliente</option></select></div>
-      <div class="field"><label for="receiptAmount">Monto</label><input id="receiptAmount" type="number" step="0.01" min="0.01" placeholder="0.00" required /></div>
+      <div class="field"><label for="receiptAmount">Monto</label><input id="receiptAmount" type="text" inputmode="decimal" autocomplete="off" maxlength="12" placeholder="0.00" required /></div>
       <div class="field s2 acts"><button type="submit" class="btn btn-p" id="receiptSubmit">Generar recibo</button><button type="button" class="btn btn-g hidden" id="receiptCancelEdit">Cancelar edición</button></div>
     </form>
     <div id="receiptResult" class="res hidden"><div class="res-top"><div><span class="rlab">Resultado del recibo</span><h3 id="receiptClientName">—</h3></div>
@@ -519,8 +525,8 @@ body{overflow-x:clip}
     <form id="transferForm" class="grid4" autocomplete="off">
       <input type="hidden" id="transferEditId" />
       <div class="field"><label for="transferClient">Cliente</label><select id="transferClient" required><option value="">Seleccionar cliente</option></select></div>
-      <div class="field"><label for="transferAccount">Cuenta a transferir</label><input id="transferAccount" type="text" inputmode="numeric" maxlength="16" placeholder="92… (16) o 5/6… (8)" /></div>
-      <div class="field"><label for="transferAmount">Monto</label><input id="transferAmount" type="number" step="0.01" min="0.01" placeholder="0.00" required /></div>
+      <div class="field"><label for="transferAccount">Cuenta a transferir</label><input id="transferAccount" type="text" inputmode="numeric" autocomplete="off" maxlength="16" placeholder="92… (16) o 5/6… (8)" /></div>
+      <div class="field"><label for="transferAmount">Monto</label><input id="transferAmount" type="text" inputmode="decimal" autocomplete="off" maxlength="12" placeholder="0.00" required /></div>
       <div class="field"><label>Detección</label><span id="transferAccountType" class="abadge">—</span></div>
       <div class="field s4 acts"><button type="submit" class="btn btn-p" id="transferSubmit">Realizar transferencia</button><button type="button" class="btn btn-g hidden" id="transferCancelEdit">Cancelar edición</button></div>
     </form>
@@ -1568,6 +1574,40 @@ function closeClientModal(){$('clientModal').classList.add('hidden');}
 function setClientOpening(c,newBal){var calc=0;receipts.filter(function(r){return r.clientId===c.id;}).forEach(function(r){calc+=r.net;});transfers.filter(function(t){return t.clientId===c.id;}).forEach(function(t){calc-=t.amount;});c.balance=r2(newBal);c.openingBalance=r2(newBal-calc);}
 window.editClient=function(id){openClientModal(id);};
 window.togglePan=togglePan;
+/* ===== iconos SVG de banco / monedero (glifos propios, sin logotipos oficiales) ===== */
+var BANK_STYLE={'Banco Metropolitano':{code:'MET',bg:'#16324f',fg:'#8fd3ff'},'BPA':{code:'BPA',bg:'#0d5c33',fg:'#86efac'},'BANDEC':{code:'BANDEC',bg:'#5b1a12',fg:'#ffb4a3'}};
+function svgBankTile(code,bg,fg){var w=code.length>3?46:30;
+ return '<svg class="bankico" width="'+w+'" height="16" viewBox="0 0 '+w+' 16" role="img" aria-label="'+esc(code)+'"><rect x="0.6" y="0.6" width="'+(w-1.2)+'" height="14.8" rx="3.4" fill="'+bg+'" stroke="rgba(255,255,255,.22)" stroke-width="0.8"/><text x="'+(w/2)+'" y="11.3" text-anchor="middle" font-family="ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,sans-serif" font-size="'+(code.length>3?7:8.4)+'" font-weight="800" letter-spacing="0.4" fill="'+fg+'">'+esc(code)+'</text></svg>';}
+function svgWallet(){
+ return '<svg class="bankico" width="18" height="16" viewBox="0 0 18 16" role="img" aria-label="Monedero"><path d="M2 4.2A1.7 1.7 0 0 1 3.7 2.5h9.6a1.7 1.7 0 0 1 1.7 1.7v1.1h.3A1.7 1.7 0 0 1 17 7v4.5a1.7 1.7 0 0 1-1.7 1.7H3.7A1.7 1.7 0 0 1 2 11.5v-7.3Z" fill="#3b2a63" stroke="#a78bfa" stroke-width="1.1" stroke-linejoin="round"/><rect x="11" y="6.4" width="5.6" height="3.2" rx="1.4" fill="#241a3e" stroke="#a78bfa" stroke-width="0.9"/><circle cx="13.8" cy="8" r="0.62" fill="#c4b5fd"/></svg>';}
+function svgCardUnknown(){
+ return '<svg class="bankico" width="20" height="16" viewBox="0 0 20 16" role="img" aria-label="Tarjeta"><rect x="0.6" y="0.6" width="18.8" height="14.8" rx="3" fill="#1f2937" stroke="#64748b" stroke-width="1.1"/><path d="M0.6 5h18.8" stroke="#64748b" stroke-width="2.5" opacity="0.7"/></svg>';}
+function accountIcon(inf){
+ if(!inf)return svgCardUnknown();
+ if(inf.kind==='monedero')return svgWallet();
+ if(inf.kind==='tarjeta'){var st=BANK_STYLE[inf.bank];if(st)return svgBankTile(st.code,st.bg,st.fg);return svgCardUnknown();}
+ return svgCardUnknown();}
+/* ===== guardas de entrada: montos (dígitos + un punto, 2 decimales) y cuenta (solo dígitos) ===== */
+function guardMoney(el){if(!el)return;
+ el.addEventListener('input',function(){var v=el.value||'',out='',i,ch;
+  if(v.indexOf(',')>=0){ // locale es-UY/es-CU: coma = decimal, punto = miles
+   out=v.replace(/\./g,'').replace(/,/g,'.').replace(/[^0-9.]/g,'');
+   var di=out.indexOf('.');
+   if(di>=0){var dec=out.slice(di+1).replace(/\./g,'');out=out.slice(0,di)+'.'+dec;}
+  }else{
+   var dot=false;
+   for(i=0;i<v.length;i++){ch=v.charAt(i);
+    if(ch>='0'&&ch<='9')out+=ch;
+    else if(ch==='.'){if(!dot){out+='.';dot=true;}}}
+  }
+  var parts=out.split('.');if(parts.length>2)out=parts[0]+'.'+parts.slice(1).join('');
+  if(parts[1]&&parts[1].length>2)out=parts[0]+'.'+parts[1].slice(0,2);
+  if(out.length>12)out=out.slice(0,12);
+  if(out!==v)el.value=out;});
+ el.addEventListener('keydown',function(ev){var k=ev.key;if(k&&k.length===1&&!/[0-9.,]/.test(k)&&!ev.ctrlKey&&!ev.metaKey&&!ev.altKey)ev.preventDefault();});
+ el.addEventListener('paste',function(ev){var text=(ev.clipboardData||window.clipboardData||{}).getData?(ev.clipboardData||window.clipboardData).getData('text'):'';var clean=text.replace(/[^0-9.,]/g,'').replace(/(,.*),/g,'$1');if(text!==clean&&ev.clipboardData){ev.preventDefault();document.execCommand?document.execCommand('insertText',false,clean):null;}});}
+function guardDigits(el){if(!el)return;
+ el.addEventListener('keydown',function(ev){var k=ev.key;if(k&&k.length===1&&!/[0-9]/.test(k)&&!ev.ctrlKey&&!ev.metaKey&&!ev.altKey)ev.preventDefault();});}
 window.deleteClient=function(id){var c=clients.filter(function(x){return x.id===id;})[0];if(!c)return;if(!confirm('¿Eliminar a "'+c.name+'"?'))return;
  clients=clients.filter(function(x){return x.id!==id;});pushH({sourceKey:'cli-del:'+id+':'+Date.now(),date:new Date().toISOString(),module:'Clientes',operation:'Cliente eliminado',opNumber:'',clientId:id,clientName:c.name,description:c.name+' eliminado',detail:'Tenía '+fmt(c.balance),amount:0,impact:0,balanceAfter:null});
  recalcBalances();persist();renderAll();toast('Cliente eliminado.');};
@@ -1577,15 +1617,15 @@ function cancelReceiptEdit(){ $('receiptEditId').value='';$('receiptSubmit').tex
 function cancelTransferEdit(){ $('transferEditId').value='';$('transferSubmit').textContent='Realizar transferencia';$('transferCancelEdit').classList.add('hidden');$('transferAmount').value='';$('transferAccount').value='';refreshAccountBadge(); }
 function refreshAccountBadge(){
  var v=($('transferAccount').value||'').replace(/\D/g,''),pre=analyze(v),lim=LIMITS[pre.kind]||16;if(v.length>lim)v=v.slice(0,lim);$('transferAccount').value=v;$('transferAccount').maxLength=lim;
- var inf=analyze(v),lab=$('transferAccountType'),txt,cls='abadge ';
- if(!v){lab.textContent='—';lab.className='abadge';return;}
- if(inf.kind==='tarjeta'){if(inf.len<16){txt='TARJETA · '+inf.len+'/16 dígitos';cls+='pend';}else{txt='TARJETA · '+inf.bank;cls+='ok';}}
- else if(inf.kind==='monedero'){if(inf.len<8){txt='MONEDERO · '+inf.len+'/8 dígitos';cls+='pend';}else{txt='MONEDERO · '+inf.bank;cls+='ok';}}
- else{txt='DESCONOCIDO · debe iniciar con 92, 5 o 6';lab.textContent=txt;lab.className='abadge bad';return;}
- lab.textContent=txt;lab.className=cls;
+ var inf=analyze(v),lab=$('transferAccountType'),txt,cls='abadge ';var ico=accountIcon(inf);
+ if(!v){lab.innerHTML='—';lab.className='abadge';return;}
+ if(inf.kind==='tarjeta'){if(inf.len<16){txt='TARJETA · '+inf.len+'/16 dígitos';cls+='pend';}else{txt='TARJETA · '+esc(inf.bank);cls+='ok';}}
+ else if(inf.kind==='monedero'){if(inf.len<8){txt='MONEDERO · '+inf.len+'/8 dígitos';cls+='pend';}else{txt='MONEDERO · '+esc(inf.bank);cls+='ok';}}
+ else{lab.innerHTML=ico+'<span>DESCONOCIDO · inicia con 92, 5 o 6</span>';lab.className='abadge bad';return;}
+ lab.innerHTML=ico+'<span>'+txt+'</span>';lab.className=cls;
 }
 function showReceiptResult(r){$('receiptClientName').textContent=r.clientName;$('receiptAmountText').textContent=fmt(r.amount);$('receiptRate').textContent=r.commission+'%';$('receiptFee').textContent=fmt(r.fee);$('receiptNet').textContent=fmt(r.net);$('receiptBalance').textContent=fmt(r.balanceAfter);$('receiptResult').classList.remove('hidden');}
-function showTransferResult(t){$('transferClientName').textContent=t.clientName;$('transferAccountInfo').textContent=t.bankName+' · '+t.account;$('transferAmountText').textContent=fmt(t.amount);$('transferRemaining').textContent=fmt(t.balanceAfter);$('transferResult').classList.remove('hidden');}
+function showTransferResult(t){$('transferClientName').textContent=t.clientName;$('transferAccountInfo').innerHTML=accountIcon(analyze(String(t.account||'')))+'<span>'+esc(t.bankName+' · '+t.account)+'</span>';$('transferAmountText').textContent=fmt(t.amount);$('transferRemaining').textContent=fmt(t.balanceAfter);$('transferResult').classList.remove('hidden');}
 function warnLowBalance(c,projected){if(!c||meta.settings.lowBalanceAlerts===false)return true;var min=r2(c.minBalance||0);if(projected<min)return confirm('El saldo de '+c.name+' quedará en '+fmt(projected)+', por debajo del mínimo '+fmt(min)+'. ¿Continuar?');return true;}
 window.editReceipt=function(id){var r=receipts.filter(function(x){return x.id===id;})[0];if(!r)return;$('receiptEditId').value=r.id;$('receiptClient').value=r.clientId;$('receiptAmount').value=r.amount;$('receiptSubmit').textContent='Guardar cambios';$('receiptCancelEdit').classList.remove('hidden');$('receiptForm').scrollIntoView({behavior:'smooth',block:'center'});toast('Editando '+r.opNumber+'. Guarda para recalcular saldos.');};
 window.editTransfer=function(id){var t=transfers.filter(function(x){return x.id===id;})[0];if(!t)return;$('transferEditId').value=t.id;$('transferClient').value=t.clientId;$('transferAccount').value=(t.account==='—'?'':t.account);refreshAccountBadge();$('transferAmount').value=t.amount;$('transferSubmit').textContent='Guardar cambios';$('transferCancelEdit').classList.remove('hidden');$('transferForm').scrollIntoView({behavior:'smooth',block:'center'});toast('Editando '+t.opNumber+'. Guarda para recalcular saldos.');};
@@ -1650,7 +1690,7 @@ function renderTransferH(){
   +'<div class="opcard-top"><span class="opbadge tra">Transferencia</span><span class="opclient">'+esc(t.clientName)+'</span><span class="opnum">'+opNum(t.opNumber)+'</span></div>'
   +'<div class="opamount">'+fmt(t.amount)+'</div>'
   +'<div class="opmeta">Saldo restante: <b>'+fmt(t.balanceAfter)+'</b></div>'
-  +'<div class="panline"><span class="accountchip'+(isMon?' mon':'')+'">'+(isMon?'👛 Monedero':'💳 Tarjeta')+'</span>'
+  +'<div class="panline"><span class="accountchip'+(isMon?' mon':'')+'">'+accountIcon(analyze(digits))+'<span>'+(isMon?'Monedero':'Tarjeta')+'</span></span>'
   +'<button type="button" class="pan-num" data-full="'+esc(digits)+'" data-masked="'+esc(masked)+'" onclick="togglePan(this)" title="Tocar para ver / ocultar">'+esc(masked)+'</button>'
   +'<button type="button" class="icobtn pancopy" data-copy="'+esc(digits)+'" title="Copiar número" aria-label="Copiar número">📋</button>'
   +(showBank?'<span class="cardbank">'+esc(bank)+'</span>':'')
@@ -1704,6 +1744,7 @@ $('clientForm').addEventListener('submit',function(e){e.preventDefault();var id=
  recalcBalances();persist();renderAll();closeClientModal();});
 $('receiptCancelEdit').addEventListener('click',cancelReceiptEdit);$('transferCancelEdit').addEventListener('click',cancelTransferEdit);
 $('transferAccount').addEventListener('input',refreshAccountBadge);
+guardMoney($('receiptAmount'));guardMoney($('transferAmount'));guardDigits($('transferAccount'));
 $('receiptForm').addEventListener('submit',function(e){e.preventDefault();var cid=$('receiptClient').value,amt=parseFloat($('receiptAmount').value),editId=$('receiptEditId').value;
  if(!cid||isNaN(amt)||amt<=0){toast('Elige cliente y monto válido.',false);return;}var c=clients.filter(function(x){return x.id===cid;})[0];if(!c)return;
  var fee=r2(amt*(c.commission/100)),net=r2(amt-fee),r;
