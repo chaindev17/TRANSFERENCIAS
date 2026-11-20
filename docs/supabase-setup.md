@@ -40,17 +40,25 @@ histórico y archivado) que puedes subir y bajar desde cualquier dispositivo.
 > pública. Lo que protege tus datos es RLS (paso 2) + tu sesión.
 > ⚠️ Nunca uses ni pegues aquí la `service_role key`: esa sí es secreta.
 
-## 5 · Conectar la app
+## 5 · Crear tu cuenta y entrar
 
 1. Abre la app (local o el sitio de GitHub Pages).
-2. Menú lateral → **💾 Base de datos** → **☁️ Sincronizar con la nube (Supabase)**.
-3. Pega URL del proyecto, anon public key y tu correo.
-4. Primera vez: **Crear cuenta** (luego **Conectar** si pediste confirmación de correo).
-5. **⬆ Subir copia a la nube**.
-6. En tu otro dispositivo/navegador: misma app → mismo panel → **Conectar** → **⬇ Traer copia de la nube** → elige *Combinar* o *Reemplazar*.
+2. Menú lateral → **👤 Mi cuenta y nube**.
+3. Pestaña **Crear cuenta** (primera vez):
+   - Despliega **Configuración avanzada** y pega la **Project URL** y la **anon public key** (una sola vez por dispositivo/navegador).
+   - Nombre (opcional), correo y contraseña (mín. 8 caracteres) → **Crear cuenta y enviar verificación**.
+   - Abre el correo que te llega y confirma la cuenta (enlace de verificación). Si no lo ves, **Reenviar confirmación** (revisa el spam).
+4. Vuelve a la app → pestaña **Iniciar sesión** → correo + contraseña → **Entrar**.
+5. Verás tu avatar y tu nombre. Aparecen **⬆ Subir copia a la nube**, **⬇ Traer copia de la nube** y la casilla para subir automáticamente tras cada cambio.
+6. En tu otro dispositivo/navegador: misma app → pestaña **Iniciar sesión** (la configuración avanzada también solo la primera vez) → **Entrar** → **⬇ Traer copia de la nube** → elige *Combinar* o *Reemplazar*.
 
-Opción **“Subir automáticamente tras cada cambio”**: marca la casilla y la app subirá
-una copia 8 segundos después de cada edición (con silencio entre cambios).
+**¿Olvidaste la contraseña?** → **Olvidé mi contraseña**: recibes un enlace de recuperación.
+**Sesión caducada:** la app renueva el token automáticamente cuando puede; si no, basta con **Entrar** de nuevo.
+
+> **Registro abierto, datos aislados:** cualquier persona puede crear cuenta, pero cada cuenta
+> solo ve sus propias filas en la nube (RLS con `auth.uid()`) y sus datos locales viven en un
+> espacio por cuenta dentro del navegador. La base adjunta cifrada sigue protegida por su
+> propia contraseña, aparte del login.
 
 ## 6 · Qué esperar / límites honestos
 

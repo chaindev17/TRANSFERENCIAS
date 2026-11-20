@@ -314,6 +314,53 @@ details.db-help ul{margin:10px 0 0;padding-left:18px;color:var(--mut);font-size:
 .price-note{font-size:11px;color:var(--faint);margin:0 0 12px;line-height:1.6}
 @media(max-width:980px){.price-grid{grid-template-columns:1fr 1fr}.calcbar{grid-template-columns:1fr 1fr}.calc-result{grid-column:1/-1}.calcbar .btn{grid-column:1/-1}}
 @media(max-width:640px){.price-grid{grid-template-columns:1fr}.calcbar{grid-template-columns:1fr}.calc-result{grid-column:auto}.calcbar .btn{width:100%}}
+/* ===== historial tipo tarjeta (recibo / transferencia) ===== */
+.opcards{display:grid;gap:12px;margin:4px 0}
+.opcard{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px 16px 12px 18px;overflow:hidden}
+.opcard::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:linear-gradient(180deg,var(--vio),var(--sky) 55%,transparent 130%)}
+.opcard.tra::before{background:linear-gradient(180deg,var(--mint),var(--sky) 60%,transparent 130%)}
+.opcard-top{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.opbadge{display:inline-flex;align-items:center;font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;border-radius:999px;padding:5px 12px}
+.opbadge.rec{background:var(--sky-bg);color:var(--sky-text);box-shadow:inset 0 0 0 1px var(--sky-line)}
+.opbadge.tra{background:var(--danger-bg);color:var(--coral-text);box-shadow:inset 0 0 0 1px var(--coral-line)}
+.opclient{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.opnum{margin-left:auto;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:11px;color:var(--faint);letter-spacing:.08em;white-space:nowrap}
+.opamount{font-size:clamp(24px,5vw,30px);font-weight:800;letter-spacing:-.02em;color:var(--text-strong);line-height:1.1}
+.opmeta{font-size:12px;color:var(--mut);margin-top:4px}
+.panline{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px}
+.accountchip{display:inline-flex;align-items:center;gap:6px;background:var(--sky-bg);color:var(--sky-text);border:1px solid var(--sky-line);border-radius:8px;padding:4px 10px;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
+.accountchip.mon{background:var(--vio-bg);color:var(--vio-text);border-color:var(--vio-bg)}
+.pan-num{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:var(--surface2);border:1px solid var(--line);color:var(--tx);border-radius:8px;padding:5px 10px;font-size:12px;letter-spacing:.13em;cursor:pointer;transition:.18s}
+.pan-num:hover{background:var(--surface-hover)}
+.pancopy{font-size:11px}
+.cardbank{font-size:11px;color:var(--faint)}
+.opfoot{display:flex;align-items:center;gap:8px;border-top:1px solid var(--line2);margin-top:11px;padding-top:10px}
+.opdate{display:inline-flex;align-items:center;gap:7px;font-size:12px;color:var(--mut)}
+.opdate b{color:var(--tx);font-weight:700}
+.opactions{margin-left:auto;display:flex;gap:8px}
+.opbtn{width:36px;height:36px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--mut);display:inline-grid;place-items:center;cursor:pointer;font-size:15px;transition:.18s}
+.opbtn:hover{background:var(--surface-hover);color:var(--text-strong);transform:translateY(-1px)}
+.opbtn.danger:hover{color:var(--danger-hover);background:var(--danger-bg)}
+.sortbtn{min-width:112px}
+/* ===== mi cuenta / nube ===== */
+.authseg{display:grid;grid-template-columns:1fr 1fr;gap:5px;padding:4px;border:1px solid var(--line2);background:var(--surface5);border-radius:12px;margin-bottom:12px}
+.authseg-btn{border:0;background:transparent;color:var(--mut);border-radius:9px;padding:9px 10px;font-size:12px;font-weight:800;cursor:pointer;transition:.18s}
+.authseg-btn:hover{background:var(--surface2);color:var(--tx)}
+.authseg-btn.active{background:var(--mint-bg);color:var(--mint-text);box-shadow:inset 0 0 0 1px var(--mint-accent)}
+.auth-advanced{border:1px dashed var(--line-strong);border-radius:12px;padding:10px 12px;margin-bottom:12px;background:var(--surface4)}
+.auth-advanced summary{cursor:pointer;font-size:11px;font-weight:800;letter-spacing:.06em;color:var(--mut);text-transform:uppercase;outline:none}
+.auth-advanced[open] summary{margin-bottom:10px}
+.auth-session{display:flex;align-items:center;gap:11px;border:1px solid var(--mint-accent);background:var(--mint-wash);border-radius:12px;padding:10px 12px;margin-bottom:12px}
+.auth-avatar{width:42px;height:42px;flex:0 0 42px;border-radius:50%;display:grid;place-items:center;font-weight:800;color:var(--logo-text);background:linear-gradient(135deg,var(--mint),var(--mint2));font-size:17px}
+.auth-session b{display:block;font-size:13px}
+.auth-session small{display:block;color:var(--mut);font-size:11px;word-break:break-all}
+.syncbox{border:1px solid var(--line2);background:var(--surface4);border-radius:12px;padding:10px 12px;margin-bottom:12px}
+.syncbox .srow{display:flex;gap:8px;flex-wrap:wrap}
+.syncbox .srow .btn{flex:1 1 46%}
+.localbanner{display:flex;align-items:center;gap:10px;margin:0 0 14px;border:1px solid var(--amber-line);background:var(--amber-bg);color:var(--amber-text);border-radius:14px;padding:10px 12px;font-size:12px;line-height:1.45}
+.localbanner b{color:var(--text-strong)}
+.localbanner .btn{margin-left:auto;white-space:nowrap}
+@media(max-width:640px){.opactions{gap:6px}.opbtn{width:34px;height:34px}.opamount{font-size:24px}.localbanner{flex-wrap:wrap}.localbanner .btn{margin-left:0;width:100%}}
 </style>
 </head>
 <body>
@@ -343,7 +390,7 @@ details.db-help ul{margin:10px 0 0;padding-left:18px;color:var(--mut);font-size:
         </div>
         <button type="button" class="dbnav-link" id="drawerRestoreBackup">↺ Restaurar última copia</button>
         <button type="button" class="dbnav-link" id="drawerExport">⬇ CSV histórico completo</button>
-        <button type="button" class="dbnav-link" id="drawerCloudSync">☁️ Sincronizar con la nube (Supabase)</button>
+        <button type="button" class="dbnav-link" id="drawerCloudSync">👤 Mi cuenta y nube</button>
         <button type="button" class="dbnav-link" id="shortcutsBtn">⌨ Atajos y ayuda</button>
         <p class="dbnav-note">También puedes arrastrar un archivo .json al panel. Al importar eliges <b>combinar sin duplicar</b> o <b>reemplazar todo</b>.</p>
       </div>
@@ -380,6 +427,12 @@ details.db-help ul{margin:10px 0 0;padding-left:18px;color:var(--mut);font-size:
 </header>
 
 <main class="wrap">
+  <div class="localbanner hidden" id="localBanner" role="status">
+    <span>📱 <span><b>Modo local.</b> Los datos viven solo en este dispositivo. Inicia sesión o crea una cuenta para recuperarlos y sincronizarlos.</span></span>
+    <button type="button" class="btn btn-p btn-s" id="bannerSignIn">Iniciar sesión / Crear cuenta</button>
+    <button type="button" class="btn btn-g btn-s hidden" id="bannerAdopt" title="Copia los datos ya guardados en este navegador al modo local (el original no se borra)">Adoptar datos de este dispositivo</button>
+    <button type="button" class="icobtn" id="bannerDismiss" aria-label="Ocultar aviso">✕</button>
+  </div>
   <div class="hero" aria-live="polite">
     <span class="eyebrow view-kicker" id="viewKicker">SECCIÓN ACTIVA · CLIENTES</span>
     <h2 id="viewTitle">Gestión de clientes</h2>
@@ -418,8 +471,8 @@ details.db-help ul{margin:10px 0 0;padding-left:18px;color:var(--mut);font-size:
     </form>
     <div id="receiptResult" class="res hidden"><div class="res-top"><div><span class="rlab">Resultado del recibo</span><h3 id="receiptClientName">—</h3></div>
       <div class="rgrid"><div class="metric"><span>Monto</span><strong id="receiptAmountText">$0,00</strong></div><div class="metric"><span>Comisión (<span id="receiptRate">0%</span>)</span><strong class="coralx" id="receiptFee">$0,00</strong></div><div class="metric"><span>Recibe</span><strong class="mintx big" id="receiptNet">$0,00</strong></div><div class="metric"><span>Saldo restante</span><strong id="receiptBalance">$0,00</strong></div></div></div></div>
-    <div class="thead"><h3>Historial · Recibos</h3><div class="finline"><input id="receiptSearch" type="search" placeholder="Buscar OP, cliente…" /><select id="receiptRange"><option value="today">Hoy</option><option value="7">7 días</option><option value="30">30 días</option><option value="all">Todas</option></select></div><span class="tag tag-a"><span id="receiptRangeLabel">Hoy</span> · <span id="receiptTodayCount">0</span></span></div>
-    <div class="twrap"><table><thead><tr><th>Operación</th><th>Nº operación</th><th>Cliente</th><th>Monto</th><th>Comisión</th><th>Recibe</th><th>Saldo después</th><th>Acciones</th><th>Hora</th></tr></thead><tbody id="receiptHistoryBody"></tbody></table></div>
+    <div class="thead"><h3 id="receiptDayTitle">RECIBOS DEL DÍA</h3><div class="finline"><input id="receiptSearch" type="search" placeholder="Buscar OP, cliente…" /><select id="receiptRange"><option value="today">Hoy</option><option value="7">7 días</option><option value="30">30 días</option><option value="all">Todas</option></select><button type="button" class="btn btn-g btn-s sortbtn" id="receiptSortBtn">↓ Recientes</button></div><span class="tag tag-a"><span id="receiptRangeLabel">Hoy</span> · <span id="receiptTodayCount">0</span></span></div>
+    <div class="opcards" id="receiptHistoryBody"></div>
   </section>
 
   <section id="transferencia" class="panel op-pane" role="tabpanel" aria-labelledby="tab-transferencia" aria-label="Transferencia">
@@ -435,8 +488,8 @@ details.db-help ul{margin:10px 0 0;padding-left:18px;color:var(--mut);font-size:
     <p class="hintline">Reglas: <b>92</b> → tarjeta, exactamente <b>16 dígitos</b> · <b>5 / 6</b> → monedero, exactamente <b>8 dígitos</b>. Dígitos 5–6 de la tarjeta: <b>95</b> Metropolitano · <b>12</b> BPA · <b>23 / 13</b> BANDEC. El campo solo acepta números y se recorta solo al límite del tipo detectado.</p>
     <div id="transferResult" class="res hidden"><div class="res-top"><div><span class="rlab">Resultado de la transferencia</span><h3 id="transferClientName">—</h3><p class="res-sub" id="transferAccountInfo">—</p></div>
       <div class="rgrid"><div class="metric"><span>Monto</span><strong id="transferAmountText">$0,00</strong></div><div class="metric"><span>Saldo restante</span><strong class="mintx big" id="transferRemaining">$0,00</strong></div></div></div></div>
-    <div class="thead"><h3>Historial · Transferencias</h3><div class="finline"><input id="transferSearch" type="search" placeholder="Buscar OP, cuenta…" /><select id="transferRange"><option value="today">Hoy</option><option value="7">7 días</option><option value="30">30 días</option><option value="all">Todas</option></select></div><span class="tag tag-s"><span id="transferRangeLabel">Hoy</span> · <span id="transferTodayCount">0</span></span></div>
-    <div class="twrap"><table><thead><tr><th>Operación</th><th>Nº operación</th><th>Cliente</th><th>Cuenta</th><th>Banco / tipo</th><th>Monto</th><th>Saldo restante</th><th>Acciones</th><th>Hora</th></tr></thead><tbody id="transferHistoryBody"></tbody></table></div>
+    <div class="thead"><h3 id="transferDayTitle">TRANSFERENCIAS DEL DÍA</h3><div class="finline"><input id="transferSearch" type="search" placeholder="Buscar OP, cuenta…" /><select id="transferRange"><option value="today">Hoy</option><option value="7">7 días</option><option value="30">30 días</option><option value="all">Todas</option></select><button type="button" class="btn btn-g btn-s sortbtn" id="transferSortBtn">↓ Recientes</button></div><span class="tag tag-s"><span id="transferRangeLabel">Hoy</span> · <span id="transferTodayCount">0</span></span></div>
+    <div class="opcards" id="transferHistoryBody"></div>
   </section>
 
   <section id="saldo" class="panel op-pane" role="tabpanel" aria-labelledby="tab-saldo" aria-label="Saldo">
@@ -654,24 +707,55 @@ details.db-help ul{margin:10px 0 0;padding-left:18px;color:var(--mut);font-size:
 </div>
 <div id="cloudModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="cloudModalTitle">
   <div class="mback" id="cloudModalBack"></div>
-  <div class="mcard" style="max-width:580px">
-    <div class="mhead"><h3 id="cloudModalTitle">☁️ Sincronizar con la nube (Supabase)</h3><button class="icobtn" id="cloudModalX" aria-label="Cerrar">✕</button></div>
-    <form id="cloudForm" class="mform" autocomplete="off">
-      <div class="field"><label for="cloudUrl">URL del proyecto</label><input id="cloudUrl" type="url" placeholder="https://xxxxxxxx.supabase.co" required /></div>
-      <div class="field"><label for="cloudKey">Anon public key</label><input id="cloudKey" type="password" placeholder="eyJhbGciOi… (segura para exponer, la protege RLS)" required /></div>
-      <div class="field"><label for="cloudEmail">Correo de la cuenta</label><input id="cloudEmail" type="email" placeholder="tu@correo.com" required /></div>
-      <div class="field"><label for="cloudPassword">Contraseña de la cuenta</label><input id="cloudPassword" type="password" autocomplete="current-password" placeholder="La contraseña de Supabase Auth" /></div>
-      <label class="check" for="cloudAuto"><input id="cloudAuto" type="checkbox" /> Subir automáticamente tras cada cambio (8 s de silencio)</label>
-      <p class="hintline" id="cloudStatus">Sin conectar. La anon key es pública por diseño; tus datos quedan protegidos por Row Level Security (cada usuario solo ve lo suyo).</p>
-      <div class="macts" style="flex-wrap:wrap">
-        <button type="button" class="btn btn-p" id="cloudLoginBtn" style="flex:1 1 45%">Conectar</button>
-        <button type="button" class="btn btn-g" id="cloudSignupBtn" style="flex:1 1 45%">Crear cuenta</button>
-        <button type="button" class="btn btn-g" id="cloudPushBtn" style="flex:1 1 45%">⬆ Subir copia a la nube</button>
-        <button type="button" class="btn btn-g" id="cloudPullBtn" style="flex:1 1 45%">⬇ Traer copia de la nube</button>
-        <button type="button" class="btn btn-g" id="cloudLogoutBtn" style="flex:1 1 45%">Desconectar</button>
-        <button type="button" class="btn btn-g" id="cloudCloseBtn" style="flex:1 1 45%">Cerrar</button>
+  <div class="mcard" style="max-width:600px">
+    <div class="mhead"><h3 id="cloudModalTitle">👤 Mi cuenta y nube</h3><button class="icobtn" id="cloudModalX" aria-label="Cerrar">✕</button></div>
+    <div class="auth-session hidden" id="authSessionPane">
+      <div class="auth-avatar" id="authAvatar">A</div>
+      <div><b id="authName">Conectado</b><small id="authEmail">—</small><small>Sincronización cifrada por HTTPS · datos aislados por cuenta</small></div>
+      <button type="button" class="btn btn-g btn-s" id="cloudLogoutBtn" style="margin-left:auto;white-space:nowrap">Desconectar</button>
+    </div>
+    <div id="authFormsPane">
+      <div class="authseg" role="tablist" aria-label="Iniciar sesión o crear cuenta">
+        <button type="button" class="authseg-btn active" id="authTabLogin" role="tab">Iniciar sesión</button>
+        <button type="button" class="authseg-btn" id="authTabSignup" role="tab">Crear cuenta</button>
       </div>
-    </form>
+      <form id="cloudForm" class="mform" autocomplete="off">
+        <div class="auth-pane" id="authLoginPane" role="tabpanel">
+          <div class="field"><label for="cloudEmail">Correo</label><input id="cloudEmail" type="email" inputmode="email" autocomplete="email" placeholder="tu@correo.com" required /></div>
+          <div class="field"><label for="cloudPassword">Contraseña</label><input id="cloudPassword" type="password" autocomplete="current-password" placeholder="Tu contraseña" /></div>
+          <div class="macts" style="flex-wrap:wrap">
+            <button type="submit" class="btn btn-p" id="cloudLoginBtn" style="flex:1 1 100%">Entrar</button>
+            <button type="button" class="btn btn-g btn-s" id="cloudRecoverBtn" style="flex:1 1 45%">Olvidé mi contraseña</button>
+            <button type="button" class="btn btn-g btn-s" id="cloudResendBtn" style="flex:1 1 45%">Reenviar confirmación</button>
+          </div>
+        </div>
+        <div class="auth-pane hidden" id="authSignupPane" role="tabpanel">
+          <div class="field"><label for="cloudName">Nombre (opcional)</label><input id="cloudName" type="text" autocomplete="name" placeholder="¿Cómo te llamas?" /></div>
+          <div class="field"><label for="cloudEmail2">Correo</label><input id="cloudEmail2" type="email" inputmode="email" autocomplete="email" placeholder="tu@correo.com" /></div>
+          <div class="field"><label for="cloudPassword2">Contraseña (mín. 8 caracteres)</label><input id="cloudPassword2" type="password" autocomplete="new-password" placeholder="Algo difícil de adivinar" /></div>
+          <div class="field"><label for="cloudPassword2b">Repetir contraseña</label><input id="cloudPassword2b" type="password" autocomplete="new-password" placeholder="Repítela" /></div>
+          <button type="button" class="btn btn-p" id="cloudSignupBtn" style="width:100%">Crear cuenta y enviar verificación</button>
+          <p class="hintline">Te enviaremos un correo de verificación. Confirma la cuenta desde ese correo, vuelve aquí e inicia sesión.</p>
+        </div>
+      </form>
+      <details class="auth-advanced" id="authAdvanced">
+        <summary>Configuración avanzada · proyecto Supabase</summary>
+        <div class="mform" style="margin-top:10px">
+          <div class="field"><label for="cloudUrl">URL del proyecto</label><input id="cloudUrl" type="url" placeholder="https://xxxxxxxx.supabase.co" /></div>
+          <div class="field"><label for="cloudKey">Anon public key</label><input id="cloudKey" type="password" placeholder="eyJhbGciOi… (pública por diseño; RLS protege cada fila)" /></div>
+          <p class="hintline">Solo la primera vez. La anon key viaja al navegador de todos modos; lo que aísla tus datos es Row Level Security. Guía: <b>docs/supabase-setup.md</b>.</p>
+        </div>
+      </details>
+    </div>
+    <div class="syncbox hidden" id="authSyncBox">
+      <div class="srow">
+        <button type="button" class="btn btn-p" id="cloudPushBtn">⬆ Subir copia a la nube</button>
+        <button type="button" class="btn btn-g" id="cloudPullBtn">⬇ Traer copia de la nube</button>
+      </div>
+      <label class="check" for="cloudAuto" style="margin-top:10px"><input id="cloudAuto" type="checkbox" /> Subir automáticamente tras cada cambio (8 s de silencio)</label>
+    </div>
+    <p class="hintline" id="cloudStatus">Sin conectar.</p>
+    <div class="macts"><button type="button" class="btn btn-g" id="cloudCloseBtn" style="flex:1">Cerrar</button></div>
   </div>
 </div>
 <div id="toast" class="toast"></div>
@@ -690,8 +774,13 @@ var storeOK=true,mem={},pendingImport=null,curOp='recibo',toastTimer=null;
 try{localStorage.setItem('__t','1');localStorage.removeItem('__t');}catch(e){storeOK=false;}
 function sget(k){if(!storeOK)return mem[k]!=null?mem[k]:null;try{return localStorage.getItem(k);}catch(e){storeOK=false;return mem[k]!=null?mem[k]:null;}}
 function sset(k,v){if(!storeOK){mem[k]=v;return;}try{localStorage.setItem(k,v);}catch(e){storeOK=false;mem[k]=v;}}
-function load(k,f){var r=sget(k);if(r==null)return f;try{var p=JSON.parse(r);return p==null?f:p;}catch(e){return f;}}
-function save(k,v){try{sset(k,JSON.stringify(v));}catch(e){}}
+function load(k,f){var r=sget(nsKey(k));if(r==null)return f;try{var p=JSON.parse(r);return p==null?f:p;}catch(e){return f;}}
+function save(k,v){try{sset(nsKey(k),JSON.stringify(v));}catch(e){}}
+/* ===== espacio por usuario (multi-cuenta) ===== */
+var cloudBoot=(function(){try{return JSON.parse(sget('gestor_nube')||'null')||{};}catch(e){return{};}})();
+var NS=(cloudBoot.accessToken&&cloudBoot.userId)?('u:'+String(cloudBoot.userId).replace(/[^a-zA-Z0-9_-]/g,'')+':'):'local:';
+function nsKey(k){return NS+k;}
+(function migrateLegacy(){if(NS==='local:')return;var seen={},moved=0;Object.keys(K).forEach(function(ok){var k=K[ok];if(seen[k])return;seen[k]=1;var l=sget(k);if(l!=null&&sget(NS+k)==null){sset(NS+k,l);moved++;}});try{if(moved)sset('gestor_migrado_'+NS,'1');}catch(e){}})();
 var clients=load(K.clients,null),receipts=load(K.receipts,[]),transfers=load(K.transfers,[]),fin=load(K.finance,[]),fconf=load(K.fconf,{openingBalance:0,prices:defaultPrices()}),hist=load(K.hist,[]),meta=load(K.meta,null);
 function $(id){return document.getElementById(id);}
 function arr(x){return Array.isArray(x)?x:[];}
@@ -735,6 +824,11 @@ function rangeLabel(rg){return({today:'Hoy','7':'7 días','30':'30 días',all:'T
 function byDate(a,b){return new Date(a.date)-new Date(b.date);}
 function byOpDate(a,b){var d=byDate(a.o,b.o);if(d)return d;var n=opToNumber(a.o.opNumber,0)-opToNumber(b.o.opNumber,0);if(n)return n;return String(a.o.id||'').localeCompare(String(b.o.id||''));}
 function descDate(a,b){return new Date(b.date)-new Date(a.date)||opToNumber(b.opNumber,0)-opToNumber(a.opNumber,0);}
+function ascDate(a,b){return new Date(a.date)-new Date(b.date)||opToNumber(a.opNumber,0)-opToNumber(b.opNumber,0);}
+var receiptAsc=false,transferAsc=false;
+function opNum(v){var n=opToNumber(v,0);return '#'+esc(n?String(n):String(v||''));}
+function maskPan(digits){digits=String(digits||'').replace(/\D/g,'');var last=digits.slice(-4);return (digits.length>4?'•'.repeat(Math.min(digits.length-4,12)):'')+last;}
+function togglePan(el){var full=el.getAttribute('data-full')||'',msk=el.getAttribute('data-masked')||'';el.textContent=(el.textContent===msk)?full:msk;}
 function copyBtn(v){return '<button type="button" class="copybtn" data-copy="'+esc(v)+'" title="Copiar '+esc(v)+'">⧉</button>';}
 function opCell(v){return v?('<span class="mono">'+esc(v)+'</span> '+copyBtn(v)):'<span class="mut">—</span>';}
 
@@ -893,7 +987,7 @@ function bootstrapAttached(){
  if(meta&&meta.importedSignatures&&meta.importedSignatures.indexOf(ATTACHED_META.sha256)>=0)return false;
  if(getAttachedEnvelope())return false; /* base cifrada: requiere contraseña */
  var raw=getAttachedData();if(!raw)return false;
- var hasData=[K.clients,K.receipts,K.transfers,K.finance,K.hist].some(function(k){return sget(k)!==null;});
+ var hasData=[K.clients,K.receipts,K.transfers,K.finance,K.hist].some(function(k){return sget(nsKey(k))!==null;});
  var mode=(!hasData||isDemoState())?'replace':'merge';
  var ok=applyDatabasePayload({data:raw,fileName:ATTACHED_META.fileName,signature:ATTACHED_META.sha256,embedded:true},mode,{bootstrap:true,skipRender:true,silent:false,force:true});
  if(ok){try{$('receiptRange').value='all';$('transferRange').value='all';}catch(e){}}
@@ -906,7 +1000,7 @@ function attachedPending(){if(!getAttachedEnvelope())return false;return !(meta&
 function openUnlock(mode){unlockMode=mode||'bootstrap';var m=$('unlockModal');if(!m)return;var e=$('unlockError');if(e)e.classList.add('hidden');$('unlockPass').value='';m.classList.remove('hidden');setTimeout(function(){try{$('unlockPass').focus();}catch(e){}},50);}
 function closeUnlock(){var m=$('unlockModal');if(m)m.classList.add('hidden');}
 function decryptAndApply(raw){
- var hasData=[K.clients,K.receipts,K.transfers,K.finance,K.hist].some(function(k){return sget(k)!==null;});
+ var hasData=[K.clients,K.receipts,K.transfers,K.finance,K.hist].some(function(k){return sget(nsKey(k))!==null;});
  var mode=(!hasData||isDemoState())?'replace':'merge';
  var ok=applyDatabasePayload({data:raw,fileName:ATTACHED_META.fileName,signature:ATTACHED_META.sha256,embedded:true},mode,{bootstrap:true,skipRender:false,silent:false,force:true});
  if(ok){try{$('receiptRange').value='all';$('transferRange').value='all';}catch(e){}}
@@ -931,57 +1025,159 @@ async function submitUnlock(){
  }
 }
 
-/* ===== nube (Supabase, opcional) ===== */
+/* ===== cuenta y nube (Supabase) ===== */
 var CLOUD_KEY='gestor_nube',cloudTimer=null;
 function cloudCfg(){try{return JSON.parse(sget(CLOUD_KEY)||'null')||{};}catch(e){return{};}}
-function cloudSave(c){save(CLOUD_KEY,c);}
+function cloudSave(c){sset(CLOUD_KEY,JSON.stringify(c));} /* la sesión nunca se namespacea: vive fuera del espacio por usuario */
+function cloudBase(){return String(cloudCfg().url||'').replace(/\/+$/,'');}
+function isSignedIn(){var c=cloudCfg();return !!(c.accessToken&&c.userId);}
+function authErr(d,status){return (d&&(d.msg||d.message||d.error_description||d.error||d.hint))||('HTTP '+status);}
 function cloudStatus(msg,ok){var el=$('cloudStatus');if(el){el.textContent=msg;el.style.color=ok===false?'var(--coral-text)':(ok===true?'var(--mint-text)':'');}}
-function openCloud(){var c=cloudCfg();$('cloudUrl').value=c.url||'';$('cloudKey').value=c.key||'';$('cloudEmail').value=c.email||'';$('cloudPassword').value='';$('cloudAuto').checked=!!c.auto;cloudStatus(c.accessToken?('Conectado como '+(c.email||'cuenta')+' · listo para sincronizar.'):'Sin conectar. La anon key es pública por diseño; tus filas quedan protegidas por RLS (cada usuario solo ve lo suyo).');$('cloudModal').classList.remove('hidden');setTimeout(function(){try{$('cloudUrl').focus();}catch(e){}},50);}
+function sessionLabel(){var c=cloudCfg();return 'Conectado como '+(c.name||c.email||'tu cuenta')+'.';}
+function openCloud(){
+ var c=cloudCfg();
+ $('cloudUrl').value=c.url||'';$('cloudKey').value=c.key||'';
+ if(!c.url||!c.key)$('authAdvanced').setAttribute('open','open');
+ setAuthMode('login');renderSession();
+ $('cloudModal').classList.remove('hidden');
+ setTimeout(function(){try{(isSignedIn()?$('cloudCloseBtn'):$('cloudEmail')).focus();}catch(e){}},60);
+}
 function closeCloud(){var m=$('cloudModal');if(m)m.classList.add('hidden');}
-function cloudBase(){var c=cloudCfg();return String(c.url||'').replace(/\/+$/,'');}
-async function cloudAuth(mode){
- var url=$('cloudUrl').value.trim().replace(/\/+$/,''),key=$('cloudKey').value.trim(),email=$('cloudEmail').value.trim(),pass=$('cloudPassword').value;
- if(!url||!key||!email){cloudStatus('Completa URL del proyecto, anon key y correo.',false);return;}
- if(!pass){cloudStatus(mode==='signup'?'Escribe la contraseña para crear la cuenta.':'Escribe la contraseña (o pulsa «Crear cuenta» la primera vez).',false);return;}
- var c=cloudCfg();c.url=url;c.key=key;c.email=email;c.auto=$('cloudAuto').checked;cloudSave(c);
- cloudStatus(mode==='signup'?'Creando cuenta…':'Conectando…');
+function setAuthMode(mode){
+ $('authLoginPane').classList.toggle('hidden',mode!=='login');
+ $('authSignupPane').classList.toggle('hidden',mode!=='signup');
+ $('authTabLogin').classList.toggle('active',mode==='login');
+ $('authTabSignup').classList.toggle('active',mode==='signup');
+ cloudStatus(isSignedIn()?(sessionLabel()+' Tus datos están aislados de otras cuentas.'):'Sin conectar. La primera vez: configuración avanzada → pega URL y anon key de tu proyecto.');
+}
+function renderSession(){
+ var on=isSignedIn(),c=cloudCfg();
+ $('authSessionPane').classList.toggle('hidden',!on);
+ $('authSyncBox').classList.toggle('hidden',!on);
+ $('authFormsPane').classList.toggle('hidden',on);
+ if(on){
+  var nm=c.name||c.email||'Cuenta';
+  $('authName').textContent=nm;$('authEmail').textContent=c.email||'';
+  $('authAvatar').textContent=(String(nm).trim().charAt(0)||'A').toUpperCase();
+  $('cloudAuto').checked=!!c.auto;
+  cloudStatus(sessionLabel()+' Tus datos están aislados de otras cuentas.',true);
+ }
+}
+async function cloudRefresh(){
+ var c=cloudCfg();if(!c.refreshToken)return false;
  try{
-  var endpoint=mode==='signup'?'/auth/v1/signup':'/auth/v1/token?grant_type=password';
-  var res=await fetch(url+endpoint,{method:'POST',headers:{'apikey':key,'Content-Type':'application/json'},body:JSON.stringify({email:email,password:pass})});
+  var res=await fetch(cloudBase()+'/auth/v1/token?grant_type=refresh_token',{method:'POST',headers:{'apikey':c.key||'','Content-Type':'application/json'},body:JSON.stringify({refresh_token:c.refreshToken})});
   var data={};try{data=await res.json();}catch(e){}
-  if(!res.ok){cloudStatus('Supabase: '+((data&&(data.msg||data.message||data.error_description||data.error))||('HTTP '+res.status)),false);return;}
-  if(mode==='signup'&&!data.access_token){cloudStatus('Cuenta creada. Revisa tu correo para confirmarla y luego pulsa «Conectar».',true);return;}
-  c.accessToken=data.access_token;c.refreshToken=data.refresh_token||null;c.userId=(data.user&&data.user.id)||c.userId||null;c.expiresAt=Date.now()+((data.expires_in||3600)*1000);cloudSave(c);
-  cloudStatus('Conectado como '+email+'.',true);
+  if(!res.ok||!data.access_token)return false;
+  c.accessToken=data.access_token;c.refreshToken=data.refresh_token||c.refreshToken;
+  if(data.user&&data.user.id)c.userId=data.user.id;
+  c.expiresAt=Date.now()+((data.expires_in||3600)*1000);cloudSave(c);return true;
+ }catch(e){return false;}
+}
+async function cloudFetch(path,opts){
+ var c=cloudCfg();opts=opts||{};
+ opts.headers=Object.assign({'apikey':c.key||'','Content-Type':'application/json'},opts.headers||{});
+ if(c.accessToken)opts.headers['Authorization']='Bearer '+c.accessToken;
+ var res=await fetch(cloudBase()+path,opts);
+ if(res.status===401&&c.refreshToken){
+  if(await cloudRefresh()){var c2=cloudCfg();opts.headers['apikey']=c2.key||'';opts.headers['Authorization']='Bearer '+c2.accessToken;res=await fetch(cloudBase()+path,opts);}
+ }
+ return res;
+}
+function saveAuthSession(data,name){
+ var c=cloudCfg();
+ c.accessToken=data.access_token;c.refreshToken=data.refresh_token||null;
+ c.userId=(data.user&&data.user.id)||c.userId||null;
+ c.email=(data.user&&data.user.email)||c.email||null;
+ var md=(data.user&&data.user.user_metadata)||{};
+ c.name=name||md.name||md.full_name||c.name||String(c.email||'').split('@')[0];
+ c.expiresAt=Date.now()+((data.expires_in||3600)*1000);
+ cloudSave(c);
+}
+async function cloudLogin(ev){
+ if(ev)ev.preventDefault();
+ var url=$('cloudUrl').value.trim().replace(/\/+$/,''),key=$('cloudKey').value.trim(),email=$('cloudEmail').value.trim(),pass=$('cloudPassword').value;
+ if(!url||!key){cloudStatus('Falta la configuración avanzada: URL del proyecto y anon key (una sola vez).',false);$('authAdvanced').setAttribute('open','open');return;}
+ if(!email||!pass){cloudStatus('Escribe correo y contraseña.',false);return;}
+ var c=cloudCfg();c.url=url;c.key=key;c.email=email;cloudSave(c);
+ cloudStatus('Entrando…');
+ try{
+  var res=await fetch(url+'/auth/v1/token?grant_type=password',{method:'POST',headers:{'apikey':key,'Content-Type':'application/json'},body:JSON.stringify({email:email,password:pass})});
+  var data={};try{data=await res.json();}catch(e){}
+  if(!res.ok){cloudStatus('Supabase: '+authErr(data,res.status),false);return;}
+  saveAuthSession(data);
+  cloudStatus('Bienvenido, '+(cloudCfg().name||email)+'. Cargando tus datos…',true);
+  setTimeout(function(){location.reload();},600);
  }catch(e){cloudStatus('No pude conectar: '+e.message,false);}
 }
-async function cloudRequest(path,opts){var c=cloudCfg();opts=opts||{};opts.headers=Object.assign({'apikey':c.key||'','Content-Type':'application/json'},opts.headers||{});if(c.accessToken)opts.headers['Authorization']='Bearer '+c.accessToken;return fetch(cloudBase()+path,opts);}
+async function cloudSignup(){
+ var url=$('cloudUrl').value.trim().replace(/\/+$/,''),key=$('cloudKey').value.trim();
+ var name=$('cloudName').value.trim(),email=$('cloudEmail2').value.trim(),pass=$('cloudPassword2').value,pass2=$('cloudPassword2b').value;
+ if(!url||!key){cloudStatus('Falta la configuración avanzada: URL del proyecto y anon key (una sola vez).',false);$('authAdvanced').setAttribute('open','open');return;}
+ if(!email){cloudStatus('Escribe el correo de tu cuenta.',false);return;}
+ if(String(pass).length<8){cloudStatus('La contraseña debe tener al menos 8 caracteres.',false);return;}
+ if(pass!==pass2){cloudStatus('Las contraseñas no coinciden.',false);return;}
+ var c=cloudCfg();c.url=url;c.key=key;c.email=email;if(name)c.name=name;cloudSave(c);
+ cloudStatus('Creando cuenta y enviando verificación…');
+ try{
+  var body={email:email,password:pass};if(name)body.data={name:name};
+  var res=await fetch(url+'/auth/v1/signup',{method:'POST',headers:{'apikey':key,'Content-Type':'application/json'},body:JSON.stringify(body)});
+  var data={};try{data=await res.json();}catch(e){}
+  if(!res.ok){cloudStatus('Supabase: '+authErr(data,res.status),false);return;}
+  if(data.access_token){saveAuthSession(data,name);cloudStatus('Cuenta creada y conectada. Recargando…',true);setTimeout(function(){location.reload();},600);return;}
+  $('cloudEmail').value=email;$('cloudPassword').value='';setAuthMode('login');
+  cloudStatus('Cuenta creada. Abre el correo que te enviamos y confirma tu cuenta; después inicia sesión aquí.',true);
+ }catch(e){cloudStatus('No pude conectar: '+e.message,false);}
+}
+async function cloudResend(){
+ var url=cloudBase(),key=cloudCfg().key,email=(($('cloudEmail').value)||($('cloudEmail2').value)||'').trim();
+ if(!url||!key){cloudStatus('Configura primero la URL y la anon key.',false);$('authAdvanced').setAttribute('open','open');return;}
+ if(!email){cloudStatus('Escribe tu correo para reenviar la confirmación.',false);return;}
+ cloudStatus('Reenviando correo de confirmación…');
+ try{
+  var res=await fetch(url+'/auth/v1/resend',{method:'POST',headers:{'apikey':key,'Content-Type':'application/json'},body:JSON.stringify({type:'signup',email:email})});
+  var data={};try{data=await res.json();}catch(e){}
+  if(!res.ok){cloudStatus('Supabase: '+authErr(data,res.status),false);return;}
+  cloudStatus('Correo reenviado a '+email+'. Revisa tu bandeja de entrada y el spam.',true);
+ }catch(e){cloudStatus('No pude conectar: '+e.message,false);}
+}
+async function cloudRecover(){
+ var url=cloudBase(),key=cloudCfg().key,email=$('cloudEmail').value.trim();
+ if(!url||!key){cloudStatus('Configura primero la URL y la anon key.',false);$('authAdvanced').setAttribute('open','open');return;}
+ if(!email){cloudStatus('Escribe tu correo para enviarte el enlace de recuperación.',false);return;}
+ cloudStatus('Enviando enlace de recuperación…');
+ try{
+  var res=await fetch(url+'/auth/v1/recover',{method:'POST',headers:{'apikey':key,'Content-Type':'application/json'},body:JSON.stringify({email:email})});
+  var data={};try{data=await res.json();}catch(e){}
+  if(!res.ok){cloudStatus('Supabase: '+authErr(data,res.status),false);return;}
+  cloudStatus('Si el correo existe, recibirás un enlace para restablecer tu contraseña.',true);
+ }catch(e){cloudStatus('No pude conectar: '+e.message,false);}
+}
 async function cloudPush(){
- var c=cloudCfg();if(!c.accessToken){cloudStatus('Conéctate primero.',false);return;}
+ var c=cloudCfg();if(!c.accessToken){cloudStatus('Inicia sesión primero.',false);return;}
  cloudStatus('Subiendo copia a la nube…');
  try{
   var payload=buildExportObject();
-  var res=await cloudRequest('/rest/v1/gestor_snapshots',{method:'POST',headers:{'Prefer':'resolution=merge-duplicates,return=minimal'},body:JSON.stringify({user_id:c.userId,payload:payload,updated_at:new Date().toISOString()})});
-  if(res.status===401){cloudStatus('Sesión caducada: pulsa «Conectar» de nuevo.',false);return;}
+  var res=await cloudFetch('/rest/v1/gestor_snapshots',{method:'POST',headers:{'Prefer':'resolution=merge-duplicates,return=minimal'},body:JSON.stringify({user_id:c.userId,payload:payload,updated_at:new Date().toISOString()})});
+  if(res.status===401){cloudStatus('Sesión caducada: vuelve a iniciar sesión.',false);return;}
   if(!res.ok){var t=await res.text();cloudStatus('No se pudo subir ('+res.status+'): '+t.slice(0,180),false);return;}
   cloudStatus('Copia subida: '+new Date().toLocaleString('es-UY')+'.',true);
  }catch(e){cloudStatus('Error de red: '+e.message,false);}
 }
 async function cloudPull(){
- var c=cloudCfg();if(!c.accessToken){cloudStatus('Conéctate primero.',false);return;}
+ var c=cloudCfg();if(!c.accessToken){cloudStatus('Inicia sesión primero.',false);return;}
  cloudStatus('Buscando copia en la nube…');
  try{
-  var res=await cloudRequest('/rest/v1/gestor_snapshots?select=payload,updated_at&limit=1',{method:'GET'});
-  if(res.status===401){cloudStatus('Sesión caducada: pulsa «Conectar» de nuevo.',false);return;}
+  var res=await cloudFetch('/rest/v1/gestor_snapshots?select=payload,updated_at&limit=1',{method:'GET'});
+  if(res.status===401){cloudStatus('Sesión caducada: vuelve a iniciar sesión.',false);return;}
   var rows=[];try{rows=await res.json();}catch(e){}
   if(!res.ok){cloudStatus('No se pudo leer la copia ('+res.status+').',false);return;}
   if(!Array.isArray(rows)||!rows.length){cloudStatus('Aún no hay copia en la nube: pulsa «Subir copia» primero.',false);return;}
-  var row=rows[0];
-  closeCloud();
+  var row=rows[0];closeCloud();
   showImportModal({data:row.payload,fileName:'Nube · copia '+fmtDT(row.updated_at||new Date().toISOString()),signature:'cloud|'+(row.updated_at||Date.now())});
  }catch(e){cloudStatus('Error de red: '+e.message,false);}
 }
-function cloudLogout(){var c=cloudCfg();delete c.accessToken;delete c.refreshToken;delete c.userId;delete c.expiresAt;cloudSave(c);cloudStatus('Desconectado. Los datos locales siguen intactos.');}
+function cloudLogout(){var c=cloudCfg();['accessToken','refreshToken','userId','expiresAt'].forEach(function(k){delete c[k];});cloudSave(c);location.reload();}
 function cloudAutoSync(){if(cloudTimer)clearTimeout(cloudTimer);cloudTimer=setTimeout(function(){var c=cloudCfg();if(c.auto&&c.accessToken)cloudPush();},8000);}
 
 /* ===== histórico y saldos derivados ===== */
@@ -1049,7 +1245,7 @@ function persist(){
  save(K.clients,clients);save(K.receipts,receipts);save(K.transfers,transfers);save(K.finance,fin);save(K.fconf,fconf);save(K.hist,hist);
  saveAutoBackup(false);save(K.meta,meta);updateStorageStatus();cloudAutoSync();
 }
-function approxSize(){var n=0;Object.keys(K).forEach(function(k){var v=sget(K[k]);if(v)n+=v.length;});return Math.round(n/1024);}
+function approxSize(){var n=0;Object.keys(K).forEach(function(k){var v=sget(nsKey(K[k]));if(v)n+=v.length;});return Math.round(n/1024);}
 
 /* ===== Precios manuales: Toque / Abitab / Red Pagos ===== */
 var PRICE_INPUTS={toque:{fixed:'priceToqueFixed',rate:'priceToqueRate',preview:'priceToquePreview'},abitab:{fixed:'priceAbitabFixed',rate:'priceAbitabRate',preview:'priceAbitabPreview'},redpagos:{fixed:'priceRedPagosFixed',rate:'priceRedPagosRate',preview:'priceRedPagosPreview'}};
@@ -1244,6 +1440,7 @@ function openClientModal(id){var m=$('clientModal');$('clientEditId').value=id||
 function closeClientModal(){$('clientModal').classList.add('hidden');}
 function setClientOpening(c,newBal){var calc=0;receipts.filter(function(r){return r.clientId===c.id;}).forEach(function(r){calc+=r.net;});transfers.filter(function(t){return t.clientId===c.id;}).forEach(function(t){calc-=t.amount;});c.balance=r2(newBal);c.openingBalance=r2(newBal-calc);}
 window.editClient=function(id){openClientModal(id);};
+window.togglePan=togglePan;
 window.deleteClient=function(id){var c=clients.filter(function(x){return x.id===id;})[0];if(!c)return;if(!confirm('¿Eliminar a "'+c.name+'"?'))return;
  clients=clients.filter(function(x){return x.id!==id;});pushH({sourceKey:'cli-del:'+id+':'+Date.now(),date:new Date().toISOString(),module:'Clientes',operation:'Cliente eliminado',opNumber:'',clientId:id,clientName:c.name,description:c.name+' eliminado',detail:'Tenía '+fmt(c.balance),amount:0,impact:0,balanceAfter:null});
  recalcBalances();persist();renderAll();toast('Cliente eliminado.');};
@@ -1296,17 +1493,46 @@ function renderSelects(){var o='<option value="">Seleccionar cliente</option>'+c
  setSelect('receiptClient',o,true);setSelect('transferClient',o,true);setSelect('financeClient','<option value="">Sin vincular</option>'+clients.map(function(c){return'<option value="'+esc(c.id)+'">'+esc(c.name)+'</option>';}).join(''),true);setSelect('historyClient','<option value="">Todos los clientes</option>'+clients.map(function(c){return'<option value="'+esc(c.id)+'">'+esc(c.name)+'</option>';}).join(''),true);}
 function renderReceiptH(){
  var rg=$('receiptRange').value||'today',q=($('receiptSearch').value||'').trim().toLowerCase(),tb=$('receiptHistoryBody');
- var list=receipts.filter(function(r){return inRange(r.date,rg)&&(!q||(r.opNumber+' '+r.clientName+' '+r.amount+' '+r.fee+' '+r.net).toLowerCase().indexOf(q)>=0);}).sort(descDate);
+ var title=$('receiptDayTitle');if(title)title.textContent=rg==='today'?'RECIBOS DEL DÍA':'HISTORIAL DE RECIBOS';
+ var list=receipts.filter(function(r){return inRange(r.date,rg)&&(!q||(r.opNumber+' '+r.clientName+' '+r.amount+' '+r.fee+' '+r.net).toLowerCase().indexOf(q)>=0);}).sort(receiptAsc?ascDate:descDate);
  $('receiptRangeLabel').textContent=rangeLabel(rg);$('receiptTodayCount').textContent=list.length;var shown=list.slice(0,300);
- if(!shown.length){tb.innerHTML='<tr><td colspan="9" class="empty">Sin recibos con esos filtros.</td></tr>';return;}
- tb.innerHTML=shown.map(function(r){return'<tr><td class="mut">Recibo</td><td>'+opCell(r.opNumber)+'</td><td>'+esc(r.clientName)+'</td><td>'+fmt(r.amount)+'</td><td class="coralx">'+fmt(r.fee)+' ('+r.commission+'%)</td><td class="mintx">'+fmt(r.net)+'</td><td>'+fmt(r.balanceAfter)+'</td><td><button type="button" class="icobtn" onclick="editReceipt(\''+esc(r.id)+'\')" title="Editar">✎</button> <button type="button" class="icobtn danger" onclick="deleteReceipt(\''+esc(r.id)+'\')" title="Eliminar">🗑</button></td><td class="mut">'+fmtT(r.date)+'</td></tr>';}).join('')+(list.length>300?'<tr><td colspan="9" class="empty">Mostrando 300 de '+list.length.toLocaleString('es-UY')+'. Usa el buscador o exporta CSV.</td></tr>':'');
+ if(!shown.length){tb.innerHTML='<div class="empty">Sin recibos con esos filtros.</div>';return;}
+ tb.innerHTML=shown.map(function(r){
+  var copyRaw='Recibo '+(r.opNumber||'')+' · '+(r.clientName||'')+' · '+fmt(r.amount)+' · Comisión '+fmt(r.fee)+' ('+(r.commission||0)+'%) · Neto '+fmt(r.net)+' · '+fmtDT(r.date);
+  return '<article class="opcard rec">'
+  +'<div class="opcard-top"><span class="opbadge rec">Recibo</span><span class="opclient">'+esc(r.clientName)+'</span><span class="opnum">'+opNum(r.opNumber)+'</span></div>'
+  +'<div class="opamount">'+fmt(r.amount)+'</div>'
+  +'<div class="opmeta">Comisión: <b>'+fmt(r.fee)+'</b> ('+esc(String(r.commission||0))+'%) · Neto: <b>'+fmt(r.net)+'</b></div>'
+  +'<div class="opfoot"><span class="opdate">🗓 <b>'+fmtDT(r.date)+'</b></span><div class="opactions">'
+  +'<button type="button" class="opbtn" data-copy="'+esc(copyRaw)+'" title="Copiar resumen" aria-label="Copiar resumen">📋</button>'
+  +'<button type="button" class="opbtn" onclick="editReceipt(\''+esc(r.id)+'\')" title="Editar" aria-label="Editar">✎</button>'
+  +'<button type="button" class="opbtn danger" onclick="deleteReceipt(\''+esc(r.id)+'\')" title="Eliminar" aria-label="Eliminar">🗑</button>'
+  +'</div></div></article>';}).join('')+(list.length>300?'<div class="empty">Mostrando 300 de '+list.length.toLocaleString('es-UY')+'. Usa el buscador o exporta CSV.</div>':'');
 }
 function renderTransferH(){
  var rg=$('transferRange').value||'today',q=($('transferSearch').value||'').trim().toLowerCase(),tb=$('transferHistoryBody');
- var list=transfers.filter(function(t){return inRange(t.date,rg)&&(!q||(t.opNumber+' '+t.clientName+' '+t.account+' '+t.bankName+' '+t.amount).toLowerCase().indexOf(q)>=0);}).sort(descDate);
+ var title=$('transferDayTitle');if(title)title.textContent=rg==='today'?'TRANSFERENCIAS DEL DÍA':'HISTORIAL DE TRANSFERENCIAS';
+ var list=transfers.filter(function(t){return inRange(t.date,rg)&&(!q||(t.opNumber+' '+t.clientName+' '+t.account+' '+t.bankName+' '+t.amount).toLowerCase().indexOf(q)>=0);}).sort(transferAsc?ascDate:descDate);
  $('transferRangeLabel').textContent=rangeLabel(rg);$('transferTodayCount').textContent=list.length;var shown=list.slice(0,300);
- if(!shown.length){tb.innerHTML='<tr><td colspan="9" class="empty">Sin transferencias con esos filtros.</td></tr>';return;}
- tb.innerHTML=shown.map(function(t){return'<tr><td class="mut">Transferencia</td><td>'+opCell(t.opNumber)+'</td><td>'+esc(t.clientName)+'</td><td class="mono">'+esc(t.account)+'</td><td class="skyx">'+esc(t.bankName)+'</td><td>'+fmt(t.amount)+'</td><td>'+fmt(t.balanceAfter)+'</td><td><button type="button" class="icobtn" onclick="editTransfer(\''+esc(t.id)+'\')" title="Editar">✎</button> <button type="button" class="icobtn danger" onclick="deleteTransfer(\''+esc(t.id)+'\')" title="Eliminar">🗑</button></td><td class="mut">'+fmtT(t.date)+'</td></tr>';}).join('')+(list.length>300?'<tr><td colspan="9" class="empty">Mostrando 300 de '+list.length.toLocaleString('es-UY')+'. Usa el buscador o exporta CSV.</td></tr>':'');
+ if(!shown.length){tb.innerHTML='<div class="empty">Sin transferencias con esos filtros.</div>';return;}
+ tb.innerHTML=shown.map(function(t){
+  var digits=String(t.account||'').replace(/\D/g,''),isMon=t.kind==='monedero',masked=maskPan(digits);
+  var bank=String(t.bankName||'');var showBank=bank&&!/^(Tarjeta|Monedero|—|desconocido)$/i.test(bank);
+  var copyRaw='Transferencia '+(t.opNumber||'')+' · '+(t.clientName||'')+' · '+fmt(t.amount)+' · '+(isMon?'Monedero':'Tarjeta')+' '+digits+' · Saldo restante '+fmt(t.balanceAfter)+' · '+fmtDT(t.date);
+  return '<article class="opcard tra">'
+  +'<div class="opcard-top"><span class="opbadge tra">Transferencia</span><span class="opclient">'+esc(t.clientName)+'</span><span class="opnum">'+opNum(t.opNumber)+'</span></div>'
+  +'<div class="opamount">'+fmt(t.amount)+'</div>'
+  +'<div class="opmeta">Saldo restante: <b>'+fmt(t.balanceAfter)+'</b></div>'
+  +'<div class="panline"><span class="accountchip'+(isMon?' mon':'')+'">'+(isMon?'👛 Monedero':'💳 Tarjeta')+'</span>'
+  +'<button type="button" class="pan-num" data-full="'+esc(digits)+'" data-masked="'+esc(masked)+'" onclick="togglePan(this)" title="Tocar para ver / ocultar">'+esc(masked)+'</button>'
+  +'<button type="button" class="icobtn pancopy" data-copy="'+esc(digits)+'" title="Copiar número" aria-label="Copiar número">📋</button>'
+  +(showBank?'<span class="cardbank">'+esc(bank)+'</span>':'')
+  +'</div>'
+  +'<div class="opfoot"><span class="opdate">🗓 <b>'+fmtDT(t.date)+'</b></span><div class="opactions">'
+  +'<button type="button" class="opbtn" data-copy="'+esc(copyRaw)+'" title="Copiar resumen" aria-label="Copiar resumen">📋</button>'
+  +'<button type="button" class="opbtn" onclick="editTransfer(\''+esc(t.id)+'\')" title="Editar" aria-label="Editar">✎</button>'
+  +'<button type="button" class="opbtn danger" onclick="deleteTransfer(\''+esc(t.id)+'\')" title="Eliminar" aria-label="Eliminar">🗑</button>'
+  +'</div></div></article>';}).join('')+(list.length>300?'<div class="empty">Mostrando 300 de '+list.length.toLocaleString('es-UY')+'. Usa el buscador o exporta CSV.</div>':'');
 }
 function renderFinance(){var bal=r2(fconf.openingBalance+fin.reduce(function(s,m){return s+(Number(m.signedAmount)||0);},0)),inc=fin.reduce(function(s,m){return s+(m.signedAmount>0?m.signedAmount:0);},0),exp=fin.reduce(function(s,m){return s+(m.signedAmount<0?-m.signedAmount:0);},0);
  $('financeBalance').textContent=fmt(bal);$('financeIncome').textContent=fmt(inc);$('financeExpense').textContent=fmt(exp);$('financeClientTotal').textContent=fmt(clients.reduce(function(s,c){return s+(Number(c.balance)||0);},0));$('financeCount').textContent=fin.length+' movimientos';
@@ -1392,9 +1618,18 @@ $('unlockCancel').addEventListener('click',closeUnlock);$('unlockModalX').addEve
 $('unlockPass').addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();submitUnlock();}});
 $('drawerCloudSync').addEventListener('click',function(){setMenu(false);openCloud();});
 $('cloudModalX').addEventListener('click',closeCloud);$('cloudModalBack').addEventListener('click',closeCloud);$('cloudCloseBtn').addEventListener('click',closeCloud);
-$('cloudLoginBtn').addEventListener('click',function(){cloudAuth('login');});$('cloudSignupBtn').addEventListener('click',function(){cloudAuth('signup');});
-$('cloudPushBtn').addEventListener('click',cloudPush);$('cloudPullBtn').addEventListener('click',cloudPull);$('cloudLogoutBtn').addEventListener('click',cloudLogout);
-$('cloudForm').addEventListener('submit',function(e){e.preventDefault();cloudAuth('login');});
+$('authTabLogin').addEventListener('click',function(){setAuthMode('login');});$('authTabSignup').addEventListener('click',function(){setAuthMode('signup');});
+$('cloudForm').addEventListener('submit',cloudLogin);
+$('cloudSignupBtn').addEventListener('click',cloudSignup);
+$('cloudResendBtn').addEventListener('click',cloudResend);$('cloudRecoverBtn').addEventListener('click',cloudRecover);
+$('cloudPushBtn').addEventListener('click',cloudPush);$('cloudPullBtn').addEventListener('click',cloudPull);
+$('cloudLogoutBtn').addEventListener('click',function(){if(confirm('¿Desconectar tu cuenta en esta app? Tus datos locales quedan intactos; podrás volver a entrar.'))cloudLogout();});
+$('cloudAuto').addEventListener('change',function(){var c=cloudCfg();c.auto=$('cloudAuto').checked;cloudSave(c);cloudStatus(c.auto?'Auto-sincronía activada: se sube una copia 8 s tras cada cambio.':'Auto-sincronía desactivada.');});
+$('bannerSignIn').addEventListener('click',openCloud);
+$('bannerAdopt').addEventListener('click',function(){if(!confirm('¿Copiar los datos guardados en este navegador al modo local?\n\nLa copia original se conserva; podrás borrarla luego desde «Reiniciar datos» si quieres.'))return;var seen={};Object.keys(K).forEach(function(ok){var k=K[ok];if(seen[k])return;seen[k]=1;var l=sget(k);if(l!=null&&sget(nsKey(k))==null)sset(nsKey(k),l);});location.reload();});
+$('bannerDismiss').addEventListener('click',function(){try{sessionStorage.setItem('gestor_banner','1');}catch(e){}$('localBanner').classList.add('hidden');});
+$('receiptSortBtn').addEventListener('click',function(){receiptAsc=!receiptAsc;this.textContent=receiptAsc?'↑ Antiguos':'↓ Recientes';renderReceiptH();});
+$('transferSortBtn').addEventListener('click',function(){transferAsc=!transferAsc;this.textContent=transferAsc?'↑ Antiguos':'↓ Recientes';renderTransferH();});
 $('exportCsvModuleBtn').addEventListener('click',function(){exportModuleCSV($('csvModule').value);});$('restoreBackupBtn').addEventListener('click',restoreLatestBackup);$('saveSettingsBtn').addEventListener('click',saveSettings);
 $('drawerRestoreAttached').addEventListener('click',function(){setMenu(false);$('dbRestoreAttached').click();});
 $('drawerRestoreBackup').addEventListener('click',function(){setMenu(false);restoreLatestBackup();});
@@ -1425,6 +1660,7 @@ document.addEventListener('keydown',function(e){
 var bootstrapped=bootstrapAttached();if(!bootstrapped){normalize();persist();}
 $('financeDate').value=dtLocal(new Date());renderAll();showView((window.location.hash||'#clientes').slice(1),false);
 if(attachedPending()){setTimeout(function(){openUnlock('bootstrap');},400);}
+if(NS==='local:'){var hideBanner=false;try{hideBanner=sessionStorage.getItem('gestor_banner')==='1';}catch(e){}if(!hideBanner){var lb=$('localBanner');if(lb)lb.classList.remove('hidden');if([K.clients,K.receipts,K.transfers,K.finance,K.hist].some(function(k){return sget(k)!==null;})){var ba=$('bannerAdopt');if(ba)ba.classList.remove('hidden');}}}
 })();
 </script>
 </body>
