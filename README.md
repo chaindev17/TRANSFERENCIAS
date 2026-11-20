@@ -59,6 +59,14 @@ Cada push a la rama configurada dispara `.github/workflows/deploy.yml`, que publ
 contenido estático del repo en GitHub Pages. No hay build: lo que está en el repo es lo
 que se sirve.
 
+**Paso único previo (una vez por repositorio):** en GitHub ve a
+*Settings → Pages → Build and deployment → Source* y elige **GitHub Actions** → Save.
+Hasta que eso esté activo, el workflow falla en «Configurar Pages» con
+`Get Pages site failed` (el token del workflow no puede habilitar Pages por sí mismo
+en este repositorio). Después de guardarlo, vuelve a ejecutar el workflow:
+`gh run rerun <id>` o simplemente haz otro push. La URL quedará en
+<https://chaindev17.github.io/TRANSFERENCIAS/>.
+
 ## Respaldos
 
 La app guarda **copias automáticas locales** (panel Base de datos) y permite
