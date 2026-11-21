@@ -524,7 +524,7 @@ body{overflow-x:clip}
       <div class="field"><label>Detección</label><span id="transferAccountType" class="abadge">—</span></div>
       <div class="field s4 acts"><button type="submit" class="btn btn-p" id="transferSubmit">Realizar transferencia</button><button type="button" class="btn btn-g hidden" id="transferCancelEdit">Cancelar edición</button></div>
     </form>
-    <p class="hintline">Reglas: <b>92</b> → tarjeta, exactamente <b>16 dígitos</b> · <b>5 / 6</b> → monedero, exactamente <b>8 dígitos</b>. Dígitos 5–6 de la tarjeta: <b>95</b> Metropolitano · <b>12</b> BPA · <b>23 / 13</b> BANDEC. Acepta <b>9234-5678-9012-3456</b>, <b>9234 5678 9012 3456</b> o <b>9234567890123456</b>: al escribir o pegar, el campo se queda solo con los dígitos juntos y se recorta solo al límite del tipo detectado.</p>
+    <p class="hintline">Reglas: <b>92</b> → tarjeta, exactamente <b>16 dígitos</b> · <b>5 / 6</b> → monedero, exactamente <b>8 dígitos</b>. Dígitos 5–6 de la tarjeta: <b>95</b> Metropolitano · <b>12</b> BPA · <b>23 / 13</b> BANDEC. También puedes pegar un mensaje completo: detecta la tarjeta y se queda solo con sus dígitos. Acepta <b>9234-5678-9012-3456</b>, <b>9234 5678 9012 3456</b> o <b>9234567890123456</b>; al escribir o pegar, el campo queda con los dígitos juntos. Dígitos 5–6 de la tarjeta: <b>95</b> Metropolitano · <b>12</b> BPA · <b>23 / 13 / 06</b> BANDEC (rojo).</p>
     <div id="transferResult" class="res hidden"><div class="res-top"><div><span class="rlab">Resultado de la transferencia</span><h3 id="transferClientName">—</h3><p class="res-sub" id="transferAccountInfo">—</p></div>
       <div class="rgrid"><div class="metric"><span>Monto</span><strong id="transferAmountText">$0,00</strong></div><div class="metric"><span>Saldo restante</span><strong class="mintx big" id="transferRemaining">$0,00</strong></div></div></div></div>
     <div class="thead"><h3 id="transferDayTitle">TRANSFERENCIAS DEL DÍA</h3><div class="finline"><input id="transferSearch" type="search" placeholder="Buscar OP, cuenta…" /><select id="transferRange"><option value="today">Hoy</option><option value="7">7 días</option><option value="30">30 días</option><option value="all">Todas</option></select><button type="button" class="btn btn-g btn-s sortbtn" id="transferSortBtn">↓ Recientes</button></div><span class="tag tag-s"><span id="transferRangeLabel">Hoy</span> · <span id="transferTodayCount">0</span></span></div>
@@ -835,7 +835,7 @@ body{overflow-x:clip}
 (function(){
 'use strict';
 var K={clients:'gestor_clientes',receipts:'gestor_recibos',transfers:'gestor_transferencias',finance:'gestor_finanzas',fconf:'gestor_finanzas_config',hist:'gestor_historial',meta:'gestor_meta',backups:'gestor_backups'};
-var BANKS={'95':'Banco Metropolitano','12':'BPA','23':'BANDEC','13':'BANDEC'};
+var BANKS={'95':'Banco Metropolitano','12':'BPA','23':'BANDEC','13':'BANDEC','06':'BANDEC'};
 var MCLS={'Clientes':'mc','Recibo':'mr','Transferencia':'mt','Finanzas':'mf','Sistema':'ms'};
 var THEME_KEY='gestor_tema',LIMITS={tarjeta:16,monedero:8};
 var PRICE_KEYS=[{key:'toque',label:'Toque'},{key:'abitab',label:'Abitab'},{key:'redpagos',label:'Red Pagos'}];
@@ -1395,7 +1395,7 @@ function setClientOpening(c,newBal){var calc=0;receipts.filter(function(r){retur
 window.editClient=function(id){openClientModal(id);};
 window.togglePan=togglePan;
 /* ===== iconos SVG de banco / monedero (glifos propios, sin logotipos oficiales) ===== */
-var BANK_STYLE={'Banco Metropolitano':{code:'MET',bg:'#16324f',fg:'#8fd3ff'},'BPA':{code:'BPA',bg:'#0d5c33',fg:'#86efac'},'BANDEC':{code:'BANDEC',bg:'#5b1a12',fg:'#ffb4a3'}};
+var BANK_STYLE={'Banco Metropolitano':{code:'MET',bg:'#16324f',fg:'#8fd3ff'},'BPA':{code:'BPA',bg:'#0d5c33',fg:'#86efac'},'BANDEC':{code:'BANDEC',bg:'#b91c1c',fg:'#ffffff'}};
 function svgBankTile(code,bg,fg){var w=code.length>3?46:30;
  return '<svg class="bankico" width="'+w+'" height="16" viewBox="0 0 '+w+' 16" role="img" aria-label="'+esc(code)+'"><rect x="0.6" y="0.6" width="'+(w-1.2)+'" height="14.8" rx="3.4" fill="'+bg+'" stroke="rgba(255,255,255,.22)" stroke-width="0.8"/><text x="'+(w/2)+'" y="11.3" text-anchor="middle" font-family="ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,sans-serif" font-size="'+(code.length>3?7:8.4)+'" font-weight="800" letter-spacing="0.4" fill="'+fg+'">'+esc(code)+'</text></svg>';}
 function svgWallet(){
@@ -1426,8 +1426,25 @@ function guardMoney(el){if(!el)return;
   if(out!==v)el.value=out;});
  el.addEventListener('keydown',function(ev){var k=ev.key;if(k&&k.length===1&&!/[0-9.,]/.test(k)&&!ev.ctrlKey&&!ev.metaKey&&!ev.altKey)ev.preventDefault();});
  el.addEventListener('paste',function(ev){var text=(ev.clipboardData||window.clipboardData||{}).getData?(ev.clipboardData||window.clipboardData).getData('text'):'';var clean=text.replace(/[^0-9.,]/g,'').replace(/(,.*),/g,'$1');if(text!==clean&&ev.clipboardData){ev.preventDefault();document.execCommand?document.execCommand('insertText',false,clean):null;}});}
+function extractAccount(text){
+ text=String(text||'');
+ var runs=text.match(/\d[\d\s\-]*\d|\d/g)||[],i,j;
+ var digits=runs.map(function(r){return r.replace(/\D/g,'');});
+ for(i=0;i<digits.length;i++){var d=digits[i];for(j=0;j+16<=d.length;j++){if(d.substr(j,2)==='92')return d.substr(j,16);}}
+ for(i=0;i<digits.length;i++){var d2=digits[i];if(d2.length===8&&/^[56]/.test(d2))return d2;}
+ return '';
+}
 function guardAccount(el){if(!el)return;
- el.addEventListener('keydown',function(ev){var k=ev.key;if(k&&k.length===1&&!/[0-9\- ]/.test(k)&&!ev.ctrlKey&&!ev.metaKey&&!ev.altKey)ev.preventDefault();});}
+ el.addEventListener('keydown',function(ev){var k=ev.key;if(k&&k.length===1&&!/[0-9\- ]/.test(k)&&!ev.ctrlKey&&!ev.metaKey&&!ev.altKey)ev.preventDefault();});
+ el.addEventListener('paste',function(ev){
+  var text=(ev.clipboardData||window.clipboardData||{}).getData?(ev.clipboardData||window.clipboardData).getData('text'):'';
+  if(!text)return;
+  var digits=extractAccount(text);
+  if(!digits){ev.preventDefault();toast('No encontré dígitos de tarjeta o monedero en el texto.',false);return;}
+  ev.preventDefault();el.value=digits;refreshAccountBadge();
+  if(/^92/.test(digits)&&digits.length===16)toast('Tarjeta detectada: '+digits.slice(0,4)+' '+digits.slice(4,8)+' '+digits.slice(8,12)+' '+digits.slice(12));
+  else if(/^[56]/.test(digits)&&digits.length===8)toast('Monedero detectado: '+digits);
+ });}
 window.deleteClient=function(id){var c=clients.filter(function(x){return x.id===id;})[0];if(!c)return;if(!confirm('¿Eliminar a "'+c.name+'"?'))return;
  clients=clients.filter(function(x){return x.id!==id;});pushH({sourceKey:'cli-del:'+id+':'+Date.now(),date:new Date().toISOString(),module:'Clientes',operation:'Cliente eliminado',opNumber:'',clientId:id,clientName:c.name,description:c.name+' eliminado',detail:'Tenía '+fmt(c.balance),amount:0,impact:0,balanceAfter:null});
  recalcBalances();persist();renderAll();toast('Cliente eliminado.');};
