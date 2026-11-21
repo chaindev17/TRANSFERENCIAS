@@ -18,6 +18,9 @@ negocio de transferencias del día a día. Sin backend propio y sin dependencias
   Sin correo ni contraseña. La nube (Supabase) sigue disponible como opción avanzada para
   sincronizar entre dispositivos; con «Confirm email» desactivado, la entrada es directa.
 - **Finanzas**: ingresos, egresos y ajustes con saldo base y libro mayor.
+- **Compartir desde WhatsApp (Android)**: con la app instalada, comparte un mensaje
+  desde WhatsApp → Gestor Integral y se abre en **Transferencia** con la tarjeta/monedero
+  y el monto detectados. En iOS no existe esta integración; usa pegar, que detecta lo mismo.
 - **Histórico general**: todo en un solo libro, con buscador, filtros, export CSV/JSON.
 - **Base de datos**: importa/combina tu propio `.json`, detecta el formato,
   combina sin duplicados o reemplaza, respaldos automáticos locales, export/import con un clic.
