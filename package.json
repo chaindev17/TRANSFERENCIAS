@@ -1,0 +1,13 @@
+{
+  "name": "gestor-integral",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Gestor Integral — la app no tiene dependencias en runtime; acá solo vive la prueba de humo previa al deploy.",
+  "scripts": {
+    "test": "node test/smoke.mjs"
+  },
+  "devDependencies": {
+    "jsdom": "^27.4.0"
+  }
+}

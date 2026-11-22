@@ -69,7 +69,22 @@ index.html                  La app completa (HTML+CSS+JS, sin build)
 private/                    SOLO local y gitignored: base en claro + contraseña (si existe)
 supabase/schema.sql         Tabla gestor_snapshots + políticas RLS (para la nube)
 docs/supabase-setup.md      Paso a paso para activar la sincronización en la nube
-.github/workflows/deploy.yml  Despliegue automático a GitHub Pages
+.github/workflows/deploy.yml  Despliegue automático a GitHub Pages (con verificación previa)
+test/smoke.mjs              Prueba de humo (boot + importación de un fixture sintético)
+test/fixture-ale.json       Datos SINTÉTICOS para esa prueba (nunca tu base real)
+package.json                Solo para `npm test` (jsdom); la app no tiene dependencias
+```
+
+## Verificación previa al deploy
+
+El workflow ejecuta `npm test` **antes** de publicar: levanta la app en jsdom,
+revisa la sintaxis de los scripts inline e importa un fixture sintético por el
+flujo real (Importar → Reemplazar) comprobando los conteos. Si algo se rompe,
+el deploy no llega a Pages. Para correrlo en tu máquina (Node ≥ 18):
+
+```bash
+npm install
+npm test
 ```
 
 ## Despliegue (GitHub Pages)
@@ -86,9 +101,44 @@ en este repositorio). Después de guardarlo, vuelve a ejecutar el workflow:
 `gh run rerun <id>` o simplemente haz otro push. La URL quedará en
 <https://chaindev17.github.io/TRANSFERENCIAS/>.
 
+**Fallo conocido e intermitente al final del deploy** («No artifacts named
+github-pages were found» en el paso *Desplegar*, con «Subir artefacto» en verde):
+es un problema de metadatos del lado de GitHub, no del contenido. Receta: borrar el
+artifact del run y reejecutar solo el job fallido — se re-sube un único artifact y
+cuaja:
+
+```bash
+gh api repos/<owner>/<repo>/actions/runs/<run-id>/artifacts --jq '.artifacts[].id'
+gh api -X DELETE repos/<owner>/<repo>/actions/artifacts/<artifact-id>
+gh run rerun <run-id> --failed
+```
+
+## Importar una base (.json)
+
+La app reconoce tres formatos y avisa «Formato detectado» antes de aplicar:
+
+- **Base Ale / español**: `clientes`, `recibos`, `transferencias`, `finanzas` en
+  español (`nombre`, `monto`, `neto`, `numeroOp`…) — el formato histórico de las
+  exportaciones de Ale.
+- **Formato interno del gestor**: las claves que usa la app internamente
+  (`clients`, `receipts`, `transfers`, `fin`…).
+- **Gestor Integral v2** (`formato: "gestor_integral"`): lo que exporta esta
+  misma pantalla — incluye precios de Toque/Abitab/Red Pagos y el objeto `interno`.
+
+Siempre podés elegir **Combinar sin duplicados** (agrega solo lo nuevo, por ID y
+por contenido) o **Reemplazar todo** (borra lo actual y usa el archivo).
+
+**Si la importación falla**: la app muestra un aviso tipo
+`No pude leer la base: …` — copiá ese mensaje exacto (y el nombre del archivo) en
+una issue o en la conversación con el mantenedor. Los datos de tu navegador no se
+tocan cuando falla la importación.
+
+Recordá: el `.json` con tus datos **nunca** se commitea; `private/` y `*.local`
+están gitignoreados a propósito.
+
 ## Respaldos
 
-La app guarda **copias automáticas locales** (panel Base de datos) y permite
+La app guarda **las últimas 3 copias automáticas locales** (panel Base de datos) y permite
 **Exportar base JSON** en cualquier momento. Para llevarte los datos a otro dispositivo:
 Exporta → copia el `.json` → en el otro dispositivo *Importar base JSON* → *Combinar sin
 duplicados*. Si activaste la nube, usa «☁️ Sincronizar con la nube» en su lugar.

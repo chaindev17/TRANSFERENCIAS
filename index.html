@@ -8,6 +8,7 @@
 <link rel="manifest" href="manifest.json" />
 <link rel="icon" type="image/svg+xml" href="icon.svg" />
 <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://*.supabase.co; img-src 'self' data:; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'" />
 <meta name="mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-title" content="Gestor" />
@@ -992,6 +993,19 @@ function accountToggle(){
  if(ap){if(confirm('¿Salir de la cuenta «'+(ap.name||'esta cuenta')+'»?\n\nTus datos quedan guardados en este dispositivo; para entrar de nuevo necesitarás tu PIN.'))lockNow();}
  else openCloud();
 }
+function exportNudge(){
+ try{
+  var hasData=receipts.length>0||transfers.length>0||fin.length>0||clients.length>3;
+  if(!hasData)return;
+  var last=meta.db&&meta.db.lastExportAt?Date.parse(meta.db.lastExportAt):0;
+  var nowT=Date.now();
+  if(last&&nowT-last<=7*86400000)return;
+  var shown=0;try{shown=Number(sessionStorage.getItem('gestor_export_nudge'))||0;}catch(e){}
+  if(nowT-shown<7*86400000)return;
+  try{sessionStorage.setItem('gestor_export_nudge',String(nowT));}catch(e){}
+  setTimeout(function(){try{toast('💡 Hace más de 7 días que no exportás tu base. Base de datos → ⬇ Exportar base JSON.');}catch(e){}},1200);
+ }catch(e){}
+}
 function tryShowLock(){var mustLock=profilesRead().length>0&&!unlockedProfile();if(!mustLock)return;if(NS.indexOf('local:')!==0)return;try{if(sessionStorage.getItem('gestor_local_ok')==='1')return;}catch(e){}
  renderLockList();var ls=$('lockScreen');if(ls)ls.classList.remove('hidden');}
 
@@ -1123,14 +1137,29 @@ async function cloudRecover(){
   cloudStatus('Si el correo existe, recibirás un enlace para restablecer tu contraseña.',true);
  }catch(e){cloudStatus('No pude conectar: '+e.message,false);}
 }
-async function cloudPush(){
+async function cloudPush(opts){
+ opts=opts||{};var auto=!!opts.auto;
  var c=cloudCfg();if(!c.accessToken){cloudStatus('Inicia sesión primero.',false);return;}
  cloudStatus('Subiendo copia a la nube…');
  try{
+  /* guardia anti-pisado: no sobrescribir una copia más nueva que la última subida desde este dispositivo */
+  if(c.lastPushAt){
+   try{
+    var chk=await cloudFetch('/rest/v1/gestor_snapshots?select=updated_at&limit=1',{method:'GET'});
+    if(chk.ok){var rows=await chk.json();var cloudAt=(rows&&rows[0]&&rows[0].updated_at)?Date.parse(rows[0].updated_at):0;
+     if(cloudAt&&cloudAt>Number(c.lastPushAt)+5000){
+      if(auto){cloudStatus('Auto-sincronía en pausa: la copia en la nube es más NUEVA que la última subida desde este dispositivo. Usá «⬇ Traer copia» antes de seguir.',false);return;}
+      var ok=confirm('La copia en la nube es más NUEVA que la última subida desde este dispositivo (nube: '+new Date(cloudAt).toLocaleString('es-UY')+').\n\n¿Subir igualmente y sobrescribirla?\n\nAceptar = sobrescribir · Cancelar = no subir (mejor «⬇ Traer copia»).');
+      if(!ok){cloudStatus('No se subió nada. Usá «⬇ Traer copia» para traer la versión más nueva.',false);return;}
+     }
+    }
+   }catch(e){/* si la verificación falla, la subida sigue su curso normal */}
+  }
   var payload=buildExportObject();
   var res=await cloudFetch('/rest/v1/gestor_snapshots',{method:'POST',headers:{'Prefer':'resolution=merge-duplicates,return=minimal'},body:JSON.stringify({user_id:c.userId,payload:payload,updated_at:new Date().toISOString()})});
   if(res.status===401){cloudStatus('Sesión caducada: vuelve a iniciar sesión.',false);return;}
   if(!res.ok){var t=await res.text();cloudStatus('No se pudo subir ('+res.status+'): '+t.slice(0,180),false);return;}
+  c.lastPushAt=Date.now();cloudSave(c);
   cloudStatus('Copia subida: '+new Date().toLocaleString('es-UY')+'.',true);
  }catch(e){cloudStatus('Error de red: '+e.message,false);}
 }
@@ -1148,7 +1177,7 @@ async function cloudPull(){
  }catch(e){cloudStatus('Error de red: '+e.message,false);}
 }
 function cloudLogout(){var c=cloudCfg();['accessToken','refreshToken','userId','expiresAt'].forEach(function(k){delete c[k];});cloudSave(c);location.reload();}
-function cloudAutoSync(){if(cloudTimer)clearTimeout(cloudTimer);cloudTimer=setTimeout(function(){var c=cloudCfg();if(c.auto&&c.accessToken)cloudPush();},8000);}
+function cloudAutoSync(){if(cloudTimer)clearTimeout(cloudTimer);cloudTimer=setTimeout(function(){var c=cloudCfg();if(c.auto&&c.accessToken)cloudPush({auto:true});},8000);}
 
 /* ===== histórico y saldos derivados ===== */
 function pushH(e){e.id=e.id||uid('h');e.sourceKey=e.sourceKey||('h:'+e.id);hist.push(e);return e;}
@@ -1209,7 +1238,7 @@ function getBackups(){var b=load(K.backups,[]);return Array.isArray(b)?b:[];}
 function saveAutoBackup(force){
  var now=Date.now();if(!force&&meta.lastBackupAt&&now-Number(meta.lastBackupAt)<60000)return;
  var snap={at:new Date(now).toISOString(),clients:clone(clients),receipts:clone(receipts),transfers:clone(transfers),fin:clone(fin),fconf:clone(fconf),meta:clone(meta),events:hist.filter(function(h){return !/^(rec|tr|fi):/.test(h.sourceKey||'');}).map(clone)};
- var list=getBackups();list.unshift(snap);list=list.slice(0,1);save(K.backups,list);meta.lastBackupAt=now;
+ var list=getBackups();list.unshift(snap);list=list.slice(0,3);save(K.backups,list);meta.lastBackupAt=now;
 }
 function persist(){
  save(K.clients,clients);save(K.receipts,receipts);save(K.transfers,transfers);save(K.finance,fin);save(K.fconf,fconf);save(K.hist,hist);
@@ -1597,7 +1626,7 @@ function refreshAccountBadge(){
  lab.innerHTML=ico+'<span>'+txt+'</span>';lab.className=cls;
 }
 function showReceiptResult(r){$('receiptClientName').textContent=r.clientName;$('receiptAmountText').textContent=fmt(r.amount);$('receiptRate').textContent=r.commission+'%';$('receiptFee').textContent=fmt(r.fee);$('receiptNet').textContent=fmt(r.net);$('receiptBalance').textContent=fmt(r.balanceAfter);$('receiptResult').classList.remove('hidden');}
-function showTransferResult(t){$('transferClientName').textContent=t.clientName;$('transferAccountInfo').innerHTML=accountIcon(analyze(String(t.account||'')))+'<span>'+esc(t.bankName+' · '+t.account)+'</span>';$('transferAmountText').textContent=fmt(t.amount);$('transferRemaining').textContent=fmt(t.balanceAfter);$('transferResult').classList.remove('hidden');}
+function showTransferResult(t){var rawAcct=String(t.account||'');var acctDigits=rawAcct.replace(/\D/g,'');var acctNum=acctDigits.length>=4?('<button type="button" class="pan-num" data-full="'+esc(acctDigits)+'" data-masked="'+esc(maskPan(acctDigits))+'" onclick="togglePan(this)" title="Tocar para ver / ocultar">'+esc(maskPan(acctDigits))+'</button>'):('<span>'+esc(rawAcct||'—')+'</span>');$('transferClientName').textContent=t.clientName;$('transferAccountInfo').innerHTML=accountIcon(analyze(acctDigits||rawAcct))+'<span>'+esc(t.bankName+' · ')+'</span>'+acctNum;$('transferAmountText').textContent=fmt(t.amount);$('transferRemaining').textContent=fmt(t.balanceAfter);$('transferResult').classList.remove('hidden');}
 function warnLowBalance(c,projected){if(!c||meta.settings.lowBalanceAlerts===false)return true;var min=r2(c.minBalance||0);if(projected<min)return confirm('El saldo de '+c.name+' quedará en '+fmt(projected)+', por debajo del mínimo '+fmt(min)+'. ¿Continuar?');return true;}
 window.editReceipt=function(id){var r=receipts.filter(function(x){return x.id===id;})[0];if(!r)return;$('receiptEditId').value=r.id;$('receiptClient').value=r.clientId;$('receiptAmount').value=r.amount;$('receiptSubmit').textContent='Guardar cambios';$('receiptCancelEdit').classList.remove('hidden');$('receiptForm').scrollIntoView({behavior:'smooth',block:'center'});toast('Editando '+r.opNumber+'. Guarda para recalcular saldos.');};
 window.editTransfer=function(id){var t=transfers.filter(function(x){return x.id===id;})[0];if(!t)return;$('transferEditId').value=t.id;$('transferClient').value=t.clientId;$('transferAccount').value=(t.account==='—'?'':t.account);refreshAccountBadge();$('transferAmount').value=t.amount;$('transferSubmit').textContent='Guardar cambios';$('transferCancelEdit').classList.remove('hidden');$('transferForm').scrollIntoView({behavior:'smooth',block:'center'});toast('Editando '+t.opNumber+'. Guarda para recalcular saldos.');};
@@ -1825,7 +1854,7 @@ var lb=$('localBanner');if(lb&&!hideBanner){
  if(NS==='local:'){lb.classList.remove('hidden');if(legacy&&targetEmpty){var ba=$('bannerAdopt');if(ba)ba.classList.remove('hidden');}}
  else if(legacy&&targetEmpty){lb.classList.remove('hidden');var bt=$('bannerText');if(bt)bt.innerHTML='<b>Cuenta nueva en este dispositivo.</b> ¿Copiar los datos ya guardados en este navegador a tu cuenta?';var ba2=$('bannerAdopt');if(ba2)ba2.classList.remove('hidden');var bs=$('bannerSignIn');if(bs)bs.classList.add('hidden');}
 }
-tryShowLock();renderAccountBtn();})();
+tryShowLock();renderAccountBtn();exportNudge();})();
 })();
 </script>
 <script>/* PWA: cachea la app para uso sin conexión (los datos siguen en localStorage) */

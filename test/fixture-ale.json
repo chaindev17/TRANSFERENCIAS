@@ -1,0 +1,19 @@
+{
+  "clientes": [
+    { "id": "fxclient0001", "nombre": "Cliente Fixture Uno", "comision": 1.5, "saldo": 1200 },
+    { "id": "fxclient0002", "nombre": "Cliente Fixture Dos", "comision": 2, "saldo": 0 }
+  ],
+  "recibos": [
+    { "id": "fxreceipt01", "clienteId": "fxclient0001", "monto": 1000, "comision": 15, "neto": 985, "fecha": 1779667200000, "numeroOp": 1 },
+    { "id": "fxreceipt02", "clienteId": "fxclient0001", "monto": 2000, "comision": 30, "neto": 1970, "fecha": 1779667201000, "numeroOp": 2 }
+  ],
+  "transferencias": [
+    { "id": "fxtransf001", "clienteId": "fxclient0001", "monto": 100, "saldoAntes": 985, "fecha": 1779667202000, "numeroOp": 3, "tipoDestino": "tarjeta", "numeroDestino": "9200000000000001", "banco": "BANDEC" },
+    { "id": "fxtransf002", "clienteId": "fxclient0002", "monto": 50, "saldoAntes": 0, "fecha": 1779667203000, "numeroOp": 4 }
+  ],
+  "finanzas": [
+    { "id": "fxfin0000001", "tipo": "comision", "monto": 15, "descripcion": "Comisión de Cliente Fixture Uno", "clienteId": "fxclient0001", "reciboId": "fxreceipt01", "fecha": 1779667200000 }
+  ],
+  "exportado": "2026-11-20T00:00:00.000Z",
+  "usuario": "Fixture"
+}

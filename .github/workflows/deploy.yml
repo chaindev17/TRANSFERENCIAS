@@ -2,7 +2,7 @@ name: Deploy a GitHub Pages
 
 on:
   push:
-    branches: [main, arena/4a8186c2-transferencias]
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -22,6 +22,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Configurar Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Verificar app (smoke)
+        run: |
+          npm ci --no-audit --no-fund
+          npm test
 
       - name: Configurar Pages
         uses: actions/configure-pages@v5
