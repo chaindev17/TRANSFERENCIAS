@@ -1299,6 +1299,104 @@ function exportModuleCSV(kind){
 }
 function exportCSV(){exportModuleCSV('historico');}
 
+/* ===== importación: motor de conversión (Ale español / interno / export v2) ===== */
+function cloneInternal(o){
+ var d={clients:[],receipts:[],transfers:[],fin:[],fconf:clone(first(o,['fconf'],{openingBalance:0})),hist:arr(o.hist).map(clone),meta:(o.meta&&typeof o.meta==='object')?clone(o.meta):{}};
+ d.fconf.openingBalance=r2(first(d.fconf,['openingBalance','saldoBase'],0));
+ d.fconf.prices=normalizePrices(first(d.fconf,['prices','precios'],null));
+ arr(o.clients).forEach(function(c,i){d.clients.push(Object.assign({},c,{id:String(first(c,['id'],'c_'+i)),name:String(first(c,['name','nombre'],'Cliente '+(i+1))),commission:clampNum(first(c,['commission','comision'],0),0,100),balance:r2(first(c,['balance','saldo'],0)),minBalance:r2(first(c,['minBalance','saldoMinimo'],0)),createdAt:importDate(first(c,['createdAt','creado'],Date.now()))}));});
+ arr(o.receipts).forEach(function(r,i){var a=r2(first(r,['amount','monto'],0)),cm=clampNum(first(r,['commission','comisionCliente','tasa'],0),0,100),fee=r2(first(r,['fee','comision'],a*cm/100)),net=r2(first(r,['net','neto'],a-fee));
+  d.receipts.push(Object.assign({},r,{id:String(first(r,['id'],'r_'+i)),opNumber:String(first(r,['opNumber','numeroOp'],numToOp(i+1))),type:'recibo',clientId:String(first(r,['clientId','clienteId'],'')),clientName:String(first(r,['clientName','clienteNombre'],'')),amount:a,commission:cm,fee:fee,net:net,balanceAfter:r2(first(r,['balanceAfter','saldoDespues'],0)),date:importDate(first(r,['date','fechaISO','fecha'],Date.now()))}));});
+ arr(o.transfers).forEach(function(t,i){var acc=String(first(t,['account','numeroDestino','cuenta'],'')),inf=analyze(acc),amount=r2(first(t,['amount','monto'],0));
+  d.transfers.push(Object.assign({},t,{id:String(first(t,['id'],'t_'+i)),opNumber:String(first(t,['opNumber','numeroOp'],numToOp(i+1))),type:'transferencia',clientId:String(first(t,['clientId','clienteId'],'')),clientName:String(first(t,['clientName','clienteNombre'],'')),account:inf.clean||'—',kind:String(first(t,['kind','tipoDestino'],inf.kind)),bankName:String(first(t,['bankName','banco'],inf.bank)),amount:amount,balanceAfter:r2(first(t,['balanceAfter','saldoDespues'],0)),date:importDate(first(t,['date','fechaISO','fecha'],Date.now()))}));});
+ arr(o.fin).forEach(function(m,i){var a=r2(Math.abs(Number(first(m,['amount','monto'],0))||0)),sg=Number(first(m,['signedAmount'],NaN));if(!isFinite(sg))sg=(m.kind==='egreso'||m.kind==='gasto')?-a:a;
+  d.fin.push(Object.assign({},m,{id:String(first(m,['id'],'f_'+i)),opNumber:String(first(m,['opNumber'],'FIN-'+String(i+1).padStart(6,'0'))),kind:(['ingreso','egreso','ajuste'].indexOf(m.kind)>=0?m.kind:(sg<0?'egreso':'ingreso')),direction:String(first(m,['direction'],sg<0?'restar':'sumar')),amount:a,signedAmount:r2(sg),concept:String(first(m,['concept','descripcion'],'Movimiento')),category:String(first(m,['category','categoria'],'Otros')),clientId:String(first(m,['clientId','clienteId'],'')),clientName:String(first(m,['clientName','clienteNombre'],'')),appliesToClient:false,note:String(first(m,['note','nota'],'')),date:importDate(first(m,['date','fechaISO','fecha'],Date.now())),createdAt:importDate(first(m,['createdAt','date','fechaISO','fecha'],Date.now())),balanceAfter:r2(first(m,['balanceAfter'],0))}));});
+ computeOpeningBalances(d);return d;
+}
+function convertSpanish(raw){
+ var d={clients:[],receipts:[],transfers:[],fin:[],fconf:{openingBalance:r2(first(raw,['saldoBase','openingBalance'],0))},hist:[],meta:{}},cMap={};
+ var priceSrc=first(raw,['precios','prices'],null);
+ if(!priceSrc&&raw.config&&typeof raw.config==='object')priceSrc=first(raw.config,['precios','prices'],null);
+ d.fconf.prices=normalizePrices(priceSrc);
+ function resolve(cid,hint,create){
+  cid=String(cid||'');if(cid&&cMap[cid])return cid;
+  if(create&&cid){var o={id:cid,name:guessName(hint)||('Cliente importado '+cid.slice(-4)),commission:0,balance:0,openingBalance:null,minBalance:0,createdAt:new Date().toISOString()};d.clients.push(o);cMap[cid]=o;return cid;}
+  return '';
+ }
+ arr(raw.clientes).forEach(function(c,i){var o={id:String(first(c,['id'],'c_'+i)),name:String(first(c,['nombre','name'],'Cliente '+(i+1))),commission:clampNum(first(c,['comision','commission'],0),0,100),balance:r2(first(c,['saldo','balance'],0)),openingBalance:first(c,['saldoInicial','openingBalance'],null),minBalance:r2(first(c,['saldoMinimo','minBalance'],0)),createdAt:importDate(first(c,['creado','createdAt'],Date.now()))};d.clients.push(o);cMap[o.id]=o;});
+ arr(raw.recibos).forEach(function(r,i){var rawCid=String(first(r,['clienteId','clientId'],'')),cid=resolve(rawCid,first(r,['clienteNombre','descripcion'],''),true),c=cMap[cid]||{commission:0,name:''};
+  var a=r2(first(r,['monto','amount'],0)),fee=r2(first(r,['comision','fee'],a*(c.commission||0)/100)),net=r2(first(r,['neto','net'],a-fee)),rate=clampNum(first(r,['comisionCliente','tasa','commissionRate'],c.commission||0),0,100),n=Number(first(r,['numeroOp','numeroOperacion'],i+1));
+  d.receipts.push({id:String(first(r,['id'],'r_'+i)),opNumber:numToOp(n||i+1),type:'recibo',clientId:cid,clientName:String(first(r,['clienteNombre','clientName'],c.name||'Cliente eliminado')),amount:a,commission:rate,fee:fee,net:net,balanceAfter:r2(first(r,['saldoDespues','balanceAfter'],0)),date:importDate(first(r,['fechaISO','fecha','date'],Date.now()))});});
+ arr(raw.transferencias).forEach(function(t,i){var rawCid=String(first(t,['clienteId','clientId'],'')),cid=resolve(rawCid,first(t,['clienteNombre','descripcion'],''),true),a=r2(first(t,['monto','amount'],0));
+  var acc=String(first(t,['numeroDestino','cuenta','account'],'')),clean=acc.replace(/\D/g,''),inf=analyze(clean),kind=String(first(t,['tipoDestino','kind'],inf.kind!=='desconocido'?inf.kind:'desconocido'));
+  var bank=String(first(t,['banco','bankName'],''));if(bank==='Metropolitano')bank='Banco Metropolitano';if(!bank||bank==='null'||bank==='undefined')bank=(kind==='tarjeta'?'Tarjeta':kind==='monedero'?'Monedero':'Sin banco');
+  var before=r2(first(t,['saldoAntes','balanceBefore'],0)),n=Number(first(t,['numeroOp','numeroOperacion'],i+1));
+  d.transfers.push({id:String(first(t,['id'],'t_'+i)),opNumber:numToOp(n||i+1),type:'transferencia',clientId:cid,clientName:String(first(t,['clienteNombre','clientName'],(cMap[cid]||{}).name||'Cliente eliminado')),account:clean||'—',kind:kind,bankName:bank,amount:a,balanceAfter:r2(first(t,['saldoDespues','balanceAfter'],before-a)),date:importDate(first(t,['fechaISO','fecha','date'],Date.now())),legacySaldoAntes:before,legacyBancoColor:first(t,['bancoColor'],null)});});
+ arr(raw.finanzas).forEach(function(f,i){var rawCid=String(first(f,['clienteId','clientId'],'')),desc=String(first(f,['descripcion','concept'],'Movimiento')),cid=resolve(rawCid,desc,false);
+  var a=r2(Math.abs(Number(first(f,['monto','amount'],0))||0)),typ=String(first(f,['tipo','legacyTipo'],'')).toLowerCase(),rawSign=first(f,['signedAmount','signo'],null),sg;
+  if(typeof rawSign==='number')sg=rawSign;else if(rawSign==='-'||rawSign==='neg')sg=-a;else sg=(typ==='gasto'||typ==='egreso'||typ==='salida')?-a:a;sg=r2(sg);
+  var kind=sg<0?'egreso':(typ==='ajuste'?'ajuste':'ingreso'),cat=String(first(f,['categoria','category'],typ==='comision'?'Comisión':typ==='gasto'?'Gasto operativo':'Otros')),n=first(f,['numeroFin','numeroOp'],null);
+  d.fin.push({id:String(first(f,['id'],'f_'+i)),opNumber:'FIN-'+String(Number(n)||i+1).padStart(6,'0'),kind:kind,direction:sg<0?'restar':'sumar',amount:a,signedAmount:sg,concept:desc,category:cat,clientId:cid,clientName:cid?(cMap[cid]||{}).name:(guessName(desc)||'Sin cliente'),appliesToClient:false,note:String(first(f,['nota','note'],'')),date:importDate(first(f,['fechaISO','fecha','date'],Date.now())),createdAt:importDate(first(f,['fechaISO','fecha','date'],Date.now())),balanceAfter:0,legacyTipo:typ||null,legacyReciboId:first(f,['reciboId'],null),legacyClientId:rawCid||null});});
+ computeOpeningBalances(d);return d;
+}
+function convertDatabase(raw){
+ if(!raw||typeof raw!=='object')throw new Error('El archivo no contiene un objeto JSON.');
+ if(raw.data&&typeof raw.data==='object')return convertDatabase(raw.data);
+ var internal=null,format='',user=String(first(raw,['usuario','user'],'Gestor')),exportedAt=vISO(first(raw,['exportado','exportedAt'],''))||new Date().toISOString();
+ if(raw.interno&&typeof raw.interno==='object'&&(arr(raw.interno.clients).length||arr(raw.interno.receipts).length||arr(raw.interno.transfers).length||arr(raw.interno.fin).length)){
+  internal=cloneInternal(raw.interno);format=raw.formato==='gestor_integral'?'Gestor Integral v2':'Formato interno';
+ }else if(arr(raw.clientes).length||arr(raw.recibos).length||arr(raw.transferencias).length||arr(raw.finanzas).length){
+  internal=convertSpanish(raw);format='Base Ale / español';
+ }else if(arr(raw.clients).length||arr(raw.receipts).length||arr(raw.transfers).length||arr(raw.fin).length){
+  internal=cloneInternal(raw);format='Formato interno';
+ }else throw new Error('No reconocí clientes, recibos ni transferencias en el JSON.');
+ return{internal:internal,format:format,user:user,exportedAt:exportedAt};
+}
+
+/* ===== combinar / aplicar ===== */
+function mergeInternal(cur,inc){
+ var out={clients:clone(cur.clients),receipts:clone(cur.receipts),transfers:clone(cur.transfers),fin:clone(cur.fin),fconf:clone(cur.fconf||{openingBalance:0}),hist:clone(cur.hist||[]),meta:clone(cur.meta||{})};
+ var added={clients:0,receipts:0,transfers:0,fin:0,hist:0},byId={},byName={},alias={};
+ out.clients.forEach(function(c){byId[c.id]=c;byName[normName(c.name)]=c;});
+ inc.clients.forEach(function(ic){var ex=byId[ic.id]||byName[normName(ic.name)];
+  if(ex){alias[ic.id]=ex.id;if(ic.id!==ex.id)ex.openingBalance=r2((Number(ex.openingBalance)||0)+(Number(ic.openingBalance)||0));}
+  else{var nc=clone(ic);out.clients.push(nc);byId[nc.id]=nc;byName[normName(nc.name)]=nc;alias[ic.id]=nc.id;added.clients++;}});
+ function cidOf(id,hint){id=String(id||'');if(alias[id])return alias[id];if(!id)return'';var ex=byId[id]||byName[normName(hint||'')];if(ex){alias[id]=ex.id;return ex.id;}
+  var nc={id:id,name:hint||('Cliente importado '+id.slice(-4)),commission:0,balance:0,openingBalance:0,minBalance:0,createdAt:new Date().toISOString()};out.clients.push(nc);byId[id]=nc;alias[id]=id;added.clients++;return id;}
+ function nameOf(id){var c=byId[id];return c?c.name:'';}
+ function mergeRec(target,incoming,sigFn,key){var before=target.length,ids={},sigs={};target.forEach(function(x){ids[x.id]=1;sigs[sigFn(x)]=1;});
+  incoming.forEach(function(raw){var x=clone(raw);x.clientId=cidOf(x.clientId,x.clientName);x.clientName=nameOf(x.clientId)||x.clientName||'';if(ids[x.id])return;var sg=sigFn(x);if(sigs[sg])return;target.push(x);ids[x.id]=1;sigs[sg]=1;});
+  added[key]=target.length-before;}
+ function sigR(r){return[r.opNumber,r.clientId,r.amount,r.date].join('|');}
+ function sigT(t){return[t.opNumber,t.clientId,t.amount,t.account,t.date].join('|');}
+ function sigF(f){return[f.opNumber,f.clientId,f.signedAmount,f.concept,f.date].join('|');}
+ mergeRec(out.receipts,inc.receipts,sigR,'receipts');mergeRec(out.transfers,inc.transfers,sigT,'transfers');mergeRec(out.fin,inc.fin,sigF,'fin');
+ out.fconf.openingBalance=r2((Number(out.fconf.openingBalance)||0)+(Number(inc.fconf.openingBalance)||0));
+ out.fconf.prices=mergePrices(out.fconf.prices,inc.fconf&&inc.fconf.prices);
+ var valid={},seen={};out.receipts.forEach(function(r){valid['rec:'+r.id]=1;});out.transfers.forEach(function(t){valid['tr:'+t.id]=1;});out.fin.forEach(function(m){valid['fi:'+m.id]=1;});
+ out.hist.forEach(function(h){seen[h.sourceKey||('h:'+h.id)]=1;});
+ inc.hist.forEach(function(h){var k=h.sourceKey||('h:'+h.id);if(/^(rec|tr|fi):/.test(k)&&!valid[k])return;if(seen[k])return;out.hist.push(clone(h));seen[k]=1;added.hist++;});
+ if(!out.meta.settings)out.meta.settings=clone(inc.meta&&inc.meta.settings)||{defaultMinBalance:0,lowBalanceAlerts:true};
+ return{data:out,added:added};
+}
+function applyDatabasePayload(payload,mode,opts){
+ opts=opts||{};
+ var sig=payload.signature||('db-'+Date.now());
+ if(mode==='merge'&&!opts.force&&meta&&meta.importedSignatures&&meta.importedSignatures.indexOf(sig)>=0){toast('Esa base ya estaba integrada; no se duplicó.');closeDbModal();return false;}
+ var conv;try{conv=convertDatabase(payload.data);}catch(e){toast('No pude leer la base: '+e.message,false);return false;}
+ var incoming=conv.internal,current={clients:clients,receipts:receipts,transfers:transfers,fin:fin,fconf:fconf,hist:hist,meta:meta},merged,added;
+ if(mode==='replace'){merged=clone(incoming);added={clients:incoming.clients.length,receipts:incoming.receipts.length,transfers:incoming.transfers.length,fin:incoming.fin.length,hist:incoming.hist.length};}
+ else{var m=mergeInternal(current,incoming);merged=m.data;added=m.added;}
+ clients=merged.clients;receipts=merged.receipts;transfers=merged.transfers;fin=merged.fin;fconf=merged.fconf||{openingBalance:0};hist=merged.hist||[];meta=merged.meta||{};
+ meta.db={name:payload.fileName||'Base importada',user:conv.user||'Gestor',exportedAt:conv.exportedAt||null,importedAt:new Date().toISOString(),format:conv.format,mode:mode==='replace'?'Reemplazada':'Combinada',signature:sig,sourceCounts:countDb(incoming),lastExportAt:null};
+ meta.importedSignatures=uniq((meta.importedSignatures||[]).concat([sig]));
+ if(!meta.settings)meta.settings={defaultMinBalance:0,lowBalanceAlerts:true};
+ pushH({sourceKey:'db:'+Date.now(),date:new Date().toISOString(),module:'Sistema',operation:mode==='replace'?'Base reemplazada':'Base combinada',opNumber:'',clientId:'',clientName:'',description:meta.db.name,detail:conv.format+' · +'+added.clients+' clientes, +'+added.receipts+' recibos, +'+added.transfers+' transferencias, +'+added.fin+' finanzas',amount:0,impact:0,balanceAfter:null});
+ normalize();persist();if(!opts.skipRender)renderAll();
+ if(!opts.silent){toast(mode==='replace'?'Base reemplazada.':'Base combinada sin duplicados.');}
+ closeDbModal();return true;
+}
+
 /* ===== importación UI ===== */
 function showImportModal(payload){
  var conv;try{conv=convertDatabase(payload.data);}catch(e){toast('No pude leer la base: '+e.message,false);return;}
