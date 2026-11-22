@@ -299,7 +299,7 @@ details.db-help{margin-top:12px;border:1px solid var(--line2);border-radius:12px
 details.db-help summary{cursor:pointer;font-size:12px;font-weight:700;color:var(--mut)}
 details.db-help ul{margin:10px 0 0;padding-left:18px;color:var(--mut);font-size:11px;line-height:1.9}
 @media(max-width:980px){.db-grid{grid-template-columns:1fr}.grid4{grid-template-columns:1fr 1fr}.s4{grid-column:span 2}.cards{grid-template-columns:1fr 1fr}.kpis,.hstats{grid-template-columns:1fr 1fr}.fbar{grid-template-columns:1fr 1fr}.openbar{grid-template-columns:1fr 1fr}.openbar .hintline{grid-column:span 2}}
-@media(max-width:640px){.db-meta,.db-stats,.db-summary-grid,.today-grid{grid-template-columns:1fr 1fr}.db-settings{grid-template-columns:1fr}.db-actions .btn{width:100%}.top-in{flex-wrap:wrap}.gsearch{order:10;flex:1 0 100%;width:100%}.brand p{display:none}.pillstat{display:none}.panel{padding:17px;border-radius:17px}.shead{flex-direction:column}.grid4,.cards,.kpis,.hstats,.fbar,.openbar{grid-template-columns:1fr}.s2,.s4,.openbar .hintline{grid-column:span 1}.acts .btn{width:100%}table.big{min-width:1000px}.theme-label,#resetLbl,#opsLbl{display:none}.theme-toggle{width:38px;padding:8px}.top-in{gap:8px}.brand h1{font-size:16px}.btn.btn-s{padding:8px 10px}}
+@media(max-width:640px){.db-meta,.db-stats,.db-summary-grid,.today-grid{grid-template-columns:1fr 1fr}.db-settings{grid-template-columns:1fr}.db-actions .btn{width:100%}.top-in{flex-wrap:wrap}.gsearch{order:10;flex:1 0 100%;width:100%}.brand p{display:none}.pillstat{display:none}.panel{padding:17px;border-radius:17px}.shead{flex-direction:column}.grid4,.cards,.kpis,.hstats,.fbar,.openbar{grid-template-columns:1fr}.s2,.s4,.openbar .hintline{grid-column:span 1}.acts .btn{width:100%}table.big{min-width:1000px}.theme-label,#resetLbl,#opsLbl,#accountBtnLabel{display:none}.theme-toggle{width:38px;padding:8px}.top-in{gap:8px}.brand h1{font-size:16px}.btn.btn-s{padding:8px 10px}}
 /* ===== Precios manuales Toque / Abitab / Red Pagos ===== */
 .price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:0 0 12px}
 .price-card{background:var(--surface3);border:1px solid var(--line);border-radius:15px;padding:14px}
@@ -400,7 +400,7 @@ body{overflow-x:clip}
 @media(max-width:980px){.cards{grid-template-columns:repeat(2,1fr)}.today-grid{grid-template-columns:repeat(2,1fr)}.wrap{width:min(1160px,calc(100% - 24px))}}
 @media(max-width:900px){.pillstat#dbStatus{display:none}.theme-toggle .theme-label{display:none}}
 @media(max-width:780px){.gsearch{order:4;flex:1 1 100%;width:100%}.top-in{row-gap:8px;padding:10px 0}}
-@media(max-width:640px){.wrap{width:calc(100% - 20px)}.brand h1{font-size:16px}.logo{width:38px;height:38px;flex-basis:38px;border-radius:11px;font-size:17px}.burger{width:40px;height:40px;flex-basis:40px}.top-in{gap:8px}.top-in .btn-s{padding:8px 10px;font-size:12px}#resetLbl{display:none}.cards{grid-template-columns:1fr}.today-grid{grid-template-columns:1fr 1fr;gap:8px}.stitle h2{font-size:19px}.sico{width:36px;height:36px;flex-basis:36px;border-radius:11px}.shead{flex-direction:column;align-items:stretch;gap:12px;margin-bottom:14px}.grid4{grid-template-columns:1fr 1fr}.gsearch{max-width:none}.twrap table{font-size:12px}.finline input{max-width:none;flex:1 1 100%}.res-top{flex-direction:column;align-items:stretch}.rgrid{gap:16px}.mcard{padding:18px 16px;border-radius:16px}.mhead h3{font-size:17px}}
+@media(max-width:640px){.wrap{width:calc(100% - 20px)}.brand h1{font-size:16px}.logo{width:38px;height:38px;flex-basis:38px;border-radius:11px;font-size:17px}.burger{width:40px;height:40px;flex-basis:40px}.top-in{gap:8px}.top-in .btn-s{padding:8px 10px;font-size:12px}#resetLbl,#accountBtnLabel{display:none}.cards{grid-template-columns:1fr}.today-grid{grid-template-columns:1fr 1fr;gap:8px}.stitle h2{font-size:19px}.sico{width:36px;height:36px;flex-basis:36px;border-radius:11px}.shead{flex-direction:column;align-items:stretch;gap:12px;margin-bottom:14px}.grid4{grid-template-columns:1fr 1fr}.gsearch{max-width:none}.twrap table{font-size:12px}.finline input{max-width:none;flex:1 1 100%}.res-top{flex-direction:column;align-items:stretch}.rgrid{gap:16px}.mcard{padding:18px 16px;border-radius:16px}.mhead h3{font-size:17px}}
 @media(max-width:480px){.grid4{grid-template-columns:1fr}.db-stats{grid-template-columns:1fr!important}.rgrid{gap:12px}}
 @media(prefers-contrast:more){:focus-visible{outline-width:3px}}
 /* ===== iconos de banco / monedero (SVG inline) ===== */
@@ -451,6 +451,7 @@ body{overflow-x:clip}
         <button class="theme-opt active" id="themeDark" type="button" data-theme-choice="dark" aria-pressed="true">🌙 Oscuro</button>
       </div>
     </div>
+    <button class="btn btn-g btn-s" id="drawerAccountBtn" type="button" title="Entrar a una cuenta">👤 Entrar a una cuenta</button>
     <button class="btn btn-g btn-s" id="drawerReset">↺ Reiniciar datos</button>
     <div class="mini">💾 Base de datos abre importación, exportación y respaldos · ESC para cerrar</div>
   </div>
@@ -468,6 +469,7 @@ body{overflow-x:clip}
     </div>
     <span class="pillstat" id="dbStatus"><span class="dot"></span> Guardado local</span>
     <button class="btn btn-g btn-s theme-toggle" id="themeToggle" type="button" aria-label="Cambiar a modo claro" title="Cambiar a modo claro"><span id="themeIcon">☀️</span><span class="theme-label" id="themeLabel">Claro</span></button>
+    <button class="btn btn-g btn-s" id="topAccountBtn" type="button" title="Entrar a tu cuenta" aria-label="Entrar a tu cuenta"><span id="accountBtnIcon">👤</span> <span id="accountBtnLabel">Entrar</span></button>
     <button class="btn btn-p btn-s" id="topSaldo" title="Abrir Operaciones: recibo, transferencia y saldo">🔁 <span id="opsLbl">Operaciones</span></button>
     <button class="btn btn-g btn-s" id="topReset">↺ <span id="resetLbl">Reiniciar</span></button>
   </div>
@@ -736,7 +738,7 @@ body{overflow-x:clip}
     <div class="auth-session hidden" id="profileSessionPane">
       <div class="auth-avatar" id="profileAvatar">A</div>
       <div><b id="profileActiveName">Cuenta</b><small>Perfil local · este dispositivo</small><small>Tu información está separada; se pide el PIN al entrar</small></div>
-      <button type="button" class="btn btn-g btn-s" id="profileLockBtn" style="margin-left:auto;white-space:nowrap">🔒 Bloquear</button>
+      <button type="button" class="btn btn-g btn-s" id="profileLockBtn" style="margin-left:auto;white-space:nowrap" title="Salir de la cuenta y volver al inicio">🔒 Salir</button>
     </div>
 
     <div class="auth-session hidden" id="authSessionPane">
@@ -961,7 +963,7 @@ function currentLockError(){var el=$('lockError');return el;}
 function renderLockList(){var box=$('lockList');if(!box)return;var list=profilesRead();
  box.innerHTML=list.length?list.map(function(p){return '<button type="button" class="profilerow lockitem'+(SELECTED_LOCK_ID===p.id?' active':'')+'" data-pid="'+esc(p.id)+'"><span class="pavatar">'+esc(profileIni(p.name))+'</span><span class="grow"><b>'+esc(p.name)+'</b><small>Creada '+esc(new Date(p.createdAt||Date.now()).toLocaleDateString('es-UY'))+'</small></span><span style="font-size:16px">🔒</span></button>';}).join(''):'<p class="hintline" style="text-align:center">No hay cuentas todavía.</p>';
  $('lockPinRow').classList.toggle('hidden',!SELECTED_LOCK_ID);}
-function renderProfileUI(){var ap=unlockedProfile();var list=profilesRead();
+function renderProfileUI(){var ap=unlockedProfile();renderAccountBtn();var list=profilesRead();
  var pPane=$('profileSessionPane');if(pPane)pPane.classList.toggle('hidden',!ap);
  if(ap){$('profileAvatar').textContent=profileIni(ap.name);$('profileActiveName').textContent=ap.name;}
  var box=$('profileList');if(!box)return;
@@ -978,6 +980,18 @@ function deleteProfile(pid){var p=findProfile(pid);if(!p)return;var ok=window.co
  try{if(sessionStorage.getItem('gestor_unlocked')===pid)sessionStorage.removeItem('gestor_unlocked');}catch(e){}
  toast('Cuenta borrada','ok');location.reload();}
 function lockNow(){try{sessionStorage.removeItem('gestor_unlocked');}catch(e){}location.reload();}
+function renderAccountBtn(){
+ var ap=unlockedProfile(),unlocked=!!ap;
+ var btn=$('topAccountBtn');
+ if(btn){$('accountBtnIcon').textContent=unlocked?'🔒':'👤';$('accountBtnLabel').textContent=unlocked?'Salir':'Entrar';var t=unlocked?('Salir de la cuenta «'+(ap.name||'')+'» · vuelve al inicio; necesitarás tu PIN para entrar de nuevo'):'Entrar a tu cuenta · PIN, crear una cuenta o la nube';btn.title=t;btn.setAttribute('aria-label',t);}
+ var d=$('drawerAccountBtn');if(d){d.textContent=unlocked?'🔒 Salir de la cuenta':'👤 Entrar a una cuenta';d.title=unlocked?'Salir de la cuenta y volver al inicio':'Abrir Mi cuenta: PIN, cuenta nueva o la nube';}
+}
+function accountToggle(){
+ var ap=unlockedProfile();
+ setMenu(false);
+ if(ap){if(confirm('¿Salir de la cuenta «'+(ap.name||'esta cuenta')+'»?\n\nTus datos quedan guardados en este dispositivo; para entrar de nuevo necesitarás tu PIN.'))lockNow();}
+ else openCloud();
+}
 function tryShowLock(){var mustLock=profilesRead().length>0&&!unlockedProfile();if(!mustLock)return;if(NS.indexOf('local:')!==0)return;try{if(sessionStorage.getItem('gestor_local_ok')==='1')return;}catch(e){}
  renderLockList();var ls=$('lockScreen');if(ls)ls.classList.remove('hidden');}
 
@@ -1630,7 +1644,7 @@ $('financeCancel').addEventListener('click',cancelFinanceEdit);$('financeSearch'
 ['historySearch','historyModule','historyRange','historyClient','historySort'].forEach(function(id){$(id).addEventListener('input',renderHistory);$(id).addEventListener('change',renderHistory);});
 ['receiptRange','receiptSearch','transferRange','transferSearch'].forEach(function(id){$(id).addEventListener('input',function(){if(id.indexOf('receipt')===0)renderReceiptH();else renderTransferH();});$(id).addEventListener('change',function(){if(id.indexOf('receipt')===0)renderReceiptH();else renderTransferH();});});
 $('exportBtn').addEventListener('click',exportCSV);$('drawerExport').addEventListener('click',function(){setMenu(false);exportCSV();});
-$('topReset').addEventListener('click',resetApp);$('drawerReset').addEventListener('click',function(){setMenu(false);resetApp();});$('topSaldo').addEventListener('click',function(){showView('saldo',true);});
+$('topReset').addEventListener('click',resetApp);$('drawerReset').addEventListener('click',function(){setMenu(false);resetApp();});$('topSaldo').addEventListener('click',function(){showView('saldo',true);});$('topAccountBtn').addEventListener('click',accountToggle);$('drawerAccountBtn').addEventListener('click',accountToggle);
 $('dbPickBtn').addEventListener('click',function(){$('dbFileInput').click();});$('drawerImportDB').addEventListener('click',function(){setMenu(false);$('dbFileInput').click();});
 $('dbFileInput').addEventListener('change',function(){var f=this.files&&this.files[0];if(f)handleDbFile(f);this.value='';});
 var drop=$('dbDrop');['dragenter','dragover'].forEach(function(ev){drop.addEventListener(ev,function(e){e.preventDefault();drop.classList.add('over');});});['dragleave','drop'].forEach(function(ev){drop.addEventListener(ev,function(e){e.preventDefault();drop.classList.remove('over');if(ev==='drop'){var f=e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0];if(f)handleDbFile(f);}});});
@@ -1713,7 +1727,7 @@ var lb=$('localBanner');if(lb&&!hideBanner){
  if(NS==='local:'){lb.classList.remove('hidden');if(legacy&&targetEmpty){var ba=$('bannerAdopt');if(ba)ba.classList.remove('hidden');}}
  else if(legacy&&targetEmpty){lb.classList.remove('hidden');var bt=$('bannerText');if(bt)bt.innerHTML='<b>Cuenta nueva en este dispositivo.</b> ¿Copiar los datos ya guardados en este navegador a tu cuenta?';var ba2=$('bannerAdopt');if(ba2)ba2.classList.remove('hidden');var bs=$('bannerSignIn');if(bs)bs.classList.add('hidden');}
 }
-tryShowLock();})();
+tryShowLock();renderAccountBtn();})();
 })();
 </script>
 <script>/* PWA: cachea la app para uso sin conexión (los datos siguen en localStorage) */
