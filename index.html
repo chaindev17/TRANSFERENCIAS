@@ -512,8 +512,6 @@ body{overflow-x:clip}
       <div class="field"><label for="receiptAmount">Monto</label><input id="receiptAmount" type="text" inputmode="decimal" autocomplete="off" maxlength="12" placeholder="0.00" required /></div>
       <div class="field s2 acts"><button type="submit" class="btn btn-p" id="receiptSubmit">Generar recibo</button><button type="button" class="btn btn-g hidden" id="receiptCancelEdit">Cancelar edición</button></div>
     </form>
-    <div id="receiptResult" class="res hidden"><div class="res-top"><div><span class="rlab">Resultado del recibo</span><h3 id="receiptClientName">—</h3></div>
-      <div class="rgrid"><div class="metric"><span>Monto</span><strong id="receiptAmountText">$0,00</strong></div><div class="metric"><span>Comisión (<span id="receiptRate">0%</span>)</span><strong class="coralx" id="receiptFee">$0,00</strong></div><div class="metric"><span>Recibe</span><strong class="mintx big" id="receiptNet">$0,00</strong></div><div class="metric"><span>Saldo restante</span><strong id="receiptBalance">$0,00</strong></div></div></div></div>
     <div class="thead"><h3 id="receiptDayTitle">RECIBOS DEL DÍA</h3><div class="finline"><input id="receiptSearch" type="search" placeholder="Buscar OP, cliente…" /><select id="receiptRange"><option value="today">Hoy</option><option value="7">7 días</option><option value="30">30 días</option><option value="all">Todas</option></select><button type="button" class="btn btn-g btn-s sortbtn" id="receiptSortBtn">↓ Recientes</button></div><span class="tag tag-a"><span id="receiptRangeLabel">Hoy</span> · <span id="receiptTodayCount">0</span></span></div>
     <div class="opcards" id="receiptHistoryBody"></div>
   </section>
@@ -1735,7 +1733,6 @@ function refreshAccountBadge(){
  else{lab.innerHTML=ico+'<span>DESCONOCIDO · inicia con 92, 5 o 6</span>';lab.className='abadge bad';return;}
  lab.innerHTML=ico+'<span>'+txt+'</span>';lab.className=cls;
 }
-function showReceiptResult(r){$('receiptClientName').textContent=r.clientName;$('receiptAmountText').textContent=fmt(r.amount);$('receiptRate').textContent=r.commission+'%';$('receiptFee').textContent=fmt(r.fee);$('receiptNet').textContent=fmt(r.net);$('receiptBalance').textContent=fmt(r.balanceAfter);$('receiptResult').classList.remove('hidden');}
 function warnLowBalance(c,projected){if(!c||meta.settings.lowBalanceAlerts===false)return true;var min=r2(c.minBalance||0);if(projected<min)return confirm('El saldo de '+c.name+' quedará en '+fmt(projected)+', por debajo del mínimo '+fmt(min)+'. ¿Continuar?');return true;}
 window.editReceipt=function(id){var r=receipts.filter(function(x){return x.id===id;})[0];if(!r)return;$('receiptEditId').value=r.id;$('receiptClient').value=r.clientId;$('receiptAmount').value=r.amount;$('receiptSubmit').textContent='Guardar cambios';$('receiptCancelEdit').classList.remove('hidden');$('receiptForm').scrollIntoView({behavior:'smooth',block:'center'});toast('Editando '+r.opNumber+'. Guarda para recalcular saldos.');};
 window.editTransfer=function(id){var t=transfers.filter(function(x){return x.id===id;})[0];if(!t)return;$('transferEditId').value=t.id;$('transferClient').value=t.clientId;$('transferAccount').value=(t.account==='—'?'':t.account);refreshAccountBadge();$('transferAmount').value=t.amount;$('transferSubmit').textContent='Guardar cambios';$('transferCancelEdit').classList.remove('hidden');$('transferForm').scrollIntoView({behavior:'smooth',block:'center'});toast('Editando '+t.opNumber+'. Guarda para recalcular saldos.');};
@@ -1831,7 +1828,7 @@ function renderAll(){renderAlerts();renderTodaySummary();renderClients();renderS
 function resetApp(){if(!confirm('¿Reiniciar todos los datos? Se borrarán clientes, recibos, transferencias, finanzas, histórico y respaldos.'))return;
  clients=seed();receipts=[];transfers=[];fin=[];fconf={openingBalance:0,prices:defaultPrices()};hist=[{id:uid('h'),sourceKey:'sys:'+Date.now(),date:new Date().toISOString(),module:'Sistema',operation:'Reinicio',opNumber:'',clientId:'',clientName:'',description:'Datos reiniciados',detail:'',amount:0,impact:0,balanceAfter:null}];
  meta={nextOp:1,nextFin:1,db:null,importedSignatures:[],settings:{defaultMinBalance:0,lowBalanceAlerts:true},lastBackupAt:null};save(K.backups,[]);
- normalize();persist();$('receiptResult').classList.add('hidden');cancelReceiptEdit();cancelTransferEdit();cancelFinanceEdit();closeClientModal();closeDbModal();$('globalSearch').value='';$('globalResults').classList.add('hidden');$('receiptRange').value='today';$('transferRange').value='today';renderAll();toast('Datos reiniciados.');}
+ normalize();persist();cancelReceiptEdit();cancelTransferEdit();cancelFinanceEdit();closeClientModal();closeDbModal();$('globalSearch').value='';$('globalResults').classList.add('hidden');$('receiptRange').value='today';$('transferRange').value='today';renderAll();toast('Datos reiniciados.');}
 
 /* ===== eventos ===== */
 applyTheme(currentTheme(),false,false);
@@ -1858,7 +1855,7 @@ $('receiptForm').addEventListener('submit',function(e){e.preventDefault();var ci
  var fee=r2(amt*(c.commission/100)),net=r2(amt-fee),r;
  if(editId){r=receipts.filter(function(x){return x.id===editId;})[0];if(!r){cancelReceiptEdit();return;}r.clientId=c.id;r.clientName=c.name;r.amount=r2(amt);r.commission=c.commission;r.fee=fee;r.net=net;r.type='recibo';}
  else{r={id:uid('r'),opNumber:nextOp(),type:'recibo',clientId:c.id,clientName:c.name,amount:r2(amt),commission:c.commission,fee:fee,net:net,balanceAfter:0,date:new Date().toISOString()};receipts.push(r);}
- recalcBalances();persist();renderAll();cancelReceiptEdit();showReceiptResult(r);toast(editId?('Recibo '+r.opNumber+' actualizado.'):('Recibo '+r.opNumber+' · recibe '+fmt(net)+'.'));});
+ recalcBalances();persist();renderAll();cancelReceiptEdit();toast(editId?('Recibo '+r.opNumber+' actualizado.'):('Recibo '+r.opNumber+' · recibe '+fmt(net)+'.'));});
 $('transferForm').addEventListener('submit',function(e){e.preventDefault();var cid=$('transferClient').value,acc=$('transferAccount').value.trim(),amt=parseFloat($('transferAmount').value),editId=$('transferEditId').value;
  if(!cid||isNaN(amt)||amt<=0){toast('Completa cliente y monto válido.',false);return;}var c=clients.filter(function(x){return x.id===cid;})[0];if(!c)return;
  if(!editId&&c.balance<amt){toast('Saldo insuficiente para esta transferencia.',false);alert('El saldo del cliente es insuficiente para realizar esta transferencia.');return;}
