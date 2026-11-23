@@ -245,7 +245,7 @@ assert.doesNotMatch(doc7.querySelector('#historyBody').textContent || '', /Prueb
 assert.equal(errors7.length, 0, 'errores de ventana en el desacople finanzas: ' + errors7.join(' | '));
 console.log('finanzas OK: libro manual sin clientes, sin rastro en el Histórico');
 
-// ---- 10) acceso estilo KeyCard: Google / Apple / correo + retorno OAuth ----
+// ---- 10) la entrada vuelve a correo + PIN (sin Google/Apple/enlace mágico) ----
 const dom8 = new JSDOM(html, {
   url: 'https://gestor.local/',
   runScripts: 'dangerously',
@@ -259,18 +259,16 @@ const dom8 = new JSDOM(html, {
 const errors8 = [];
 dom8.window.addEventListener('error', (e) => errors8.push(e.message));
 const doc8 = dom8.window.document;
-assert.ok(doc8.querySelector('#lockOAuthGoogleBtn'), 'pantalla de entrada: botón Google');
-assert.ok(doc8.querySelector('#lockOAuthAppleBtn'), 'pantalla de entrada: botón Apple');
-assert.ok(doc8.querySelector('#lockEmailBtn'), 'pantalla de entrada: acceso por correo');
+assert.equal(doc8.querySelector('#lockOAuthGoogleBtn'), null, 'la entrada ya no tiene Google');
+assert.equal(doc8.querySelector('#lockOAuthAppleBtn'), null, 'la entrada ya no tiene Apple');
 doc8.querySelector('#drawerCuentaBtn').click();
 doc8.querySelector('#cuentaSyncBtn').click();
-assert.ok(doc8.querySelector('#cloudOAuthGoogleBtn'), '«Mi cuenta»: botón Google');
-assert.ok(doc8.querySelector('#cloudOAuthAppleBtn'), '«Mi cuenta»: botón Apple');
-assert.ok(doc8.querySelector('#cloudMagicBtn'), '«Mi cuenta»: enlace mágico para cualquier correo');
-doc8.querySelector('#cloudOAuthGoogleBtn').click();
-assert.match(doc8.querySelector('#cloudStatus').textContent || '', /Google/, 'el botón Google redirige vía Supabase');
-assert.equal(errors8.length, 0, 'errores de ventana en el acceso OAuth: ' + errors8.join(' | '));
-console.log('oauth OK: acceso con Google/Apple/correo presente y cableado');
+assert.equal(doc8.querySelector('#cloudOAuthGoogleBtn'), null, '«Mi cuenta» ya no tiene Google');
+assert.equal(doc8.querySelector('#cloudOAuthAppleBtn'), null, '«Mi cuenta» ya no tiene Apple');
+assert.equal(doc8.querySelector('#cloudMagicBtn'), null, 'sin enlace mágico: solo correo y contraseña');
+assert.ok(doc8.querySelector('#cloudEmail') && doc8.querySelector('#cloudPassword'), 'correo y contraseña presentes');
+assert.equal(errors8.length, 0, 'errores de ventana en la entrada recuperada: ' + errors8.join(' | '));
+console.log('acceso OK: vuelta a correo + PIN (sin Google/Apple/enlace mágico)');
 
 // ---- 11) retorno OAuth: #access_token en la URL guarda la sesión y limpia el hash ----
 const dom9 = new JSDOM(html, {
