@@ -982,15 +982,21 @@ function deleteProfile(pid){var p=findProfile(pid);if(!p)return;var ok=window.co
  toast('Cuenta borrada','ok');location.reload();}
 function lockNow(){try{sessionStorage.removeItem('gestor_unlocked');}catch(e){}location.reload();}
 function renderAccountBtn(){
- var ap=unlockedProfile(),unlocked=!!ap;
+ var ap=unlockedProfile(),cloud=isSignedIn(),unlocked=!!ap||cloud;
  var btn=$('topAccountBtn');
- if(btn){$('accountBtnIcon').textContent=unlocked?'🔒':'👤';$('accountBtnLabel').textContent=unlocked?'Salir':'Entrar';var t=unlocked?('Salir de la cuenta «'+(ap.name||'')+'» · vuelve al inicio; necesitarás tu PIN para entrar de nuevo'):'Entrar a tu cuenta · PIN, crear una cuenta o la nube';btn.title=t;btn.setAttribute('aria-label',t);}
- var d=$('drawerAccountBtn');if(d){d.textContent=unlocked?'🔒 Salir de la cuenta':'👤 Entrar a una cuenta';d.title=unlocked?'Salir de la cuenta y volver al inicio':'Abrir Mi cuenta: PIN, cuenta nueva o la nube';}
+ if(btn){
+  $('accountBtnIcon').textContent=unlocked?'🔒':'👤';
+  $('accountBtnLabel').textContent=unlocked?'Salir':'Entrar';
+  var t=cloud?'Cerrar sesión de tu cuenta en este dispositivo · tus datos en la nube quedan intactos':(ap?('Salir de la cuenta «'+(ap.name||'')+'» · vuelve al inicio; necesitarás tu PIN para entrar de nuevo'):'Entrar a tu cuenta · PIN, crear una cuenta o la nube');
+  btn.title=t;btn.setAttribute('aria-label',t);
+ }
+ var d=$('drawerAccountBtn');if(d){d.textContent=cloud?'🔒 Cerrar sesión (nube)':(ap?'🔒 Salir de la cuenta':'👤 Entrar a una cuenta');d.title=cloud?'Cerrar sesión en este dispositivo · tu copia en la nube queda intacta':(ap?'Salir de la cuenta y volver al inicio':'Abrir Mi cuenta: PIN, cuenta nueva o la nube');}
 }
 function accountToggle(){
  var ap=unlockedProfile();
  setMenu(false);
- if(ap){if(confirm('¿Salir de la cuenta «'+(ap.name||'esta cuenta')+'»?\n\nTus datos quedan guardados en este dispositivo; para entrar de nuevo necesitarás tu PIN.'))lockNow();}
+ if(isSignedIn()){if(confirm('¿Cerrar sesión en este dispositivo?\n\nTus datos en la nube quedan intactos y los verás al entrar de nuevo; tu copia local y tus perfiles no se borran.'))cloudLogout();}
+ else if(ap){if(confirm('¿Salir de la cuenta «'+(ap.name||'esta cuenta')+'»?\n\nTus datos quedan guardados en este dispositivo; para entrar de nuevo necesitarás tu PIN.'))lockNow();}
  else openCloud();
 }
 function isFreshCorpus(){
@@ -1000,6 +1006,17 @@ function isFreshCorpus(){
  if(clients.length!==3)return false;
  var seeds=['María López','Carlos Ruiz','Laura Méndez'];
  return clients.every(function(c){return seeds.indexOf(c.name)>=0;});
+}
+function maybeSignedOut(){
+ try{
+  var so=sessionStorage.getItem('gestor_signed_out');if(!so)return;
+  sessionStorage.removeItem('gestor_signed_out');
+  var lb=$('localBanner');
+  if(lb){lb.classList.remove('hidden');var bt=$('bannerText');if(bt)bt.innerHTML='<b>Sesión cerrada.</b> Tus datos siguen en la nube; entrá de nuevo para verlos.';}
+  var bd=$('bannerAdopt');if(bd)bd.classList.add('hidden');
+  var bs=$('bannerSignIn');if(bs){bs.classList.remove('hidden');bs.textContent='👤 Entrar';}
+  setTimeout(function(){try{openCloud();}catch(e){}},550);
+ }catch(e){}
 }
 function maybeAutoPull(){
  /* tras un login, este dispositivo corre en el espacio u:<id> (vacío): buscar la copia en la nube y ofrecer traerla */
@@ -1198,7 +1215,7 @@ async function cloudPull(){
   showImportModal({data:row.payload,fileName:'Nube · copia '+fmtDT(row.updated_at||new Date().toISOString()),signature:'cloud|'+(row.updated_at||Date.now())});
  }catch(e){cloudStatus('Error de red: '+e.message,false);}
 }
-function cloudLogout(){var c=cloudCfg();['accessToken','refreshToken','userId','expiresAt'].forEach(function(k){delete c[k];});cloudSave(c);location.reload();}
+function cloudLogout(){var c=cloudCfg();['accessToken','refreshToken','userId','expiresAt'].forEach(function(k){delete c[k];});cloudSave(c);try{sessionStorage.setItem('gestor_signed_out','1');}catch(e){}location.reload();}
 function cloudAutoSync(){if(cloudTimer)clearTimeout(cloudTimer);cloudTimer=setTimeout(function(){var c=cloudCfg();if(c.auto&&c.accessToken)cloudPush({auto:true});},8000);}
 
 /* ===== histórico y saldos derivados ===== */
@@ -1876,7 +1893,7 @@ var lb=$('localBanner');if(lb&&!hideBanner){
  if(NS==='local:'){lb.classList.remove('hidden');if(legacy&&targetEmpty){var ba=$('bannerAdopt');if(ba)ba.classList.remove('hidden');}}
  else if(legacy&&targetEmpty){lb.classList.remove('hidden');var bt=$('bannerText');if(bt)bt.innerHTML='<b>Cuenta nueva en este dispositivo.</b> ¿Copiar los datos ya guardados en este navegador a tu cuenta?';var ba2=$('bannerAdopt');if(ba2)ba2.classList.remove('hidden');var bs=$('bannerSignIn');if(bs)bs.classList.add('hidden');}
 }
-tryShowLock();renderAccountBtn();exportNudge();maybeAutoPull();})();
+tryShowLock();renderAccountBtn();exportNudge();maybeAutoPull();maybeSignedOut();})();
 })();
 </script>
 <script>/* PWA: cachea la app para uso sin conexión (los datos siguen en localStorage) */
