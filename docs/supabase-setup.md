@@ -1,5 +1,11 @@
 # Sincronización en la nube con Supabase (fase 2)
 
+> **Ya está precargada en la app pública** (<https://chaindev17.github.io/TRANSFERENCIAS/>):
+> URL y publishable key vienen de fábrica — abrí la app → **👤 Mi cuenta → ☁️ Nube opcional →
+> Iniciar sesión** con tu correo y listo, sin configurar nada. Al entrar en un dispositivo nuevo,
+> la app detecta tu copia en la nube y te ofrece traerla. Esta guía aplica si self-hosteás tu
+> propio proyecto Supabase (o querés apuntar la app a otro proyecto).
+
 La app funciona 100 % en el navegador (localStorage). Esta guía activa la **copia en la nube**:
 una instantánea JSON completa de tu gestor (clientes, recibos, transferencias, finanzas,
 histórico y archivado) que puedes subir y bajar desde cualquier dispositivo.
@@ -19,7 +25,9 @@ histórico y archivado) que puedes subir y bajar desde cualquier dispositivo.
 1. Menú lateral → **SQL Editor** → **New query**.
 2. Pega todo el contenido de [`../supabase/schema.sql`](../supabase/schema.sql) → **Run**.
 3. Debe decir `Success`. Esto crea `public.gestor_snapshots` con Row Level Security:
-   cada cuenta solo puede leer/escribir su propia fila.
+   cada cuenta solo puede leer/escribir su propia fila. El script también incluye los
+   **GRANTs** (`select, insert, update` para `authenticated`); sin ellos, la API responde
+   `42501` aunque RLS esté perfecto.
 
 ## 3 · Activar el login por correo (opcional)
 
@@ -36,7 +44,8 @@ Solo si quieres sincronizar entre dispositivos. Los perfiles locales no necesita
 1. **Project Settings → API**.
 2. Copia:
    - **Project URL** (`https://xxxxxxxx.supabase.co`)
-   - **anon public key** (empieza por `eyJ…`)
+   - **publishable key** (empieza por `sb_publishable_…`, botón *API Keys* → tipo **publishable**).
+     La legacy `anon` key (`eyJ…`) también funciona, pero la publishable es la moderna.
 
 > La `anon key` **sí puede** ir dentro del HTML del sitio público: está diseñada para ser
 > pública. Lo que protege tus datos es RLS (paso 2) + tu sesión.
@@ -86,5 +95,6 @@ Solo si quieres sincronizar entre dispositivos. Los perfiles locales no necesita
 |---|---|---|
 | `Supabase: Invalid login credentials` | cuenta no confirmada o contraseña mal | confirma el correo o repite **Crear cuenta** |
 | `Sesión caducada` | token de ~1 h vencido | pulsa **Conectar** de nuevo |
-| `No se pudo subir (401)` | RLS o clave equivocada | revisa que pegaste la **anon** key, no otra |
+| `No se pudo subir (401)` | clave equivocada o sesión vencida | revisá que pegaste la **publishable/anon** key; o **Iniciar sesión** de nuevo |
+| `No se pudo subir (403)` con `42501` | falta el GRANT a la tabla | ejecutá los `grant` al final de `supabase/schema.sql` |
 | `No se pudo subir (404)` | falta la tabla | ejecuta `supabase/schema.sql` en el SQL Editor |
