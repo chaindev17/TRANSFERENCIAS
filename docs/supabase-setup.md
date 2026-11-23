@@ -39,6 +39,38 @@ Solo si quieres sincronizar entre dispositivos. Los perfiles locales no necesita
 3. (Opcional) Si prefieres confirmación por correo, déjala activada y confirma la cuenta desde el email recibido.
 4. (Opcional) **Authentication → URL Configuration**: añade la URL pública de la app en *Site URL*.
 
+### 3.5 · Entrar con Google y Apple (OAuth)
+
+La app trae botones **Continuar con Google** y **Continuar con Apple** en la pantalla de
+entrada y en **👤 Mi cuenta**. Por defecto están **desactivados** en el proyecto público (hace
+falta el Client ID de cada proveedor, que solo tu cuenta de Google/Apple puede dar). Para
+activarlos:
+
+**Google**
+
+1. [Google Cloud Console](https://console.cloud.google.com) → **APIs & Services → Credentials** →
+   **Create credentials → OAuth client ID → Web application**.
+2. En **Authorized redirect URIs** pega exactamente:
+   `https://xaumytmotnokdqbnxjgx.supabase.co/auth/v1/callback`
+3. Copia el **Client ID** y el **Client secret**.
+4. Supabase → **Authentication → Providers → Google**: pega ambos, **Enable** → **Save**.
+
+**Apple** (requiere Apple Developer Program, USD 99/año)
+
+1. [Apple Developer](https://developer.apple.com) → **Certificates, IDs & Profiles → Identifiers** →
+   **＋ Services IDs** (p. ej. `com.tudominio.gestor`) → activa **Sign In with Apple**.
+   - **Domains**: `xaumytmotnokdqbnxjgx.supabase.co`
+   - **Return URLs**: `https://xaumytmotnokdqbnxjgx.supabase.co/auth/v1/callback`
+2. **Keys** → crea una key con **Sign In with Apple** → descarga el `.p8` (anota **Key ID** y **Team ID**).
+3. Supabase → **Authentication → Providers → Apple**: Services ID + Team ID + Key ID + contenido del `.p8` → **Enable** → **Save**.
+
+**Notas**
+
+- La app siempre vuelve a la **Site URL** configurada en Supabase (la app pública), ya lista.
+- El proyecto público no trae Google/Apple habilitados todavía: **con tu correo funciona ya
+  mismo** (contraseña o «✉ Enviarme un enlace mágico», sin configurar nada).
+- Si usás tu propio proyecto Supabase, el callback es `https://<tu-ref>.supabase.co/auth/v1/callback`.
+
 ## 4 · Obtener las claves públicas
 
 1. **Project Settings → API**.

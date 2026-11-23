@@ -65,6 +65,8 @@ color-scheme:light;
 --sh:0 18px 50px rgba(80,60,140,.16);--shadow-soft:rgba(80,60,140,.18);--shadow-strong:rgba(80,60,140,.24);--mint-shadow:rgba(109,40,217,.32);--r:24px
 }
 body,.top,.drawer,.drawer-head,.panel,.card,.kpi,.stat,.srow,.twrap,.mcard,.toast,.pillstat,.btn-g,.icobtn,.mlink,.abadge,.tag,.mod,.check,.openbar,.finbox,input,select,textarea,.theme-box,.theme-seg,.theme-opt{transition:background-color .25s ease,color .25s ease,border-color .25s ease,box-shadow .25s ease}
+.lockbox{width:min(430px,100%);text-align:center}
+.lockbox h2{margin:0}
 .theme-toggle{gap:7px}.theme-toggle #themeIcon{font-size:14px;line-height:1}
 .theme-box{border:1px solid var(--line);background:var(--surface3);border-radius:14px;padding:10px;margin-bottom:2px}
 .theme-caption{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
@@ -436,17 +438,37 @@ details.db-help ul{margin:10px 0 0;padding-left:18px;color:var(--mut);font-size:
 .profilepin input{flex:1;min-width:0}
 .auth-divider{display:flex;align-items:center;gap:10px;color:var(--faint);font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;margin:2px 0 12px}
 .auth-divider::before,.auth-divider::after{content:"";flex:1;height:1px;background:var(--line2)}
-.lockscreen{position:fixed;inset:0;z-index:90;display:grid;place-items:center;background:var(--backdrop);backdrop-filter:blur(14px);padding:20px}
-.lockbox{width:min(430px,100%);background:var(--modal);border:1px solid var(--line-strong);border-radius:22px;padding:26px 22px;box-shadow:0 30px 90px var(--shadow-strong);text-align:center}
-.locklogo{width:52px;height:52px;border-radius:15px;display:grid;place-items:center;font-weight:800;font-size:22px;color:var(--logo-text);background:linear-gradient(135deg,var(--mint),var(--mint2));margin:0 auto 12px}
-.lockbox h2{margin:0;font-size:21px;letter-spacing:-.02em}
-.lock-sub{margin:4px 0 16px;color:var(--mut);font-size:12px}
-.locklist{display:grid;gap:8px;margin-bottom:12px}
-.lockpin-row{display:flex;gap:8px;margin-bottom:12px}
-.lockpin-row input{flex:1;min-width:0;text-align:center;letter-spacing:.25em;font-size:16px}
-.lock-secondary{display:block;width:100%;border:0;background:transparent;color:var(--mut);font-size:12px;font-weight:600;padding:8px;cursor:pointer;border-radius:10px;margin-top:4px}
-.lock-secondary:hover{background:var(--surface2);color:var(--tx)}
-.lock-error{color:var(--coral-text,#fda4af);font-size:12px;min-height:18px;margin:0 0 6px}
+.lockscreen{position:fixed;inset:0;z-index:90;display:grid;place-items:center;padding:22px 16px;overflow-y:auto;background:radial-gradient(1100px 750px at 18% -10%,rgba(124,58,237,.5),transparent 55%),radial-gradient(900px 650px at 115% 112%,rgba(76,29,149,.6),transparent 55%),radial-gradient(700px 500px at 50% 122%,rgba(217,70,239,.3),transparent 60%),linear-gradient(165deg,#070318 0%,#1b0f3d 48%,#2b1155 100%)}
+.lock-card{width:min(430px,100%);display:flex;flex-direction:column;align-items:stretch;gap:10px;text-align:center;margin:auto;animation:lockIn .55s cubic-bezier(.2,.9,.3,1.12) both}
+@keyframes lockIn{from{opacity:0;transform:translateY(26px) scale(.95)}to{opacity:1;transform:none}}
+.locklogo{width:76px;height:76px;border-radius:23px;display:grid;place-items:center;font-weight:800;font-size:30px;color:#fff;background:linear-gradient(160deg,#8b5cf6 0%,#6d28d9 55%,#4c1d95 100%);box-shadow:0 18px 44px rgba(139,92,246,.45),inset 0 1px 0 rgba(255,255,255,.5),inset 0 -10px 20px rgba(0,0,0,.35);margin:4px auto 0}
+.lock-brand{margin:8px 0 0;font-size:27px;letter-spacing:-.03em;color:#fff;font-weight:800}
+.lock-tag{margin:0 0 8px;color:#c4b5fd;font-size:13px;font-weight:600;letter-spacing:.04em}
+.locklist{display:grid;gap:9px;margin:2px 0 0}
+.locklist .profilerow{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);color:#fff;border-radius:16px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);padding:10px 12px;text-align:left}
+.locklist .profilerow:hover{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.3)}
+.locklist .profilerow small{color:rgba(255,255,255,.62)}
+.lockpin-row{display:flex;gap:8px;margin-bottom:0}
+.lockpin-row input{flex:1;min-width:0;text-align:center;letter-spacing:.25em;font-size:16px;background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.22);color:#fff;border-radius:13px}
+.lockpin-row input::placeholder{color:rgba(255,255,255,.45)}
+.oauth-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:13px 16px;border-radius:999px;border:1px solid transparent;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;transition:transform .15s,box-shadow .2s,background .2s}
+.oauth-btn svg{width:19px;height:19px;flex:0 0 19px}
+.oauth-btn:hover{transform:translateY(-1px)}
+.oauth-btn:active{transform:scale(.97)}
+.oauth-btn.google{background:#fff;color:#1f1f1f;box-shadow:0 10px 28px rgba(0,0,0,.38)}
+.oauth-btn.google:hover{background:#eef0f3}
+.oauth-btn.apple{background:#000;color:#fff;border-color:rgba(255,255,255,.32);box-shadow:0 10px 28px rgba(0,0,0,.42)}
+.oauth-btn.apple:hover{background:#151515}
+.oauth-stack{display:grid;gap:10px;margin:2px 0 0}
+.lock-divider{display:flex;align-items:center;gap:12px;color:rgba(255,255,255,.52);font-size:10px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;margin:2px 0}
+.lock-divider::before,.lock-divider::after{content:"";flex:1;height:1px;background:rgba(255,255,255,.18)}
+.lock-main{width:100%;padding:14px 18px;font-size:15px}
+.lock-card .auth-divider{color:rgba(255,255,255,.5)}
+.lock-card .auth-divider::before,.lock-card .auth-divider::after{background:rgba(255,255,255,.18)}
+.lock-secondary{display:block;width:100%;border:0;background:transparent;color:rgba(255,255,255,.72);font-size:12px;font-weight:600;padding:9px;cursor:pointer;border-radius:10px;margin-top:2px}
+.lock-secondary:hover{background:rgba(255,255,255,.1);color:#fff}
+.lock-error{color:#fda4af;font-size:12px;min-height:18px;margin:0;font-weight:600}
+@media(prefers-reduced-motion:reduce){.lock-card{animation:none!important}}
 /* ===== Layout escritorio / móvil ===== */
 html{-webkit-text-size-adjust:100%;overflow-x:clip}
 body{overflow-x:clip}
@@ -847,6 +869,9 @@ body{overflow-x:clip}
       <summary>☁️ Nube opcional · sincronizar entre dispositivos (Supabase)</summary>
       <p class="hintline" style="margin:8px 0 10px">Ya viene configurado con el proyecto en la nube del repositorio: solo entrá con tu correo y contraseña. ¿Querés self-host con tu propio Supabase? Ver <b>docs/supabase-setup.md</b>.</p>
       <div id="authFormsPane">
+        <div class="oauth-stack"><button type="button" class="oauth-btn google" id="cloudOAuthGoogleBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18A10.96 10.96 0 0 0 1 12c0 1.77.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 4.75c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 1.46 14.97.5 12 .5 7.7.5 3.99 2.97 2.18 7.22l3.66 2.84c.87-2.6 3.3-5.31 6.16-5.31z"/></svg>Continuar con Google</button><button type="button" class="oauth-btn apple" id="cloudOAuthAppleBtn"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.7 12.9c0-2.4 2-3.6 2.1-3.7-1.1-1.7-2.9-1.9-3.5-1.9-1.5-.2-2.9.9-3.7.9-.8 0-1.9-.9-3.2-.9-1.6 0-3.1 1-4 2.4-1.7 3-.4 7.3 1.2 9.7.8 1.2 1.8 2.5 3.1 2.4 1.2 0 1.7-.8 3.3-.8s2 .8 3.2.8 2.2-1.2 3-2.3c.9-1.3 1.3-2.6 1.3-2.7 0-.1-2.6-1-2.6-3.9zM14.9 4.6c.7-.8 1.1-1.9 1-3-.9 0-2 .6-2.7 1.4-.6.7-1.2 1.9-1 3 .9.1 2-.5 2.7-1.4z"/></svg>Continuar con Apple</button></div>
+        <div class="auth-divider" style="margin:12px 0"><span>o con tu correo</span></div>
+        <p class="hintline" style="margin:-4px 0 12px;font-size:10.5px">¿Google o Apple no abren? Hay que activarlos una vez en Supabase (Authentication → Providers) — ver <b>docs/supabase-setup.md</b>. Tu correo funciona igual: contraseña o enlace mágico.</p>
         <div class="authseg" role="tablist" aria-label="Iniciar sesión o crear cuenta">
           <button type="button" class="authseg-btn active" id="authTabLogin" role="tab">Iniciar sesión</button>
           <button type="button" class="authseg-btn" id="authTabSignup" role="tab">Crear cuenta</button>
@@ -859,6 +884,7 @@ body{overflow-x:clip}
               <button type="submit" class="btn btn-p" id="cloudLoginBtn" style="flex:1 1 100%">Entrar</button>
               <button type="button" class="btn btn-g btn-s" id="cloudRecoverBtn" style="flex:1 1 45%">Olvidé mi contraseña</button>
               <button type="button" class="btn btn-g btn-s" id="cloudResendBtn" style="flex:1 1 45%">Reenviar confirmación</button>
+              <button type="button" class="btn btn-g btn-s" id="cloudMagicBtn" style="flex:1 1 100%;margin-top:2px">✉ Enviarme un enlace mágico (cualquier correo, sin contraseña)</button>
             </div>
           </div>
           <div class="auth-pane hidden" id="authSignupPane" role="tabpanel">
@@ -911,18 +937,22 @@ body{overflow-x:clip}
 <div id="toast" class="toast"></div>
 
 <div id="lockScreen" class="lockscreen hidden" role="dialog" aria-modal="true" aria-labelledby="lockTitle">
-  <div class="lockbox">
-    <div class="locklogo">G</div>
-    <h2 id="lockTitle">Gestor Integral</h2>
-    <p class="lock-sub">Elige tu cuenta y entra con tu PIN</p>
+  <div class="lock-card">
+    <div class="locklogo" aria-hidden="true">G</div>
+    <h2 id="lockTitle" class="lock-brand">Gestor Integral</h2>
+    <p class="lock-tag">Tu lugar seguro</p>
     <p class="lock-error" id="lockError"></p>
     <div class="locklist" id="lockList"></div>
     <div class="lockpin-row hidden" id="lockPinRow">
       <input id="lockPinInput" type="password" inputmode="numeric" autocomplete="off" placeholder="••••" maxlength="8" aria-label="PIN de la cuenta seleccionada" />
       <button type="button" class="btn btn-p" id="lockUnlockBtn">Entrar</button>
     </div>
-    <button type="button" class="lock-secondary" id="lockCreateBtn">＋ Crear una cuenta nueva</button>
+    <button type="button" class="oauth-btn google" id="lockOAuthGoogleBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18A10.96 10.96 0 0 0 1 12c0 1.77.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 4.75c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 1.46 14.97.5 12 .5 7.7.5 3.99 2.97 2.18 7.22l3.66 2.84c.87-2.6 3.3-5.31 6.16-5.31z"/></svg>Continuar con Google</button>
+    <button type="button" class="oauth-btn apple" id="lockOAuthAppleBtn"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.7 12.9c0-2.4 2-3.6 2.1-3.7-1.1-1.7-2.9-1.9-3.5-1.9-1.5-.2-2.9.9-3.7.9-.8 0-1.9-.9-3.2-.9-1.6 0-3.1 1-4 2.4-1.7 3-.4 7.3 1.2 9.7.8 1.2 1.8 2.5 3.1 2.4 1.2 0 1.7-.8 3.3-.8s2 .8 3.2.8 2.2-1.2 3-2.3c.9-1.3 1.3-2.6 1.3-2.7 0-.1-2.6-1-2.6-3.9zM14.9 4.6c.7-.8 1.1-1.9 1-3-.9 0-2 .6-2.7 1.4-.6.7-1.2 1.9-1 3 .9.1 2-.5 2.7-1.4z"/></svg>Continuar con Apple</button>
+    <div class="lock-divider"><span>o con tu correo</span></div>
+    <button type="button" class="btn btn-p lock-main" id="lockEmailBtn">Crear cuenta / Entrar</button>
     <button type="button" class="lock-secondary" id="lockLocalBtn">Continuar sin cuenta (modo local)</button>
+    <button type="button" class="lock-secondary" id="lockCreateBtn">＋ Crear una cuenta en este dispositivo</button>
   </div>
 </div>
 <script>
@@ -1341,6 +1371,49 @@ async function cloudRecover(){
   if(!res.ok){cloudStatus('Supabase: '+authErr(data,res.status),false);return;}
   cloudStatus('Si el correo existe, recibirás un enlace para restablecer tu contraseña.',true);
  }catch(e){cloudStatus('No pude conectar: '+e.message,false);}
+}
+/* ===== Acceso estilo KeyCard: OAuth (Google/Apple) + enlace mágico ===== */
+function oauthRedirect(provider){
+ var prov=provider==='apple'?'apple':'google';
+ var to=window.location.origin+window.location.pathname;
+ var target=cloudBase()+'/auth/v1/authorize?provider='+prov+'&redirect_to='+encodeURIComponent(to);
+ try{cloudStatus('Redirigiendo a '+(prov==='google'?'Google':'Apple')+'…',true);}catch(e){}
+ try{window.location.assign(target);}catch(e){try{window.location.href=target;}catch(_){}}
+}
+async function cloudMagicLink(){
+ var email=($('cloudEmail').value||'').trim(),c=cloudCfg(),url=String(c.url||'').replace(/\/+$/,''),key=c.key||'';
+ if(!email){cloudStatus('Escribe tu correo para enviarte el enlace mágico.',false);return;}
+ cloudStatus('Enviando enlace mágico…');
+ try{
+  var res=await fetch(url+'/auth/v1/otp',{method:'POST',headers:{'apikey':key,'Content-Type':'application/json'},body:JSON.stringify({email:email,create_user:true})});
+  var data={};try{data=await res.json();}catch(e){}
+  if(!res.ok){cloudStatus('Supabase: '+authErr(data,res.status),false);return;}
+  cloudStatus('Te enviamos un enlace a '+email+'. Ábrelo en este dispositivo para entrar (sin contraseña).',true);
+ }catch(e){cloudStatus('No pude conectar: '+e.message,false);}
+}
+function maybeAuthCallback(){
+ try{
+  var h=window.location.hash||'';
+  if(h.indexOf('access_token=')<0)return;
+  var p=new URLSearchParams(h.slice(1)),at=p.get('access_token');
+  if(!at)return;
+  var c=cloudCfg();
+  c.accessToken=at;
+  var rt=p.get('refresh_token');if(rt)c.refreshToken=rt;
+  var exp=Number(p.get('expires_in'));c.expiresAt=Date.now()+((isFinite(exp)&&exp>0?exp:3600)*1000);
+  cloudSave(c);
+  try{sessionStorage.removeItem('gestor_signed_out');}catch(e){}
+  try{history.replaceState(null,'',window.location.pathname+window.location.search);}catch(e){}
+  try{
+   fetch(cloudBase()+'/auth/v1/user',{headers:{'apikey':cloudCfg().key||'','Authorization':'Bearer '+at}}).then(function(r){return r&&r.ok?r.json():null;}).then(function(u){
+    if(!u)return;
+    var c2=cloudCfg();c2.userId=u.id||c2.userId||null;c2.email=u.email||c2.email||null;
+    var md=u.user_metadata||{};c2.name=md.full_name||md.name||c2.name||(u.email?String(u.email).split('@')[0]:'Cuenta');
+    cloudSave(c2);
+   }).catch(function(){});
+  }catch(e){}
+  try{toast('Sesión iniciada. Sincronizando tus datos…');}catch(e){}
+ }catch(e){}
 }
 async function cloudPush(opts){
  opts=opts||{};var auto=!!opts.auto;
@@ -2010,6 +2083,12 @@ $('lockUnlockBtn').addEventListener('click',function(){var pin=$('lockPinInput')
 $('lockPinInput').addEventListener('keydown',function(ev){if(ev.key==='Enter'){ev.preventDefault();$('lockUnlockBtn').click();}});
 $('lockCreateBtn').addEventListener('click',function(){openCloud();var pb=$('profileCreateBox');if(pb)pb.setAttribute('open','open');setTimeout(function(){var n=$('profileName');if(n)n.focus();},120);});
 $('lockLocalBtn').addEventListener('click',function(){try{sessionStorage.setItem('gestor_local_ok','1');}catch(e){}location.reload();});
+$('lockOAuthGoogleBtn').addEventListener('click',function(){oauthRedirect('google');});
+$('lockOAuthAppleBtn').addEventListener('click',function(){oauthRedirect('apple');});
+$('lockEmailBtn').addEventListener('click',function(){openCloud();});
+$('cloudOAuthGoogleBtn').addEventListener('click',function(){oauthRedirect('google');});
+$('cloudOAuthAppleBtn').addEventListener('click',function(){oauthRedirect('apple');});
+$('cloudMagicBtn').addEventListener('click',cloudMagicLink);
 $('receiptSortBtn').addEventListener('click',function(){receiptAsc=!receiptAsc;this.textContent=receiptAsc?'↑ Antiguos':'↓ Recientes';renderReceiptH();});
 $('transferSortBtn').addEventListener('click',function(){transferAsc=!transferAsc;this.textContent=transferAsc?'↑ Antiguos':'↓ Recientes';renderTransferH();});
 $('exportCsvModuleBtn').addEventListener('click',function(){exportModuleCSV($('csvModule').value);});$('restoreBackupBtn').addEventListener('click',restoreLatestBackup);$('saveSettingsBtn').addEventListener('click',saveSettings);
@@ -2058,7 +2137,7 @@ var lb=$('localBanner');if(lb&&!hideBanner){
  if(NS==='local:'){lb.classList.remove('hidden');if(legacy&&targetEmpty){var ba=$('bannerAdopt');if(ba)ba.classList.remove('hidden');}}
  else if(legacy&&targetEmpty){lb.classList.remove('hidden');var bt=$('bannerText');if(bt)bt.innerHTML='<b>Cuenta nueva en este dispositivo.</b> ¿Copiar los datos ya guardados en este navegador a tu cuenta?';var ba2=$('bannerAdopt');if(ba2)ba2.classList.remove('hidden');var bs=$('bannerSignIn');if(bs)bs.classList.add('hidden');}
 }
-try{if(localStorage.getItem('gestor_privacy')==='1'){document.documentElement.classList.add('privacy');var pb=$('togglePrivacyEye');if(pb){pb.textContent='🙈';pb.setAttribute('aria-pressed','true');}}}catch(e){}tryShowLock();renderAccountBtn();exportNudge();maybeAutoPull();maybeSignedOut();})();
+try{if(localStorage.getItem('gestor_privacy')==='1'){document.documentElement.classList.add('privacy');var pb=$('togglePrivacyEye');if(pb){pb.textContent='🙈';pb.setAttribute('aria-pressed','true');}}}catch(e){}maybeAuthCallback();tryShowLock();renderAccountBtn();exportNudge();maybeAutoPull();maybeSignedOut();})();
 })();
 </script>
 <script>/* PWA: cachea la app para uso sin conexión (los datos siguen en localStorage) */
