@@ -244,4 +244,57 @@ doc7.querySelector('#drawerNav [data-go="historico"]').click();
 assert.doesNotMatch(doc7.querySelector('#historyBody').textContent || '', /Prueba desacople/, 'la finanzas no aparece en el Histórico');
 assert.equal(errors7.length, 0, 'errores de ventana en el desacople finanzas: ' + errors7.join(' | '));
 console.log('finanzas OK: libro manual sin clientes, sin rastro en el Histórico');
+
+// ---- 10) acceso estilo KeyCard: Google / Apple / correo + retorno OAuth ----
+const dom8 = new JSDOM(html, {
+  url: 'https://gestor.local/',
+  runScripts: 'dangerously',
+  pretendToBeVisual: true,
+  beforeParse(window) {
+    try { window.crypto = webcrypto; } catch { /* jsdom ya trae crypto */ }
+    window.confirm = () => true;
+    window.alert = () => {};
+  },
+});
+const errors8 = [];
+dom8.window.addEventListener('error', (e) => errors8.push(e.message));
+const doc8 = dom8.window.document;
+assert.ok(doc8.querySelector('#lockOAuthGoogleBtn'), 'pantalla de entrada: botón Google');
+assert.ok(doc8.querySelector('#lockOAuthAppleBtn'), 'pantalla de entrada: botón Apple');
+assert.ok(doc8.querySelector('#lockEmailBtn'), 'pantalla de entrada: acceso por correo');
+doc8.querySelector('#drawerCuentaBtn').click();
+doc8.querySelector('#cuentaSyncBtn').click();
+assert.ok(doc8.querySelector('#cloudOAuthGoogleBtn'), '«Mi cuenta»: botón Google');
+assert.ok(doc8.querySelector('#cloudOAuthAppleBtn'), '«Mi cuenta»: botón Apple');
+assert.ok(doc8.querySelector('#cloudMagicBtn'), '«Mi cuenta»: enlace mágico para cualquier correo');
+doc8.querySelector('#cloudOAuthGoogleBtn').click();
+assert.match(doc8.querySelector('#cloudStatus').textContent || '', /Google/, 'el botón Google redirige vía Supabase');
+assert.equal(errors8.length, 0, 'errores de ventana en el acceso OAuth: ' + errors8.join(' | '));
+console.log('oauth OK: acceso con Google/Apple/correo presente y cableado');
+
+// ---- 11) retorno OAuth: #access_token en la URL guarda la sesión y limpia el hash ----
+const dom9 = new JSDOM(html, {
+  url: 'https://gestor.local/#access_token=tok123abc&refresh_token=ref456def&expires_in=3600&token_type=bearer&type=signup',
+  runScripts: 'dangerously',
+  pretendToBeVisual: true,
+  beforeParse(window) {
+    try { window.crypto = webcrypto; } catch { /* jsdom ya trae crypto */ }
+    window.confirm = () => true;
+    window.alert = () => {};
+    window.fetch = async (url) => {
+      if (String(url).includes('/auth/v1/user')) {
+        return { ok: true, status: 200, json: async () => ({ id: 'u-oauth', email: 'oauth@ejemplo.com', user_metadata: { full_name: 'Ana Prueba' } }) };
+      }
+      return { ok: false, status: 400, json: async () => ({ message: 'no hay red en el test' }) };
+    };
+  },
+});
+const errors9 = [];
+dom9.window.addEventListener('error', (e) => errors9.push(e.message));
+await sleep(500);
+const nube = dom9.window.localStorage.getItem('gestor_nube') || '';
+assert.ok(nube.includes('tok123abc'), 'el retorno de OAuth guarda la sesión en gestor_nube');
+assert.equal(dom9.window.location.hash, '', 'el hash OAuth se limpia tras procesarlo');
+assert.equal(errors9.length, 0, 'errores de ventana en el retorno OAuth: ' + errors9.join(' | '));
+console.log('oauth callback OK: sesión guardada, hash limpio');
 process.exit(0);

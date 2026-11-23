@@ -46,6 +46,11 @@ negocio de transferencias del día a día. Sin backend propio y sin dependencias
 - **Menú uniforme**: todos los botones del ☰ navegan a su página (`#clientes`, `#operaciones`,
   `#finanzas`, `#historico`, `#cuenta`, `#basedatos`) resaltando el activo; ya no hay sub-menús
   que trabajen dentro del drawer.
+- **Acceso estilo KeyCard (inspirado)**: pantalla de entrada tipo lienzo profundo violeta con
+  el logo y el lema «Tu lugar seguro». Entrá con **Google** o **Apple** (OAuth de Supabase), con
+  tu **correo y contraseña**, con un **enlace mágico** (cualquier correo, sin contraseña) o con
+  un perfil/PIN local. Sin assets ajenos: identidad propia. Para activar Google/Apple hay que
+  habilitar los proveedores en Supabase (ver `docs/supabase-setup.md`).
 - **Portada estilo Prex (inspirada)**: al abrir la app encontrás «Saldo disponible» con la
   suma animada de tus clientes + 👁 para ocultar/mostrar todos los importes + seis
   **acciones rápidas circulares** (Recibo, Transferencia, Saldo, Histórico, Finanzas, Importar).
