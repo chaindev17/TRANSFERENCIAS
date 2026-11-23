@@ -157,6 +157,23 @@ main{padding:26px 0 60px}
 .op-pane.active{display:block;animation:viewIn .24s ease-out both}
 @media(max-width:780px){.op-tabs{gap:5px;padding:5px;margin-bottom:10px;border-radius:12px}.op-tab{flex-direction:column;justify-content:center;align-items:center;gap:4px;padding:7px 4px;text-align:center}.op-tab b{font-size:10.5px;white-space:normal;line-height:1.15;overflow:visible;text-overflow:clip}.op-tab .t-ico{width:24px;height:24px;flex-basis:24px;font-size:12px}}
 @keyframes viewIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px) scale(.985)}to{opacity:1;transform:none}}
+@keyframes cardIn{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:none}}
+@keyframes sheen{0%{left:-90%}55%{left:140%}100%{left:140%}}
+@keyframes dotPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.45)}}
+@keyframes logoGlow{0%,100%{box-shadow:0 0 0 0 rgba(52,224,156,.0)}50%{box-shadow:0 0 26px 4px rgba(52,224,156,.32)}}
+.app-view.active>*{animation:fadeUp .42s cubic-bezier(.2,.8,.2,1) both}
+.app-view.active>*:nth-child(2){animation-delay:.05s}
+.app-view.active>*:nth-child(3){animation-delay:.1s}
+.app-view.active>*:nth-child(4){animation-delay:.15s}
+.app-view.active>*:nth-child(5){animation-delay:.2s}
+.opcard{animation:cardIn .35s cubic-bezier(.2,.8,.2,1) both}
+.logo{animation:logoGlow 5.5s ease-in-out infinite}
+#dbStatus .dot{animation:dotPulse 2.1s ease-in-out infinite}
+.btn-p{position:relative;overflow:hidden}
+.btn-p::after{content:"";position:absolute;top:-10%;bottom:-10%;left:-90%;width:45%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.38),transparent);transform:skewX(-18deg);animation:sheen 3.6s ease-in-out infinite;pointer-events:none}
+.confetti{position:fixed;width:8px;height:13px;border-radius:2px;z-index:9999;pointer-events:none;will-change:transform,opacity}
+@media(prefers-reduced-motion:reduce){.app-view.active>*,.opcard,.logo,#dbStatus .dot,.btn-p::after{animation:none!important}}
 .hero{min-height:0;margin:2px 0 10px}
 .hero h2{margin:2px 0 0;font-size:21px;letter-spacing:-.02em}
 .view-kicker{margin-bottom:2px}
@@ -441,23 +458,8 @@ body{overflow-x:clip}
     <button class="mlink" data-go="operaciones"><span class="ico" style="background:linear-gradient(135deg,#7dd3fc,#0f9d68)">🔁</span><span><b>Operaciones</b><small>Recibo · Transferencia · Saldo</small></span><span class="go">›</span></button>
     <button class="mlink" data-go="finanzas"><span class="ico" style="background:linear-gradient(135deg,#fb9a6c,#c2410c)">💰</span><span><b>Finanzas manual</b><small>Ingresos, egresos y ajustes</small></span><span class="go">›</span></button>
     <button class="mlink" data-go="historico"><span class="ico" style="background:linear-gradient(135deg,#c4b5fd,#6d28d9)">🕘</span><span><b>Histórico general</b><small>Todas las operaciones</small></span><span class="go">›</span></button>
-    <button class="mlink" id="drawerCuentaBtn" type="button"><span class="ico" style="background:linear-gradient(135deg,#f0abfc,#be185d)">👤</span><span><b>Cuenta</b><small>Tus datos personales · conectar y desconectar</small></span><span class="go">›</span></button>
-    <div class="dbnav">
-      <button class="mlink dbnav-toggle" type="button" data-go="basedatos" id="dbMenuBtn" aria-expanded="false" aria-controls="dbMenuList"><span class="ico" style="background:linear-gradient(135deg,#67e8f9,#0891b2)">💾</span><span><b>Base de datos</b><small>Todas las funciones de importación / exportación</small></span><span class="go">⌄</span></button>
-      <div class="dbnav-list hidden" id="dbMenuList" role="group" aria-label="Funciones de importación y exportación">
-        <button type="button" class="dbnav-link" data-go="basedatos">📊 Abrir panel y estado de la base</button>
-        <button type="button" class="dbnav-link" id="drawerImportDB">⬆ Importar base JSON</button>
-        <button type="button" class="dbnav-link" id="drawerExportDB">⬇ Exportar base JSON</button>
-        <div class="dbnav-row">
-          <select id="drawerCsvModule" aria-label="Módulo a exportar en CSV"><option value="clientes">CSV · Clientes</option><option value="recibos">CSV · Recibos</option><option value="transferencias">CSV · Transferencias</option><option value="finanzas">CSV · Finanzas</option><option value="historico">CSV · Histórico</option></select>
-          <button type="button" class="dbnav-link" id="drawerExportCsvModuleBtn">⬇ Exportar</button>
-        </div>
-        <button type="button" class="dbnav-link" id="drawerRestoreBackup">↺ Restaurar última copia</button>
-        <button type="button" class="dbnav-link" id="drawerExport">⬇ CSV histórico completo</button>
-        <button type="button" class="dbnav-link" id="drawerCloudSync">👤 Mi cuenta</button>
-        <button type="button" class="dbnav-link" id="shortcutsBtn">⌨ Atajos y ayuda</button>
-        <p class="dbnav-note">También puedes arrastrar un archivo .json al panel. Al importar eliges <b>combinar sin duplicar</b> o <b>reemplazar todo</b>.</p>
-      </div>
+    <button class="mlink" id="drawerCuentaBtn" type="button" data-go="cuenta"><span class="ico" style="background:linear-gradient(135deg,#f0abfc,#be185d)">👤</span><span><b>Cuenta</b><small>Tus datos personales · conectar y desconectar</small></span><span class="go">›</span></button>
+    <button class="mlink" type="button" data-go="basedatos"><span class="ico" style="background:linear-gradient(135deg,#67e8f9,#0891b2)">💾</span><span><b>Base de datos</b><small>Importar · exportar · CSV · respaldos</small></span><span class="go">›</span></button>
     </div>
   </nav>
   <div class="drawer-foot">
@@ -651,6 +653,30 @@ body{overflow-x:clip}
     <div class="thead"><h3>Todas las operaciones</h3><span class="tag tag-m"><span id="historyShown">0</span>&nbsp;visibles</span></div>
     <div class="twrap"><table class="big"><thead><tr><th>Fecha y hora</th><th>Módulo</th><th>Operación</th><th>Nº op.</th><th>Cliente</th><th>Detalle</th><th>Monto</th><th>Efecto</th><th>Saldo posterior</th></tr></thead><tbody id="historyBody"></tbody></table></div>
   </section>
+  <section id="cuenta" class="panel app-view" aria-label="Cuenta">
+    <div class="shead"><div class="stitle"><span class="sico" style="background:linear-gradient(135deg,#f0abfc,#be185d);color:#fff">08</span><div><h2>Cuenta</h2><p>Tus datos personales y tu sesión en este dispositivo.</p></div></div></div>
+    <div class="auth-session" id="cuentaIdentity">
+      <div class="auth-avatar" id="cuentaAvatar">?</div>
+      <div><b id="cuentaName">—</b><small id="cuentaSub">—</small><small id="cuentaMode">—</small></div>
+    </div>
+    <form id="personaForm" class="mform" autocomplete="off" style="max-width:520px;margin:4px 0 18px">
+      <div class="grid4" style="grid-template-columns:1fr 1fr">
+        <div class="field"><label for="personaName">Nombre</label><input id="personaName" type="text" autocomplete="name" placeholder="¿Cómo te llamas?" /></div>
+        <div class="field"><label for="personaPhone">Teléfono / WhatsApp</label><input id="personaPhone" type="tel" autocomplete="tel" inputmode="tel" placeholder="Ej.: +598 99 123 456" /></div>
+        <div class="field s2"><label for="personaEmail">Correo</label><input id="personaEmail" type="email" autocomplete="email" inputmode="email" placeholder="tu@correo.com" /></div>
+        <div class="field s2"><label for="personaNote">Nota (opcional)</label><textarea id="personaNote" rows="2" placeholder="Banco habitual, ciudad… lo que quieras"></textarea></div>
+      </div>
+      <button type="button" class="btn btn-p" id="personaSaveBtn">💾 Guardar mis datos</button>
+      <p class="hintline" style="margin:10px 0 0">Se guardan en el espacio de tu cuenta. Si cambiás el nombre, tu perfil y tu sesión de nube se actualizan al instante.</p>
+    </form>
+    <div class="thead"><h3>Sesión y sincronización</h3></div>
+    <div class="db-actions" style="max-width:520px;flex-direction:column;align-items:stretch;gap:8px">
+      <button type="button" class="btn btn-p" id="cuentaLogoutBtn" style="width:100%">⏻ Desconectar</button>
+      <button type="button" class="btn btn-g" id="cuentaSyncBtn" style="width:100%">☁️ Nube y sincronización…</button>
+      <button type="button" class="btn btn-g" id="cuentaShortcutsBtn" style="width:100%">⌨ Atajos y ayuda</button>
+    </div>
+  </section>
+
   <section id="basedatos" class="panel app-view" aria-label="Base de datos">
     <div class="shead">
       <div class="stitle"><span class="sico" style="background:linear-gradient(135deg,#67e8f9,#0891b2);color:var(--accent-ink)">07</span><div><h2>Base de datos</h2><p>Reconoce tu .json, combina sin duplicar, reemplaza, exporta y respalda.</p></div></div>
@@ -742,33 +768,6 @@ body{overflow-x:clip}
     </div>
   </div>
 </div>
-<div id="cuentaModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="cuentaModalTitle">
-  <div class="mback" id="cuentaModalBack"></div>
-  <div class="mcard" style="max-width:520px">
-    <div class="mhead"><h3 id="cuentaModalTitle">👤 Cuenta</h3><button class="icobtn" id="cuentaModalX" aria-label="Cerrar">✕</button></div>
-
-    <div class="auth-session" id="cuentaIdentity">
-      <div class="auth-avatar" id="cuentaAvatar">?</div>
-      <div><b id="cuentaName">—</b><small id="cuentaSub">—</small><small id="cuentaMode">—</small></div>
-    </div>
-
-    <form id="personaForm" class="mform" autocomplete="off" style="margin-top:12px">
-      <div class="field"><label for="personaName">Nombre</label><input id="personaName" type="text" autocomplete="name" placeholder="¿Cómo te llamas?" /></div>
-      <div class="field"><label for="personaPhone">Teléfono / WhatsApp</label><input id="personaPhone" type="tel" autocomplete="tel" inputmode="tel" placeholder="Ej.: +598 99 123 456" /></div>
-      <div class="field"><label for="personaEmail">Correo</label><input id="personaEmail" type="email" autocomplete="email" inputmode="email" placeholder="tu@correo.com" /></div>
-      <div class="field"><label for="personaNote">Nota (opcional)</label><textarea id="personaNote" rows="2" placeholder="Banco habitual, ciudad… lo que quieras"></textarea></div>
-      <button type="button" class="btn btn-p" id="personaSaveBtn" style="width:100%">💾 Guardar mis datos</button>
-      <p class="hintline">Se guardan en el espacio de tu cuenta. Si el nombre cambia, tu perfil y tu sesión de nube se actualizan al instante.</p>
-    </form>
-
-    <div class="auth-divider">Sesión</div>
-    <div class="macts" style="flex-direction:column;gap:8px;align-items:stretch">
-      <button type="button" class="btn btn-p" id="cuentaLogoutBtn" style="width:100%">⏻ Desconectar</button>
-      <button type="button" class="btn btn-g" id="cuentaSyncBtn" style="width:100%">☁️ Nube y sincronización…</button>
-    </div>
-  </div>
-</div>
-
 <div id="cloudModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="cloudModalTitle">
   <div class="mback" id="cloudModalBack"></div>
   <div class="mcard" style="max-width:600px">
@@ -1060,8 +1059,6 @@ function cuentaRender(){
  var lo=$('cuentaLogoutBtn');
  if(lo){lo.textContent=cc.cloud?'⏻ Desconectar de la nube':(cc.ap?'🔒 Salir de la cuenta «'+(cc.ap.name||'')+'»':'👤 Entrar a una cuenta');}
 }
-function openCuenta(){var m=$('cuentaModal');cuentaRender();if(m)m.classList.remove('hidden');setMenu(false);setTimeout(function(){try{$('personaName').focus();}catch(e){}},60);}
-function closeCuenta(){var m=$('cuentaModal');if(m)m.classList.add('hidden');}
 function personaSave(){
  var p=personaRead();
  p.name=String($('personaName').value||'').trim();
@@ -1083,7 +1080,7 @@ function cuentaLogout(){
  var cc=cuentaIdentity();
  if(cc.cloud){if(confirm('¿Desconectar de la nube en este dispositivo?\n\nTus datos y tu copia en la nube quedan intactos; tu perfil local (si lo hay) tampoco se borra.'))cloudLogout();}
  else if(cc.ap){if(confirm('¿Salir de la cuenta «'+(cc.ap.name||'esta cuenta')+'»?\n\nTus datos quedan guardados; para entrar de nuevo necesitarás tu PIN.'))lockNow();}
- else{closeCuenta();openCloud();}
+ else{openCloud();}
 }
 /* ===== Monedas en vivo (al tocar «Gestor Integral») ===== */
 var FX_CACHE_KEY='gestor_fx_cache',fxTimer=null;
@@ -1118,6 +1115,10 @@ function fxFetch(){
 }
 function openCurrency(){var m=$('currencyModal');fxRender(fxRead());if(m)m.classList.remove('hidden');setMenu(false);fxFetch();if(fxTimer)clearInterval(fxTimer);fxTimer=setInterval(fxFetch,60000);setTimeout(function(){var b=$('fxRefreshBtn');if(b)b.focus();},60);}
 function closeCurrency(){var m=$('currencyModal');if(m)m.classList.add('hidden');if(fxTimer){clearInterval(fxTimer);fxTimer=null;}}
+/* ===== vida: contadores y celebración ===== */
+function reduceMotion(){try{return window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches;}catch(e){return false;}}
+function countUp(el,to,fmtFn){if(!el)return;var from=parseFloat(el.dataset.v||'0')||0;to=Number(to)||0;el.dataset.v=String(to);if(reduceMotion()||Math.abs(to-from)<0.005){el.textContent=fmtFn?fmtFn(to):String(to);return;}var t0=0,dur=700;function step(t){if(!t0)t0=t;var p=Math.min(1,(t-t0)/dur),e=1-Math.pow(2,-10*p);if(p>=1)e=1;el.textContent=fmtFn?fmtFn(from+(to-from)*e):String(Math.round(from+(to-from)*e));if(p<1)requestAnimationFrame(step);}requestAnimationFrame(step);}
+function celebrate(fromEl){if(reduceMotion())return;try{var r=(fromEl&&fromEl.getBoundingClientRect)?fromEl.getBoundingClientRect():{left:window.innerWidth/2-1,top:window.innerHeight*0.35,width:2};var x=r.left+r.width/2,y=Math.max(70,r.top);var colors=['#34e09c','#fcd34d','#7dd3fc','#f0abfc','#fb9a6c','#c4b5fd','#fca5a5'];for(var i=0;i<26;i++){var sp=document.createElement('span');sp.className='confetti';sp.style.left=x+'px';sp.style.top=y+'px';sp.style.background=colors[i%colors.length];document.body.appendChild(sp);var dx=(Math.random()-0.5)*280,dy=110+Math.random()*220,rot=(Math.random()*720-360).toFixed(0);try{var an=sp.animate([{transform:'translate(0,0) rotate(0deg)',opacity:1},{transform:'translate('+dx.toFixed(0)+'px,'+dy.toFixed(0)+'px) rotate('+rot+'deg)',opacity:.05}],{duration:900+Math.random()*550,easing:'cubic-bezier(.2,.8,.2,1)'});an.onfinish=(function(el){return function(){if(el.parentNode)el.parentNode.removeChild(el);};})(sp);}catch(e){setTimeout(function(){if(sp.parentNode)sp.parentNode.removeChild(sp);},1500);}}}catch(e){}}
 function isFreshCorpus(){
  /* corpus "de fábrica": sin operaciones y clientes = seeds o cero (típico tras el primer login) */
  if(receipts.length||transfers.length||fin.length)return false;
@@ -1627,13 +1628,13 @@ function renderDatabaseInfo(){
 }
 
 /* ===== vistas ===== */
-function collapseDbMenu(){var l=$('dbMenuList'),b=$('dbMenuBtn');if(l)l.classList.add('hidden');if(b)b.setAttribute('aria-expanded','false');}
-function setMenu(open){document.body.classList.toggle('menu-open',!!open);$('menuBtn').setAttribute('aria-expanded',open?'true':'false');if(!open)collapseDbMenu();}
+function setMenu(open){document.body.classList.toggle('menu-open',!!open);$('menuBtn').setAttribute('aria-expanded',open?'true':'false');}
 var VIEW_INFO={
  clientes:{kicker:'SECCIÓN ACTIVA · CLIENTES',title:'Gestión de clientes',description:'Ingresa, edita o elimina clientes y administra su comisión, saldo y saldo mínimo.'},
  operaciones:{kicker:'SECCIÓN ACTIVA · OPERACIONES',title:'Operaciones',description:'Recibo, transferencia y saldo en una sola sección: elige arriba en cuál quieres estar.'},
- finanzas:{kicker:'SECCIÓN ACTIVA · FINANZAS',title:'Control financiero manual',description:'Administra tu saldo base y registra ingresos, egresos y ajustes sin mezclar las demás pantallas.'},
+ finanzas:{kicker:'SECCIÓN ACTIVA · FINANZAS',title:'Tu libro manual',description:'Registra ingresos, egresos y ajustes y los gestiona en el Libro de finanzas. Nada más, sin distracciones.'},
  historico:{kicker:'SECCIÓN ACTIVA · HISTÓRICO',title:'Histórico general',description:'Consulta, filtra y exporta todas las operaciones existentes desde una pantalla dedicada.'},
+ cuenta:{kicker:'SECCIÓN ACTIVA · CUENTA',title:'Tu cuenta, de este lado',description:'Tus datos personales y tu sesión en este dispositivo: entrar, salir y sincronizar la nube.'},
  basedatos:{kicker:'SECCIÓN ACTIVA · BASE DE DATOS',title:'Base de datos y respaldos',description:'Importa o exporta bases JSON, combina sin duplicar, restaura copias y revisa el estado de tus datos.'}
 };
 var OPS={
@@ -1642,7 +1643,8 @@ var OPS={
  saldo:{kicker:'OPERACIONES · SALDO',title:'Saldo total y por cliente',description:'Saldo total de todos los clientes en primer plano, resumen del día y desglose de cada uno debajo.'}
 };
 function paintOp(sub){curOp=OPS[sub]?sub:'recibo';document.querySelectorAll('.op-pane').forEach(function(p){var on=p.id===curOp;p.classList.toggle('active',on);p.setAttribute('aria-hidden',on?'false':'true');});document.querySelectorAll('.op-tab').forEach(function(t){var on=t.getAttribute('data-op')===curOp;t.setAttribute('aria-selected',on?'true':'false');t.tabIndex=on?0:-1;});}
-function showView(id,updateHash){
+var __origShowViewEnter=function(id){if(id==='cuenta')cuentaRender();};
+function showView(id,updateHash){__origShowViewEnter(id);
  var sub=null;if(OPS[id]){sub=id;id='operaciones';}if(!VIEW_INFO[id])id='clientes';if(id==='operaciones')paintOp(sub||curOp);
  document.querySelectorAll('.app-view').forEach(function(v){var on=v.id===id;v.classList.toggle('active',on);v.setAttribute('aria-hidden',on?'false':'true');});
  document.querySelectorAll('#drawerNav .mlink').forEach(function(b){b.classList.toggle('active',b.getAttribute('data-go')===id);});
@@ -1866,7 +1868,7 @@ function renderFinance(){var bal=r2(fconf.openingBalance+fin.reduce(function(s,m
 function renderHistory(){var list=filteredHistory();$('historyTotal').textContent=hist.length.toLocaleString('es-UY');$('historyReceipts').textContent=hist.filter(function(h){return h.module==='Recibo';}).length.toLocaleString('es-UY');$('historyTransfers').textContent=hist.filter(function(h){return h.module==='Transferencia';}).length.toLocaleString('es-UY');$('historyFinance').textContent=hist.filter(function(h){return h.module==='Finanzas';}).length.toLocaleString('es-UY');$('historyShown').textContent=list.length.toLocaleString('es-UY');
  var tb=$('historyBody');if(!list.length){tb.innerHTML='<tr><td colspan="9" class="empty">Sin registros con esos filtros.</td></tr>';return;}
  tb.innerHTML=list.slice(0,600).map(function(h){return'<tr><td class="mut">'+fmtD(h.date)+'<br><span class="mono">'+fmtT(h.date)+'</span></td><td><span class="mod '+(MCLS[h.module]||'ms')+'">'+esc(h.module)+'</span></td><td>'+esc(h.operation)+'</td><td>'+opCell(h.opNumber)+'</td><td>'+(h.clientName?esc(h.clientName):'<span class="mut">—</span>')+'</td><td class="detail">'+esc(h.description||'')+(h.detail?'<small>'+esc(h.detail)+'</small>':'')+'</td><td>'+(h.amount?fmt(h.amount):'—')+'</td><td class="'+(h.impact<0?'neg':(h.impact>0?'pos':''))+'">'+fmtImp(h.impact)+'</td><td>'+(h.balanceAfter==null?'<span class="mut">—</span>':fmt(h.balanceAfter))+'</td></tr>';}).join('')+(list.length>600?'<tr><td colspan="9" class="empty">Mostrando 600 de '+list.length.toLocaleString('es-UY')+'. Usa filtros o exporta el CSV.</td></tr>':'');}
-function renderSaldo(){var total=r2(clients.reduce(function(s,c){return s+r2(c.balance);},0));$('saldoTotal').textContent=fmt(total);$('saldoCount').textContent=clients.length;$('saldoTotalSub').textContent=clients.length+' '+(clients.length===1?'cliente registrado':'clientes registrados');
+function renderSaldo(){var total=r2(clients.reduce(function(s,c){return s+r2(c.balance);},0));countUp($('saldoTotal'),total,fmt);$('saldoCount').textContent=clients.length;$('saldoTotalSub').textContent=clients.length+' '+(clients.length===1?'cliente registrado':'clientes registrados');
  var bal=clients.map(function(c){return c.balance;});if(clients.length){$('saldoAvg').textContent=fmt(r2(total/clients.length));$('saldoMax').textContent=fmt(Math.max.apply(null,bal));$('saldoMin').textContent=fmt(Math.min.apply(null,bal));}else{$('saldoAvg').textContent='$0,00';$('saldoMax').textContent='$0,00';$('saldoMin').textContent='$0,00';}
  $('saldoListCount').textContent=clients.length;var box=$('saldoList');if(!clients.length){box.innerHTML='<div class="empty">No hay clientes registrados. Ingresá clientes para ver el desglose de saldos.</div>';return;}
  var sorted=clients.slice().sort(function(a,b){return b.balance-a.balance;}),mx=sorted[0].balance>0?sorted[0].balance:1;
@@ -1885,7 +1887,7 @@ applyTheme(currentTheme(),false,false);
 
 ['themeLight','themeDark'].forEach(function(id){$(id).addEventListener('click',function(){var c=$(id).getAttribute('data-theme-choice');if(c!==currentTheme())applyTheme(c,true,true);});});
 $('menuBtn').addEventListener('click',function(){setMenu(!document.body.classList.contains('menu-open'));});$('closeMenu').addEventListener('click',function(){setMenu(false);});$('overlay').addEventListener('click',function(){setMenu(false);});
-$('dbMenuBtn').addEventListener('click',function(e){e.preventDefault();e.stopPropagation();var l=$('dbMenuList'),shouldOpen=l.classList.contains('hidden');l.classList.toggle('hidden',!shouldOpen);this.setAttribute('aria-expanded',shouldOpen?'true':'false');});
+
 document.querySelectorAll('.op-tab').forEach(function(t){t.addEventListener('click',function(){showView(t.getAttribute('data-op'),true);});});
 document.querySelector('.op-tabs').addEventListener('keydown',function(e){var k=e.key;if(k!=='ArrowRight'&&k!=='ArrowLeft')return;var ids=['recibo','transferencia','saldo'],i=ids.indexOf(curOp);i=(i+(k==='ArrowRight'?1:ids.length-1))%ids.length;e.preventDefault();showView(ids[i],true);var nt=$('tab-'+ids[i]);if(nt)nt.focus();});
 window.addEventListener('popstate',function(){showView((window.location.hash||'#clientes').slice(1),false);});window.addEventListener('hashchange',function(){showView((window.location.hash||'#clientes').slice(1),false);});
@@ -1896,7 +1898,7 @@ $('clientForm').addEventListener('submit',function(e){e.preventDefault();var id=
   pushH({sourceKey:'cli:'+c.id+':'+Date.now(),date:new Date().toISOString(),module:'Clientes',operation:'Cliente editado',opNumber:'',clientId:c.id,clientName:c.name,description:'Antes: '+old,detail:'Ahora: '+c.name+' · '+c.commission+'% · '+fmt(c.balance),amount:0,impact:0,balanceAfter:c.balance});toast('Cliente actualizado.');}
  else{var nc={id:uid('c'),name:name,commission:clampNum(cm,0,100),balance:r2(bl),openingBalance:r2(bl),minBalance:r2(mn),createdAt:new Date().toISOString()};clients.push(nc);
   pushH({sourceKey:'cli:'+nc.id,date:nc.createdAt,module:'Clientes',operation:'Cliente creado',opNumber:'',clientId:nc.id,clientName:nc.name,description:nc.name+' · comisión '+nc.commission+'%',detail:'Saldo inicial '+fmt(nc.balance),amount:nc.balance,impact:0,balanceAfter:nc.balance});toast('Cliente ingresado.');}
- recalcBalances();persist();renderAll();closeClientModal();});
+ recalcBalances();persist();renderAll();closeClientModal();try{celebrate(document.querySelector('#clientForm button[type=submit]'));}catch(e){}});
 $('receiptCancelEdit').addEventListener('click',cancelReceiptEdit);$('transferCancelEdit').addEventListener('click',cancelTransferEdit);
 $('transferAccount').addEventListener('input',refreshAccountBadge);
 guardMoney($('receiptAmount'));guardMoney($('transferAmount'));guardAccount($('transferAccount'));
@@ -1905,7 +1907,7 @@ $('receiptForm').addEventListener('submit',function(e){e.preventDefault();var ci
  var fee=r2(amt*(c.commission/100)),net=r2(amt-fee),r;
  if(editId){r=receipts.filter(function(x){return x.id===editId;})[0];if(!r){cancelReceiptEdit();return;}r.clientId=c.id;r.clientName=c.name;r.amount=r2(amt);r.commission=c.commission;r.fee=fee;r.net=net;r.type='recibo';}
  else{r={id:uid('r'),opNumber:nextOp(),type:'recibo',clientId:c.id,clientName:c.name,amount:r2(amt),commission:c.commission,fee:fee,net:net,balanceAfter:0,date:new Date().toISOString()};receipts.push(r);}
- recalcBalances();persist();renderAll();cancelReceiptEdit();toast(editId?('Recibo '+r.opNumber+' actualizado.'):('Recibo '+r.opNumber+' · recibe '+fmt(net)+'.'));});
+ recalcBalances();persist();renderAll();cancelReceiptEdit();celebrate($('receiptSubmit'));toast(editId?('Recibo '+r.opNumber+' actualizado.'):('Recibo '+r.opNumber+' · recibe '+fmt(net)+'.'));});
 $('transferForm').addEventListener('submit',function(e){e.preventDefault();var cid=$('transferClient').value,acc=$('transferAccount').value.trim(),amt=parseFloat($('transferAmount').value),editId=$('transferEditId').value;
  if(!cid||isNaN(amt)||amt<=0){toast('Completa cliente y monto válido.',false);return;}var c=clients.filter(function(x){return x.id===cid;})[0];if(!c)return;
  if(!editId&&c.balance<amt){toast('Saldo insuficiente para esta transferencia.',false);alert('El saldo del cliente es insuficiente para realizar esta transferencia.');return;}
@@ -1916,28 +1918,28 @@ $('transferForm').addEventListener('submit',function(e){e.preventDefault();var c
  if(!editId&&!warnLowBalance(c,r2(c.balance-amt)))return;
  var t;if(editId){t=oldT;if(!t){cancelTransferEdit();return;}t.clientId=c.id;t.clientName=c.name;t.account=keepLegacy?t.account:inf.clean;t.kind=keepLegacy?t.kind:inf.kind;t.bankName=keepLegacy?t.bankName:inf.bank;t.amount=r2(amt);t.type='transferencia';}
  else{t={id:uid('t'),opNumber:nextOp(),type:'transferencia',clientId:c.id,clientName:c.name,account:inf.clean,kind:inf.kind,bankName:inf.bank,amount:r2(amt),balanceAfter:0,date:new Date().toISOString()};transfers.push(t);}
- recalcBalances();persist();renderAll();cancelTransferEdit();toast(editId?('Transferencia '+t.opNumber+' actualizada.'):('Transferencia '+t.opNumber+' realizada.'));});
+ recalcBalances();persist();renderAll();cancelTransferEdit();celebrate($('transferSubmit'));toast(editId?('Transferencia '+t.opNumber+' actualizada.'):('Transferencia '+t.opNumber+' realizada.'));});
 $('financeKind').addEventListener('change',function(){$('financeDirectionGroup').classList.toggle('hidden',$('financeKind').value!=='ajuste');});
 $('openingForm').addEventListener('submit',function(e){e.preventDefault();var v=parseFloat($('financeOpening').value);if(isNaN(v)){toast('Ingresa un saldo base válido.',false);return;}fconf.openingBalance=r2(v);recalcFinance();renderAll();toast('Saldo base guardado: '+fmt(v)+'.');});
 $('financeForm').addEventListener('submit',function(e){e.preventDefault();var kind=$('financeKind').value,dir=$('financeDirection').value,amt=parseFloat($('financeAmount').value),con=$('financeConcept').value.trim();
  if(isNaN(amt)||amt<=0||!con){toast('Completa monto y concepto.',false);return;}amt=r2(amt);var signed=kind==='egreso'?-amt:((kind==='ajuste'&&dir==='restar')?-amt:amt),cid=$('financeClient').value,cnm=cid?cname(cid):'',dv=$('financeDate').value,iso=dv?new Date(dv).toISOString():new Date().toISOString(),editId=$('financeEditId').value;
  if(editId){var m=fin.filter(function(x){return x.id===editId;})[0];if(!m)return;m.kind=kind;m.direction=dir;m.amount=amt;m.signedAmount=signed;m.concept=con;m.category=$('financeCategory').value;m.clientId=cid;m.clientName=cnm;m.note=$('financeNote').value.trim();m.date=iso;m.appliesToClient=false;recalcFinance();renderAll();cancelFinanceEdit();toast('Movimiento actualizado.');return;}
- var nm={id:uid('f'),opNumber:nextFin(),kind:kind,direction:dir,amount:amt,signedAmount:signed,concept:con,category:$('financeCategory').value,clientId:cid,clientName:cnm,appliesToClient:false,note:$('financeNote').value.trim(),date:iso,createdAt:new Date().toISOString(),balanceAfter:0};fin.push(nm);recalcFinance();renderAll();$('financeAmount').value='';$('financeConcept').value='';$('financeNote').value='';toast('Movimiento registrado: '+fmtImp(signed)+'.');});
+ var nm={id:uid('f'),opNumber:nextFin(),kind:kind,direction:dir,amount:amt,signedAmount:signed,concept:con,category:$('financeCategory').value,clientId:cid,clientName:cnm,appliesToClient:false,note:$('financeNote').value.trim(),date:iso,createdAt:new Date().toISOString(),balanceAfter:0};fin.push(nm);recalcFinance();renderAll();try{celebrate($('financeSubmit'));}catch(e){}$('financeAmount').value='';$('financeConcept').value='';$('financeNote').value='';toast('Movimiento registrado: '+fmtImp(signed)+'.');});
 $('financeCancel').addEventListener('click',cancelFinanceEdit);$('financeSearch').addEventListener('input',renderFinance);$('financeFilter').addEventListener('change',renderFinance);
 ['historySearch','historyModule','historyRange','historyClient','historySort'].forEach(function(id){$(id).addEventListener('input',renderHistory);$(id).addEventListener('change',renderHistory);});
 ['receiptRange','receiptSearch','transferRange','transferSearch'].forEach(function(id){$(id).addEventListener('input',function(){if(id.indexOf('receipt')===0)renderReceiptH();else renderTransferH();});$(id).addEventListener('change',function(){if(id.indexOf('receipt')===0)renderReceiptH();else renderTransferH();});});
-$('exportBtn').addEventListener('click',exportCSV);$('drawerExport').addEventListener('click',function(){setMenu(false);exportCSV();});
-$('drawerReset').addEventListener('click',function(){setMenu(false);resetApp();});$('drawerAccountBtn').addEventListener('click',accountToggle);$('drawerCuentaBtn').addEventListener('click',function(){setMenu(false);openCuenta();});
-$('dbPickBtn').addEventListener('click',function(){$('dbFileInput').click();});$('drawerImportDB').addEventListener('click',function(){setMenu(false);$('dbFileInput').click();});
+$('exportBtn').addEventListener('click',exportCSV);
+$('drawerReset').addEventListener('click',function(){setMenu(false);resetApp();});$('drawerAccountBtn').addEventListener('click',accountToggle);
+$('dbPickBtn').addEventListener('click',function(){$('dbFileInput').click();});
 $('dbFileInput').addEventListener('change',function(){var f=this.files&&this.files[0];if(f)handleDbFile(f);this.value='';});
 var drop=$('dbDrop');['dragenter','dragover'].forEach(function(ev){drop.addEventListener(ev,function(e){e.preventDefault();drop.classList.add('over');});});['dragleave','drop'].forEach(function(ev){drop.addEventListener(ev,function(e){e.preventDefault();drop.classList.remove('over');if(ev==='drop'){var f=e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0];if(f)handleDbFile(f);}});});
 $('dbMergeBtn').addEventListener('click',function(){if(pendingImport)applyDatabasePayload(pendingImport,'merge');});
 $('dbReplaceBtn').addEventListener('click',function(){if(!pendingImport)return;if(!confirm('¿Reemplazar toda la base actual por '+pendingImport.fileName+'?'))return;applyDatabasePayload(pendingImport,'replace');});
 $('dbCancelBtn').addEventListener('click',closeDbModal);$('dbModalX').addEventListener('click',closeDbModal);$('dbModalBack').addEventListener('click',closeDbModal);
-$('dbExportBtn').addEventListener('click',exportDatabase);$('drawerExportDB').addEventListener('click',function(){setMenu(false);exportDatabase();});
-$('drawerCloudSync').addEventListener('click',function(){setMenu(false);openCloud();});
+$('dbExportBtn').addEventListener('click',exportDatabase);
+
 $('cloudModalX').addEventListener('click',closeCloud);$('cloudModalBack').addEventListener('click',closeCloud);$('cloudCloseBtn').addEventListener('click',closeCloud);
-$('brandCurrencyBtn').addEventListener('click',openCurrency);$('currencyModalX').addEventListener('click',closeCurrency);$('currencyModalBack').addEventListener('click',closeCurrency);$('fxRefreshBtn').addEventListener('click',fxFetch);$('cuentaModalX').addEventListener('click',closeCuenta);$('cuentaModalBack').addEventListener('click',closeCuenta);$('personaSaveBtn').addEventListener('click',personaSave);$('cuentaLogoutBtn').addEventListener('click',cuentaLogout);$('cuentaSyncBtn').addEventListener('click',function(){closeCuenta();openCloud();});
+$('brandCurrencyBtn').addEventListener('click',openCurrency);$('currencyModalX').addEventListener('click',closeCurrency);$('currencyModalBack').addEventListener('click',closeCurrency);$('fxRefreshBtn').addEventListener('click',fxFetch);$('personaSaveBtn').addEventListener('click',personaSave);$('cuentaLogoutBtn').addEventListener('click',cuentaLogout);$('cuentaSyncBtn').addEventListener('click',openCloud);$('cuentaShortcutsBtn').addEventListener('click',function(){showView('basedatos',true);setTimeout(function(){var d=$('shortcutsDetails');if(d){d.open=true;d.scrollIntoView({behavior:'smooth',block:'center'});}},150);});
 $('authTabLogin').addEventListener('click',function(){setAuthMode('login');});$('authTabSignup').addEventListener('click',function(){setAuthMode('signup');});
 $('cloudForm').addEventListener('submit',cloudLogin);
 $('cloudSignupBtn').addEventListener('click',cloudSignup);
@@ -1962,10 +1964,6 @@ $('lockLocalBtn').addEventListener('click',function(){try{sessionStorage.setItem
 $('receiptSortBtn').addEventListener('click',function(){receiptAsc=!receiptAsc;this.textContent=receiptAsc?'↑ Antiguos':'↓ Recientes';renderReceiptH();});
 $('transferSortBtn').addEventListener('click',function(){transferAsc=!transferAsc;this.textContent=transferAsc?'↑ Antiguos':'↓ Recientes';renderTransferH();});
 $('exportCsvModuleBtn').addEventListener('click',function(){exportModuleCSV($('csvModule').value);});$('restoreBackupBtn').addEventListener('click',restoreLatestBackup);$('saveSettingsBtn').addEventListener('click',saveSettings);
-$('drawerExportCsvModuleBtn').addEventListener('click',function(){setMenu(false);exportModuleCSV($('drawerCsvModule').value);});
-$('drawerCsvModule').addEventListener('change',function(){$('csvModule').value=this.value;});
-$('csvModule').addEventListener('change',function(){$('drawerCsvModule').value=this.value;});
-$('shortcutsBtn').addEventListener('click',function(){setMenu(false);showView('basedatos',true);setTimeout(function(){var d=$('shortcutsDetails');if(d){d.open=true;d.scrollIntoView({behavior:'smooth',block:'center'});}},120);});
 $('globalSearch').addEventListener('input',renderGlobalResults);
 $('globalSearch').addEventListener('keydown',function(e){var box=$('globalResults'),items=box.querySelectorAll('.gres');if(!items.length)return;var idx=0;for(var i=0;i<items.length;i++){if(items[i].classList.contains('active')){idx=i;break;}}
  if(e.key==='ArrowDown'){e.preventDefault();items[idx].classList.remove('active');items[(idx+1)%items.length].classList.add('active');}

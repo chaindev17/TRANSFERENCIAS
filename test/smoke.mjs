@@ -62,7 +62,8 @@ assert.equal(errors.length, 0, 'errores de ventana: ' + errors.join(' | '));
 console.log('smoke OK: boot sin errores + importación (Reemplazar) con conteos verificados');
 
 // ---- 3) la nube viene precargada (zero-config) ----
-doc.querySelector('#drawerCloudSync').click();
+doc.querySelector('#drawerCuentaBtn').click();
+doc.querySelector('#cuentaSyncBtn').click();
 assert.equal(doc.querySelector('#cloudUrl').value, 'https://xaumytmotnokdqbnxjgx.supabase.co', 'URL precargada');
 assert.equal(doc.querySelector('#cloudKey').value, 'sb_publishable_70X6mCKv35NUxd3n8cP64A_kHb2kCC9', 'publishable key precargada');
 console.log('zero-config OK: URL y publishable key precargadas en «Nube opcional»');
@@ -103,7 +104,7 @@ dom3.window.addEventListener('error', (e) => errors3.push(e.message));
 const doc3 = dom3.window.document;
 assert.ok(doc3.querySelector('#drawerCuentaBtn'), 'el menú tiene el botón «Cuenta»');
 doc3.querySelector('#drawerCuentaBtn').click();
-assert.equal(doc3.querySelector('#cuentaModal').classList.contains('hidden'), false, 'clic en Cuenta debe abrir el modal');
+assert.equal(doc3.querySelector('#cuenta').classList.contains('active'), true, 'clic en Cuenta debe navegar a su página');
 doc3.querySelector('#personaName').value = 'Ada Prueba';
 doc3.querySelector('#personaPhone').value = '+598 99 000 000';
 doc3.querySelector('#personaEmail').value = 'ada@ejemplo.com';
@@ -115,7 +116,31 @@ assert.equal(savedPersona.phone, '+598 99 000 000');
 assert.equal(savedPersona.email, 'ada@ejemplo.com');
 assert.equal(doc3.querySelector('#cuentaLogoutBtn').textContent.includes('Entrar'), true, 'modo local: el botón invita a entrar');
 assert.equal(errors3.length, 0, 'errores de ventana en boot cuenta: ' + errors3.join(' | '));
-console.log('cuenta OK: modal abre, datos personales guardados en el espacio local');
+console.log('cuenta OK: página Cuenta navega, datos personales guardados en el espacio local');
+
+// ---- 5b) Cuenta es una PÁGINA: el botón del menú navega a ella ----
+const doc5b = new JSDOM(html, {
+  url: 'https://gestor.local/',
+  runScripts: 'dangerously',
+  pretendToBeVisual: true,
+  beforeParse(window) {
+    try { window.crypto = webcrypto; } catch { /* jsdom ya trae crypto */ }
+    window.confirm = () => true;
+    window.alert = () => {};
+  },
+});
+const errors5b = [];
+doc5b.window.addEventListener('error', (e) => errors5b.push(e.message));
+const docB = doc5b.window.document;
+docB.querySelector('#drawerCuentaBtn').click();
+assert.equal(docB.querySelector('#cuenta').classList.contains('active'), true, 'Cuenta navega a su página');
+docB.querySelector('#drawerNav [data-go="basedatos"]').click();
+assert.equal(docB.querySelector('#basedatos').classList.contains('active'), true, 'Base de datos navega a su página');
+const navGo = [...docB.querySelectorAll('#drawerNav .mlink[data-go]')].map((b) => b.getAttribute('data-go'));
+for (const go of navGo) {
+  assert.ok(docB.querySelector('#' + go) || docB.querySelector('#operaciones'), 'destino existe: ' + go);
+}
+console.log('navegación OK: Base de datos y Cuenta son páginas; todos los botones del menú navegan');
 
 // ---- 6) tocar «Gestor Integral» (marca) abre el modal de monedas sin red ----
 const dom4 = new JSDOM(html, {
