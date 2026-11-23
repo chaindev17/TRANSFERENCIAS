@@ -66,4 +66,24 @@ doc.querySelector('#drawerCloudSync').click();
 assert.equal(doc.querySelector('#cloudUrl').value, 'https://xaumytmotnokdqbnxjgx.supabase.co', 'URL precargada');
 assert.equal(doc.querySelector('#cloudKey').value, 'sb_publishable_70X6mCKv35NUxd3n8cP64A_kHb2kCC9', 'publishable key precargada');
 console.log('zero-config OK: URL y publishable key precargadas en «Nube opcional»');
+
+// ---- 4) tras desconectar (flag gestor_signed_out) la app abre el modal de entrada ----
+const dom2 = new JSDOM(html, {
+  url: 'https://gestor.local/',
+  runScripts: 'dangerously',
+  pretendToBeVisual: true,
+  beforeParse(window) {
+    try { window.crypto = webcrypto; } catch { /* jsdom ya trae crypto */ }
+    window.confirm = () => true;
+    window.alert = () => {};
+    try { window.sessionStorage.setItem('gestor_signed_out', '1'); } catch { /* sin storage */ }
+  },
+});
+const errors2 = [];
+dom2.window.addEventListener('error', (e) => errors2.push(e.message));
+await sleep(800);
+assert.equal(dom2.window.document.querySelector('#cloudModal').classList.contains('hidden'), false, 'tras desconectar debe abrirse «Mi cuenta»');
+assert.match((dom2.window.document.querySelector('#bannerText') || {}).innerHTML || '', /Sesión cerrada/, 'el banner anuncia la sesión cerrada');
+assert.equal(errors2.length, 0, 'errores de ventana en boot signed-out: ' + errors2.join(' | '));
+console.log('signed-out OK: sesión cerrada → aviso + modal de entrada abierto');
 process.exit(0);

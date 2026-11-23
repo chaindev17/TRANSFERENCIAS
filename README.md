@@ -15,8 +15,10 @@ negocio de transferencias del día a día. Sin backend propio y sin dependencias
   (toca para verlo u ocultarlo; 📋 copia el número o el resumen) y fecha + acciones ✎ 📋 🗑.
 - **Cuentas sin verificación**: crea tu cuenta con solo un nombre y un PIN — cada persona ve únicamente
   su información en este dispositivo (espacio separado `p:<id>:gestor_*` + bloqueo con PIN).
-  Sin correo ni contraseña. La nube (Supabase) sigue disponible como opción avanzada para
-  sincronizar entre dispositivos; con «Confirm email» desactivado, la entrada es directa.
+  Sin correo ni contraseña. La nube (Supabase) sincroniza entre dispositivos; con
+  «Confirm email» desactivado, la entrada es directa. **Cerrar sesión**: el botón 🔒 de la
+  barra superior (o del menú) cierra la sesión de la nube en este dispositivo — tus datos
+  locales y los de la nube quedan intactos; también desde 👤 Mi cuenta → «Desconectar».
 - **Finanzas**: ingresos, egresos y ajustes con saldo base y libro mayor.
 - **Compartir desde WhatsApp (Android)**: con la app instalada, comparte un mensaje
   desde WhatsApp → Gestor Integral y se abre en **Transferencia** con la tarjeta/monedero
