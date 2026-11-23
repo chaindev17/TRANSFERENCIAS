@@ -22,6 +22,10 @@ negocio de transferencias del día a día. Sin backend propio y sin dependencias
 - **Finanzas**: tu libro, simplificado — registra **ingresos, egresos y ajustes** y gestiónalos en el
   **Libro de finanzas** (editar/eliminar). Lo demás (KPIs, saldo base, precios manuales
   Toque/Abitab/Red Pagos, calculadora) quedó oculto y sus datos siguen guardados/exportables.
+- **Apariencia Prex**: paleta violeta (degradado profundo en héroes y CTA), paneles blancos
+  redondeados con sombras suaves; el modo oscuro es violeta profundo. En móvil aparece una
+  **barra inferior fija** (Inicio · Operaciones · Saldo · Histórico · Cuenta) con la sección
+  activa resaltada; en escritorio sigue el ☰.
 - **Monedas en vivo**: tocá «Gestor Integral» en la barra superior → 💱 Monedas: USD, EUR, ARS
   y BRL a pesos uruguayos (referencia de mercado, **no oficial**, vía open.er-api.com), con
   actualización cada 60 s mientras el panel está abierto y el último valor guardado si no hay red.

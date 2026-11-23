@@ -186,4 +186,28 @@ doc5.querySelector('#quickGrid .quick-btn[data-go="recibo"]').click();
 assert.equal(doc5.querySelector('#recibo').classList.contains('active'), true, 'acción rápida navega a Recibo');
 assert.equal(errors5.length, 0, 'errores de ventana en portada: ' + errors5.join(' | '));
 console.log('prex OK: portada con saldo, ojo de privacidad y acciones rápidas');
+
+// ---- 8) barra inferior Prex: existe y navega ----
+const dom6 = new JSDOM(html, {
+  url: 'https://gestor.local/',
+  runScripts: 'dangerously',
+  pretendToBeVisual: true,
+  beforeParse(window) {
+    try { window.crypto = webcrypto; } catch { /* jsdom ya trae crypto */ }
+    window.confirm = () => true;
+    window.alert = () => {};
+  },
+});
+const errors6 = [];
+dom6.window.addEventListener('error', (e) => errors6.push(e.message));
+const doc6 = dom6.window.document;
+assert.equal(doc6.querySelectorAll('#bottomBar .bb-item').length, 5, 'barra inferior con 5 accesos');
+doc6.querySelector('#bottomBar .bb-item[data-go="cuenta"]').click();
+assert.equal(doc6.querySelector('#cuenta').classList.contains('active'), true, 'barra: Cuenta navega');
+assert.equal(doc6.querySelector('#bottomBar .bb-item[data-go="cuenta"]').classList.contains('active'), true, 'barra: resaltado en Cuenta');
+doc6.querySelector('#bottomBar .bb-item[data-go="saldo"]').click();
+assert.equal(doc6.querySelector('#saldo').classList.contains('active'), true, 'barra: Saldo navega a la tarjeta de saldo');
+assert.equal(doc6.querySelector('#bottomBar .bb-item[data-go="saldo"]').classList.contains('active'), true, 'barra: resaltado en Saldo');
+assert.equal(errors6.length, 0, 'errores de ventana en barra inferior: ' + errors6.join(' | '));
+console.log('prex bottom OK: barra inferior presente, navega y resalta');
 process.exit(0);
