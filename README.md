@@ -39,6 +39,10 @@ negocio de transferencias del día a día. Sin backend propio y sin dependencias
 - **Menú uniforme**: todos los botones del ☰ navegan a su página (`#clientes`, `#operaciones`,
   `#finanzas`, `#historico`, `#cuenta`, `#basedatos`) resaltando el activo; ya no hay sub-menús
   que trabajen dentro del drawer.
+- **Portada estilo Prex (inspirada)**: al abrir la app encontrás «Saldo disponible» con la
+  suma animada de tus clientes + 👁 para ocultar/mostrar todos los importes + seis
+  **acciones rápidas circulares** (Recibo, Transferencia, Saldo, Histórico, Finanzas, Importar).
+  Misma paleta mint/cyan, bordes y sombras más suaves y CTA tipo píldora.
 - **Vida**: transición al cambiar de vista, entrada escalonada de tarjetas, Saldo total con
   contador animado, confeti al completar operaciones (recibo, transferencia, cliente, finanzas),
   logo «G» con resplandor, punto vivo en «Guardado local» y brillo en botones principales —

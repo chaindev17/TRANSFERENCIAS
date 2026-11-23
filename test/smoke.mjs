@@ -161,4 +161,29 @@ doc4.querySelector('#brandCurrencyBtn').click();
 assert.equal(doc4.querySelector('#currencyModal').classList.contains('hidden'), false, 'toque en la marca abre «Monedas»');
 assert.equal(errors4.length, 0, 'errores de ventana en boot monedas: ' + errors4.join(' | '));
 console.log('monedas OK: la marca abre el modal de cotización en vivo (sin red en el test)');
+
+// ---- 7) portada estilo Prex: saldo, ojo y acciones rápidas ----
+const dom5 = new JSDOM(html, {
+  url: 'https://gestor.local/',
+  runScripts: 'dangerously',
+  pretendToBeVisual: true,
+  beforeParse(window) {
+    try { window.crypto = webcrypto; } catch { /* jsdom ya trae crypto */ }
+    window.confirm = () => true;
+    window.alert = () => {};
+  },
+});
+const errors5 = [];
+dom5.window.addEventListener('error', (e) => errors5.push(e.message));
+const doc5 = dom5.window.document;
+assert.ok(doc5.querySelector('#prexHero'), 'la portada existe');
+assert.equal(doc5.querySelectorAll('#quickGrid .quick-btn').length, 6, 'seis acciones rápidas');
+doc5.querySelector('#togglePrivacyEye').click();
+assert.equal(dom5.window.document.documentElement.classList.contains('privacy'), true, 'el ojo oculta importes');
+doc5.querySelector('#togglePrivacyEye').click();
+assert.equal(dom5.window.document.documentElement.classList.contains('privacy'), false, 'segundo toque muestra importes');
+doc5.querySelector('#quickGrid .quick-btn[data-go="recibo"]').click();
+assert.equal(doc5.querySelector('#recibo').classList.contains('active'), true, 'acción rápida navega a Recibo');
+assert.equal(errors5.length, 0, 'errores de ventana en portada: ' + errors5.join(' | '));
+console.log('prex OK: portada con saldo, ojo de privacidad y acciones rápidas');
 process.exit(0);
