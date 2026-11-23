@@ -11,3 +11,6 @@ node_modules/
 *.log
 .vscode/
 .idea/
+
+# resultados de image_search (no commitear)
+image-search/
