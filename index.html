@@ -426,6 +426,7 @@ body{overflow-x:clip}
     <button class="mlink" data-go="operaciones"><span class="ico" style="background:linear-gradient(135deg,#7dd3fc,#0f9d68)">🔁</span><span><b>Operaciones</b><small>Recibo · Transferencia · Saldo</small></span><span class="go">›</span></button>
     <button class="mlink" data-go="finanzas"><span class="ico" style="background:linear-gradient(135deg,#fb9a6c,#c2410c)">💰</span><span><b>Finanzas manual</b><small>Ingresos, egresos y ajustes</small></span><span class="go">›</span></button>
     <button class="mlink" data-go="historico"><span class="ico" style="background:linear-gradient(135deg,#c4b5fd,#6d28d9)">🕘</span><span><b>Histórico general</b><small>Todas las operaciones</small></span><span class="go">›</span></button>
+    <button class="mlink" id="drawerCuentaBtn" type="button"><span class="ico" style="background:linear-gradient(135deg,#f0abfc,#be185d)">👤</span><span><b>Cuenta</b><small>Tus datos personales · conectar y desconectar</small></span><span class="go">›</span></button>
     <div class="dbnav">
       <button class="mlink dbnav-toggle" type="button" data-go="basedatos" id="dbMenuBtn" aria-expanded="false" aria-controls="dbMenuList"><span class="ico" style="background:linear-gradient(135deg,#67e8f9,#0891b2)">💾</span><span><b>Base de datos</b><small>Todas las funciones de importación / exportación</small></span><span class="go">⌄</span></button>
       <div class="dbnav-list hidden" id="dbMenuList" role="group" aria-label="Funciones de importación y exportación">
@@ -731,6 +732,33 @@ body{overflow-x:clip}
     </div>
   </div>
 </div>
+<div id="cuentaModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="cuentaModalTitle">
+  <div class="mback" id="cuentaModalBack"></div>
+  <div class="mcard" style="max-width:520px">
+    <div class="mhead"><h3 id="cuentaModalTitle">👤 Cuenta</h3><button class="icobtn" id="cuentaModalX" aria-label="Cerrar">✕</button></div>
+
+    <div class="auth-session" id="cuentaIdentity">
+      <div class="auth-avatar" id="cuentaAvatar">?</div>
+      <div><b id="cuentaName">—</b><small id="cuentaSub">—</small><small id="cuentaMode">—</small></div>
+    </div>
+
+    <form id="personaForm" class="mform" autocomplete="off" style="margin-top:12px">
+      <div class="field"><label for="personaName">Nombre</label><input id="personaName" type="text" autocomplete="name" placeholder="¿Cómo te llamas?" /></div>
+      <div class="field"><label for="personaPhone">Teléfono / WhatsApp</label><input id="personaPhone" type="tel" autocomplete="tel" inputmode="tel" placeholder="Ej.: +598 99 123 456" /></div>
+      <div class="field"><label for="personaEmail">Correo</label><input id="personaEmail" type="email" autocomplete="email" inputmode="email" placeholder="tu@correo.com" /></div>
+      <div class="field"><label for="personaNote">Nota (opcional)</label><textarea id="personaNote" rows="2" placeholder="Banco habitual, ciudad… lo que quieras"></textarea></div>
+      <button type="button" class="btn btn-p" id="personaSaveBtn" style="width:100%">💾 Guardar mis datos</button>
+      <p class="hintline">Se guardan en el espacio de tu cuenta. Si el nombre cambia, tu perfil y tu sesión de nube se actualizan al instante.</p>
+    </form>
+
+    <div class="auth-divider">Sesión</div>
+    <div class="macts" style="flex-direction:column;gap:8px;align-items:stretch">
+      <button type="button" class="btn btn-p" id="cuentaLogoutBtn" style="width:100%">⏻ Desconectar</button>
+      <button type="button" class="btn btn-g" id="cuentaSyncBtn" style="width:100%">☁️ Nube y sincronización…</button>
+    </div>
+  </div>
+</div>
+
 <div id="cloudModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="cloudModalTitle">
   <div class="mback" id="cloudModalBack"></div>
   <div class="mcard" style="max-width:600px">
@@ -998,6 +1026,52 @@ function accountToggle(){
  if(isSignedIn()){if(confirm('¿Cerrar sesión en este dispositivo?\n\nTus datos en la nube quedan intactos y los verás al entrar de nuevo; tu copia local y tus perfiles no se borran.'))cloudLogout();}
  else if(ap){if(confirm('¿Salir de la cuenta «'+(ap.name||'esta cuenta')+'»?\n\nTus datos quedan guardados en este dispositivo; para entrar de nuevo necesitarás tu PIN.'))lockNow();}
  else openCloud();
+}
+/* ===== Cuenta: datos personales + conectar/desconectar ===== */
+var PERSONA_KEY='gestor_persona';
+function personaRead(){return load(PERSONA_KEY,{})||{};}
+function cuentaIdentity(){return {cloud:isSignedIn(),ap:unlockedProfile()};}
+function cuentaRender(){
+ var cc=cuentaIdentity(),p=personaRead(),c=cloudCfg();
+ var cloudName=cc.cloud?(c.name||String(c.email||'').split('@')[0]||''):null;
+ var profileName=cc.ap?(cc.ap.name||''):null;
+ var disp=String(p.name||cloudName||profileName||'').trim();
+ $('cuentaAvatar').textContent=(disp?disp.trim().charAt(0).toUpperCase():'?');
+ $('cuentaName').textContent=disp||'Sin nombre todavía';
+ if(cc.cloud){$('cuentaSub').textContent=c.email||'sin correo';$('cuentaMode').textContent='Cuenta en la nube · tus dispositivos sincronizan';}
+ else if(cc.ap){$('cuentaSub').textContent='Perfil local · este dispositivo';$('cuentaMode').textContent='El PIN protege la entrada · los datos no salen del navegador';}
+ else{$('cuentaSub').textContent='Modo local';$('cuentaMode').textContent='Sin cuenta: los datos viven en este dispositivo';}
+ $('personaName').value=p.name||disp||'';
+ $('personaPhone').value=p.phone||'';
+ $('personaEmail').value=p.email||(cc.cloud?(c.email||''):'');
+ $('personaNote').value=p.note||'';
+ var lo=$('cuentaLogoutBtn');
+ if(lo){lo.textContent=cc.cloud?'⏻ Desconectar de la nube':(cc.ap?'🔒 Salir de la cuenta «'+(cc.ap.name||'')+'»':'👤 Entrar a una cuenta');}
+}
+function openCuenta(){var m=$('cuentaModal');cuentaRender();if(m)m.classList.remove('hidden');setMenu(false);setTimeout(function(){try{$('personaName').focus();}catch(e){}},60);}
+function closeCuenta(){var m=$('cuentaModal');if(m)m.classList.add('hidden');}
+function personaSave(){
+ var p=personaRead();
+ p.name=String($('personaName').value||'').trim();
+ p.phone=String($('personaPhone').value||'').trim();
+ p.email=String($('personaEmail').value||'').trim();
+ p.note=String($('personaNote').value||'').trim();
+ p.updatedAt=Date.now();
+ save(PERSONA_KEY,p);
+ /* propagar el nombre a lo que ya existe (nube / perfil local) */
+ if(p.name){
+  if(isSignedIn()){var c=cloudCfg();if(c.name!==p.name){c.name=p.name;cloudSave(c);}}
+  var ap=unlockedProfile();
+  if(ap&&ap.name!==p.name){var list=profilesRead();for(var i=0;i<list.length;i++){if(list[i].id===ap.id){list[i].name=p.name;profilesWrite(list);break;}}}
+ }
+ renderAccountBtn();cuentaRender();toast('Tus datos quedaron guardados','ok');
+ try{$('cuentaSyncBtn').focus();}catch(e){}
+}
+function cuentaLogout(){
+ var cc=cuentaIdentity();
+ if(cc.cloud){if(confirm('¿Desconectar de la nube en este dispositivo?\n\nTus datos y tu copia en la nube quedan intactos; tu perfil local (si lo hay) tampoco se borra.'))cloudLogout();}
+ else if(cc.ap){if(confirm('¿Salir de la cuenta «'+(cc.ap.name||'esta cuenta')+'»?\n\nTus datos quedan guardados; para entrar de nuevo necesitarás tu PIN.'))lockNow();}
+ else{closeCuenta();openCloud();}
 }
 function isFreshCorpus(){
  /* corpus "de fábrica": sin operaciones y clientes = seeds o cero (típico tras el primer login) */
@@ -1810,7 +1884,7 @@ $('financeCancel').addEventListener('click',cancelFinanceEdit);$('financeSearch'
 ['historySearch','historyModule','historyRange','historyClient','historySort'].forEach(function(id){$(id).addEventListener('input',renderHistory);$(id).addEventListener('change',renderHistory);});
 ['receiptRange','receiptSearch','transferRange','transferSearch'].forEach(function(id){$(id).addEventListener('input',function(){if(id.indexOf('receipt')===0)renderReceiptH();else renderTransferH();});$(id).addEventListener('change',function(){if(id.indexOf('receipt')===0)renderReceiptH();else renderTransferH();});});
 $('exportBtn').addEventListener('click',exportCSV);$('drawerExport').addEventListener('click',function(){setMenu(false);exportCSV();});
-$('topReset').addEventListener('click',resetApp);$('drawerReset').addEventListener('click',function(){setMenu(false);resetApp();});$('topSaldo').addEventListener('click',function(){showView('saldo',true);});$('topAccountBtn').addEventListener('click',accountToggle);$('drawerAccountBtn').addEventListener('click',accountToggle);
+$('topReset').addEventListener('click',resetApp);$('drawerReset').addEventListener('click',function(){setMenu(false);resetApp();});$('topSaldo').addEventListener('click',function(){showView('saldo',true);});$('topAccountBtn').addEventListener('click',accountToggle);$('drawerAccountBtn').addEventListener('click',accountToggle);$('drawerCuentaBtn').addEventListener('click',function(){setMenu(false);openCuenta();});
 $('dbPickBtn').addEventListener('click',function(){$('dbFileInput').click();});$('drawerImportDB').addEventListener('click',function(){setMenu(false);$('dbFileInput').click();});
 $('dbFileInput').addEventListener('change',function(){var f=this.files&&this.files[0];if(f)handleDbFile(f);this.value='';});
 var drop=$('dbDrop');['dragenter','dragover'].forEach(function(ev){drop.addEventListener(ev,function(e){e.preventDefault();drop.classList.add('over');});});['dragleave','drop'].forEach(function(ev){drop.addEventListener(ev,function(e){e.preventDefault();drop.classList.remove('over');if(ev==='drop'){var f=e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0];if(f)handleDbFile(f);}});});
@@ -1820,6 +1894,7 @@ $('dbCancelBtn').addEventListener('click',closeDbModal);$('dbModalX').addEventLi
 $('dbExportBtn').addEventListener('click',exportDatabase);$('drawerExportDB').addEventListener('click',function(){setMenu(false);exportDatabase();});
 $('drawerCloudSync').addEventListener('click',function(){setMenu(false);openCloud();});
 $('cloudModalX').addEventListener('click',closeCloud);$('cloudModalBack').addEventListener('click',closeCloud);$('cloudCloseBtn').addEventListener('click',closeCloud);
+$('cuentaModalX').addEventListener('click',closeCuenta);$('cuentaModalBack').addEventListener('click',closeCuenta);$('personaSaveBtn').addEventListener('click',personaSave);$('cuentaLogoutBtn').addEventListener('click',cuentaLogout);$('cuentaSyncBtn').addEventListener('click',function(){closeCuenta();openCloud();});
 $('authTabLogin').addEventListener('click',function(){setAuthMode('login');});$('authTabSignup').addEventListener('click',function(){setAuthMode('signup');});
 $('cloudForm').addEventListener('submit',cloudLogin);
 $('cloudSignupBtn').addEventListener('click',cloudSignup);

@@ -86,4 +86,34 @@ assert.equal(dom2.window.document.querySelector('#cloudModal').classList.contain
 assert.match((dom2.window.document.querySelector('#bannerText') || {}).innerHTML || '', /Sesión cerrada/, 'el banner anuncia la sesión cerrada');
 assert.equal(errors2.length, 0, 'errores de ventana en boot signed-out: ' + errors2.join(' | '));
 console.log('signed-out OK: sesión cerrada → aviso + modal de entrada abierto');
+
+// ---- 5) menú Cuenta: abre el modal, guarda datos personales namespaced ----
+const dom3 = new JSDOM(html, {
+  url: 'https://gestor.local/',
+  runScripts: 'dangerously',
+  pretendToBeVisual: true,
+  beforeParse(window) {
+    try { window.crypto = webcrypto; } catch { /* jsdom ya trae crypto */ }
+    window.confirm = () => true;
+    window.alert = () => {};
+  },
+});
+const errors3 = [];
+dom3.window.addEventListener('error', (e) => errors3.push(e.message));
+const doc3 = dom3.window.document;
+assert.ok(doc3.querySelector('#drawerCuentaBtn'), 'el menú tiene el botón «Cuenta»');
+doc3.querySelector('#drawerCuentaBtn').click();
+assert.equal(doc3.querySelector('#cuentaModal').classList.contains('hidden'), false, 'clic en Cuenta debe abrir el modal');
+doc3.querySelector('#personaName').value = 'Ada Prueba';
+doc3.querySelector('#personaPhone').value = '+598 99 000 000';
+doc3.querySelector('#personaEmail').value = 'ada@ejemplo.com';
+doc3.querySelector('#personaSaveBtn').click();
+const savedPersona = JSON.parse(dom3.window.localStorage.getItem('local:gestor_persona') || 'null');
+assert.ok(savedPersona, 'persona guardada con espacio local:');
+assert.equal(savedPersona.name, 'Ada Prueba');
+assert.equal(savedPersona.phone, '+598 99 000 000');
+assert.equal(savedPersona.email, 'ada@ejemplo.com');
+assert.equal(doc3.querySelector('#cuentaLogoutBtn').textContent.includes('Entrar'), true, 'modo local: el botón invita a entrar');
+assert.equal(errors3.length, 0, 'errores de ventana en boot cuenta: ' + errors3.join(' | '));
+console.log('cuenta OK: modal abre, datos personales guardados en el espacio local');
 process.exit(0);

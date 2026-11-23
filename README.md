@@ -24,6 +24,9 @@ negocio de transferencias del día a día. Sin backend propio y sin dependencias
   desde WhatsApp → Gestor Integral y se abre en **Transferencia** con la tarjeta/monedero
   y el monto detectados. En iOS no existe esta integración; usa pegar, que detecta lo mismo.
 - **Histórico general**: todo en un solo libro, con buscador, filtros, export CSV/JSON.
+- **Cuenta** (botón 👤 del menú): tus **datos personales** (nombre, teléfono/WhatsApp, correo
+  y una nota) guardados en el espacio de tu cuenta, y **conectar/desconectar** desde el mismo
+  lugar — en modo local, perfil con PIN o nube. `Mi cuenta` sigue abriendo sesión y nube.
 - **Base de datos**: importa/combina tu propio `.json`, detecta el formato,
   combina sin duplicados o reemplaza, respaldos automáticos locales, export/import con un clic.
 - **Tema claro/oscuro**, atajos de teclado (`Alt+1…5`, `Ctrl/⌘+K`, `Alt+T`), diseño responsive.
