@@ -26,7 +26,10 @@ negocio de transferencias del día a día. Sin backend propio y sin dependencias
   combina sin duplicados o reemplaza, respaldos automáticos locales, export/import con un clic.
 - **Tema claro/oscuro**, atajos de teclado (`Alt+1…5`, `Ctrl/⌘+K`, `Alt+T`), diseño responsive.
 - **Los datos viven en tu navegador** (localStorage): cada dispositivo tiene su copia hasta
-  que actives la [sincronización opcional con Supabase](docs/supabase-setup.md).
+  que entres a la nube. La app pública ya viene **precargada y sin configuración**:
+  ☰ → 👤 Mi cuenta → ☁️ Nube opcional → **Iniciar sesión** con tu correo, y al entrar
+  desde otro dispositivo te ofrece traer tu copia. Para self-host con tu propio proyecto:
+  [docs/supabase-setup.md](docs/supabase-setup.md).
 - **Funciona sin conexión (PWA)**: al abrirla una vez con internet, un Service Worker guarda
   la app completa en tu navegador; después abre y guarda **sin necesidad de conexión**.
   Puedes instalarla como app: en **Android/Chrome** → ⋮ → *Instalar app* (o el botón de instalar

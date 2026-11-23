@@ -51,3 +51,8 @@ drop trigger if exists gestor_snapshots_touch on public.gestor_snapshots;
 create trigger gestor_snapshots_touch
   before update on public.gestor_snapshots
   for each row execute function public.gestor_touch_updated_at();
+
+-- Permisos a nivel de tabla para la API.
+-- Sin estos GRANTs, PostgREST rechaza con 42501 aunque las políticas RLS sean correctas.
+-- (RLS sigue siendo la barrera por fila: cada cuenta solo toca su copia.)
+grant select, insert, update on public.gestor_snapshots to authenticated;

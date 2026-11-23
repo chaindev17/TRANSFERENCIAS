@@ -770,7 +770,7 @@ body{overflow-x:clip}
 
     <details class="auth-advanced" id="cloudAdvanced" style="margin-top:4px">
       <summary>☁️ Nube opcional · sincronizar entre dispositivos (Supabase)</summary>
-      <p class="hintline" style="margin:8px 0 10px">Requiere un proyecto gratuito en Supabase, una sola vez — guía paso a paso: <b>docs/supabase-setup.md</b>. En el proyecto, desactiva <b>Confirm email</b> (Authentication → Sign In / Providers → Email) para entrar directo sin verificar correo.</p>
+      <p class="hintline" style="margin:8px 0 10px">Ya viene configurado con el proyecto en la nube del repositorio: solo entrá con tu correo y contraseña. ¿Querés self-host con tu propio Supabase? Ver <b>docs/supabase-setup.md</b>.</p>
       <div id="authFormsPane">
         <div class="authseg" role="tablist" aria-label="Iniciar sesión o crear cuenta">
           <button type="button" class="authseg-btn active" id="authTabLogin" role="tab">Iniciar sesión</button>
@@ -799,8 +799,8 @@ body{overflow-x:clip}
           <summary>Configuración avanzada · proyecto Supabase</summary>
           <div class="mform" style="margin-top:10px">
             <div class="field"><label for="cloudUrl">URL del proyecto</label><input id="cloudUrl" type="url" placeholder="https://xxxxxxxx.supabase.co" /></div>
-            <div class="field"><label for="cloudKey">Anon public key</label><input id="cloudKey" type="password" placeholder="eyJhbGciOi… (pública por diseño; RLS protege cada fila)" /></div>
-            <p class="hintline">Solo la primera vez en cada navegador. Guía: <b>docs/supabase-setup.md</b>.</p>
+            <div class="field"><label for="cloudKey">Anon public key</label><input id="cloudKey" type="password" placeholder="sb_publishable_… (pública por diseño; RLS protege cada fila)" autocomplete="off" /></div>
+            <p class="hintline">Ya viene preconfigurado. Cambiá estos valores solo si self-hosteás con tu propio Supabase (<b>docs/supabase-setup.md</b>).</p>
           </div>
         </details>
       </div>
@@ -813,7 +813,7 @@ body{overflow-x:clip}
       </div>
       <label class="check" for="cloudAuto" style="margin-top:10px"><input id="cloudAuto" type="checkbox" /> Subir automáticamente tras cada cambio (8 s de silencio)</label>
     </div>
-    <p class="hintline" id="cloudStatus">Modo local: tus datos viven en este dispositivo. Crea una cuenta abajo para separarlos por persona.</p>
+    <p class="hintline" id="cloudStatus">Modo local: tus datos viven en este dispositivo. Para verlos en todos tus dispositivos: <b>☁️ Nube opcional → Iniciar sesión</b>.</p>
     <div class="macts"><button type="button" class="btn btn-g" id="cloudCloseBtn" style="flex:1">Cerrar</button></div>
   </div>
 </div>
@@ -993,6 +993,24 @@ function accountToggle(){
  if(ap){if(confirm('¿Salir de la cuenta «'+(ap.name||'esta cuenta')+'»?\n\nTus datos quedan guardados en este dispositivo; para entrar de nuevo necesitarás tu PIN.'))lockNow();}
  else openCloud();
 }
+function isFreshCorpus(){
+ /* corpus "de fábrica": sin operaciones y clientes = seeds o cero (típico tras el primer login) */
+ if(receipts.length||transfers.length||fin.length)return false;
+ if(clients.length===0)return true;
+ if(clients.length!==3)return false;
+ var seeds=['María López','Carlos Ruiz','Laura Méndez'];
+ return clients.every(function(c){return seeds.indexOf(c.name)>=0;});
+}
+function maybeAutoPull(){
+ /* tras un login, este dispositivo corre en el espacio u:<id> (vacío): buscar la copia en la nube y ofrecer traerla */
+ try{
+  if(NS.indexOf('u:')!==0)return;
+  if(!isSignedIn())return;
+  if(!isFreshCorpus())return;
+  try{if(sessionStorage.getItem('gestor_autopull_offered')==='1')return;sessionStorage.setItem('gestor_autopull_offered','1');}catch(e){}
+  setTimeout(function(){cloudPull();},700);
+ }catch(e){}
+}
 function exportNudge(){
  try{
   var hasData=receipts.length>0||transfers.length>0||fin.length>0||clients.length>3;
@@ -1010,8 +1028,12 @@ function tryShowLock(){var mustLock=profilesRead().length>0&&!unlockedProfile();
  renderLockList();var ls=$('lockScreen');if(ls)ls.classList.remove('hidden');}
 
 /* ===== cuenta y nube (Supabase) ===== */
+/* Proyecto público precargado (zero-config): la publishable key es pública por diseño;
+   RLS aísla los datos por cuenta. Se puede cambiar en «Configuración avanzada» (p. ej. tu propio Supabase). */
 var CLOUD_KEY='gestor_nube',cloudTimer=null;
-function cloudCfg(){try{return JSON.parse(sget(CLOUD_KEY)||'null')||{};}catch(e){return{};}}
+var CLOUD_DEFAULT_URL='https://xaumytmotnokdqbnxjgx.supabase.co';
+var CLOUD_DEFAULT_KEY='sb_publishable_70X6mCKv35NUxd3n8cP64A_kHb2kCC9';
+function cloudCfg(){var d={};try{d=JSON.parse(sget(CLOUD_KEY)||'null')||{};}catch(e){d={};}if(!d.url)d.url=CLOUD_DEFAULT_URL;if(!d.key)d.key=CLOUD_DEFAULT_KEY;return d;}
 function cloudSave(c){sset(CLOUD_KEY,JSON.stringify(c));} /* la sesión nunca se namespacea: vive fuera del espacio por usuario */
 function cloudBase(){return String(cloudCfg().url||'').replace(/\/+$/,'');}
 function isSignedIn(){var c=cloudCfg();return !!(c.accessToken&&c.userId);}
@@ -1032,7 +1054,7 @@ function setAuthMode(mode){
  $('authSignupPane').classList.toggle('hidden',mode!=='signup');
  $('authTabLogin').classList.toggle('active',mode==='login');
  $('authTabSignup').classList.toggle('active',mode==='signup');
- cloudStatus(isSignedIn()?(sessionLabel()+' Tus datos están aislados de otras cuentas.'):'Sin conectar. La primera vez: configuración avanzada → pega URL y anon key de tu proyecto.');
+ cloudStatus(isSignedIn()?(sessionLabel()+' Tus datos están aislados de otras cuentas.'):'Sin conectar. Entrá con tu correo y tu información te seguirá en todos tus dispositivos.');
 }
 function renderSession(){
  var on=isSignedIn(),c=cloudCfg();
@@ -1854,7 +1876,7 @@ var lb=$('localBanner');if(lb&&!hideBanner){
  if(NS==='local:'){lb.classList.remove('hidden');if(legacy&&targetEmpty){var ba=$('bannerAdopt');if(ba)ba.classList.remove('hidden');}}
  else if(legacy&&targetEmpty){lb.classList.remove('hidden');var bt=$('bannerText');if(bt)bt.innerHTML='<b>Cuenta nueva en este dispositivo.</b> ¿Copiar los datos ya guardados en este navegador a tu cuenta?';var ba2=$('bannerAdopt');if(ba2)ba2.classList.remove('hidden');var bs=$('bannerSignIn');if(bs)bs.classList.add('hidden');}
 }
-tryShowLock();renderAccountBtn();exportNudge();})();
+tryShowLock();renderAccountBtn();exportNudge();maybeAutoPull();})();
 })();
 </script>
 <script>/* PWA: cachea la app para uso sin conexión (los datos siguen en localStorage) */

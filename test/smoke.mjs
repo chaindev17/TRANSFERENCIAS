@@ -60,4 +60,10 @@ assert.equal(meta.db && meta.db.format, 'Base Ale / español', 'meta.db.format')
 assert.equal(errors.length, 0, 'errores de ventana: ' + errors.join(' | '));
 
 console.log('smoke OK: boot sin errores + importación (Reemplazar) con conteos verificados');
+
+// ---- 3) la nube viene precargada (zero-config) ----
+doc.querySelector('#drawerCloudSync').click();
+assert.equal(doc.querySelector('#cloudUrl').value, 'https://xaumytmotnokdqbnxjgx.supabase.co', 'URL precargada');
+assert.equal(doc.querySelector('#cloudKey').value, 'sb_publishable_70X6mCKv35NUxd3n8cP64A_kHb2kCC9', 'publishable key precargada');
+console.log('zero-config OK: URL y publishable key precargadas en «Nube opcional»');
 process.exit(0);
