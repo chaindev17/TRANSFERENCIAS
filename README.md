@@ -19,7 +19,15 @@ negocio de transferencias del día a día. Sin backend propio y sin dependencias
   «Confirm email» desactivado, la entrada es directa. **Cerrar sesión**: el botón 🔒 de la
   barra superior (o del menú) cierra la sesión de la nube en este dispositivo — tus datos
   locales y los de la nube quedan intactos; también desde 👤 Mi cuenta → «Desconectar».
-- **Finanzas**: ingresos, egresos y ajustes con saldo base y libro mayor.
+- **Finanzas**: tu libro, simplificado — registra **ingresos, egresos y ajustes** y gestiónalos en el
+  **Libro de finanzas** (editar/eliminar). Lo demás (KPIs, saldo base, precios manuales
+  Toque/Abitab/Red Pagos, calculadora) quedó oculto y sus datos siguen guardados/exportables.
+- **Monedas en vivo**: tocá «Gestor Integral» en la barra superior → 💱 Monedas: USD, EUR, ARS
+  y BRL a pesos uruguayos (referencia de mercado, **no oficial**, vía open.er-api.com), con
+  actualización cada 60 s mientras el panel está abierto y el último valor guardado si no hay red.
+- **Barra superior limpia**: la marca «Gestor Integral» (monedas) y el buscador. Los botones que
+  estaban ahí viven solo en el menú ☰ en su lugar habitual: Operaciones, Cuenta (Entrar/Salir),
+  Reiniciar datos y cambiar el tema (Apariencia).
 - **Compartir desde WhatsApp (Android)**: con la app instalada, comparte un mensaje
   desde WhatsApp → Gestor Integral y se abre en **Transferencia** con la tarjeta/monedero
   y el monto detectados. En iOS no existe esta integración; usa pegar, que detecta lo mismo.

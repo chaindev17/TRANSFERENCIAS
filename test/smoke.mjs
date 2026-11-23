@@ -116,4 +116,24 @@ assert.equal(savedPersona.email, 'ada@ejemplo.com');
 assert.equal(doc3.querySelector('#cuentaLogoutBtn').textContent.includes('Entrar'), true, 'modo local: el botón invita a entrar');
 assert.equal(errors3.length, 0, 'errores de ventana en boot cuenta: ' + errors3.join(' | '));
 console.log('cuenta OK: modal abre, datos personales guardados en el espacio local');
+
+// ---- 6) tocar «Gestor Integral» (marca) abre el modal de monedas sin red ----
+const dom4 = new JSDOM(html, {
+  url: 'https://gestor.local/',
+  runScripts: 'dangerously',
+  pretendToBeVisual: true,
+  beforeParse(window) {
+    try { window.crypto = webcrypto; } catch { /* jsdom ya trae crypto */ }
+    window.confirm = () => true;
+    window.alert = () => {};
+  },
+});
+const errors4 = [];
+dom4.window.addEventListener('error', (e) => errors4.push(e.message));
+const doc4 = dom4.window.document;
+assert.ok(doc4.querySelector('#brandCurrencyBtn'), 'la marca es tocable');
+doc4.querySelector('#brandCurrencyBtn').click();
+assert.equal(doc4.querySelector('#currencyModal').classList.contains('hidden'), false, 'toque en la marca abre «Monedas»');
+assert.equal(errors4.length, 0, 'errores de ventana en boot monedas: ' + errors4.join(' | '));
+console.log('monedas OK: la marca abre el modal de cotización en vivo (sin red en el test)');
 process.exit(0);

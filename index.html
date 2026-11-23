@@ -8,7 +8,7 @@
 <link rel="manifest" href="manifest.json" />
 <link rel="icon" type="image/svg+xml" href="icon.svg" />
 <link rel="apple-touch-icon" href="apple-touch-icon.png" />
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://*.supabase.co; img-src 'self' data:; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://*.supabase.co https://open.er-api.com; img-src 'self' data:; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'" />
 <meta name="mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-title" content="Gestor" />
@@ -354,6 +354,21 @@ details.db-help ul{margin:10px 0 0;padding-left:18px;color:var(--mut);font-size:
 .auth-advanced{border:1px dashed var(--line-strong);border-radius:12px;padding:10px 12px;margin-bottom:12px;background:var(--surface4)}
 .auth-advanced summary{cursor:pointer;font-size:11px;font-weight:800;letter-spacing:.06em;color:var(--mut);text-transform:uppercase;outline:none}
 .auth-advanced[open] summary{margin-bottom:10px}
+.brand-btn{display:flex;align-items:center;gap:14px;background:transparent;border:0;padding:6px 8px;margin:0;color:inherit;cursor:pointer;text-align:left;border-radius:16px;max-width:min(430px,60vw)}
+.brand-btn:hover .brand h1{text-decoration:underline;text-decoration-style:dotted;text-underline-offset:5px}
+.brand-btn:focus-visible{outline:2px solid var(--mint-accent);outline-offset:2px}
+@media(max-width:640px){.brand-btn{max-width:none}}
+.fx-list{display:grid;gap:8px;margin:2px 0 12px}
+.fx-row{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--line2);border-radius:12px;background:var(--option)}
+.fx-flag{font-size:22px;line-height:1}
+.fx-main{min-width:0;flex:1}
+.fx-main b{display:block;font-size:12.5px}
+.fx-main small{display:block;color:var(--faint);font-size:10.5px}
+.fx-num{text-align:right;white-space:nowrap}
+.fx-num b{display:block;font-size:14.5px;font-variant-numeric:tabular-nums}
+.fx-num small{color:var(--faint);font-size:10.5px}
+.fx-foot{display:flex;align-items:center;gap:10px;justify-content:space-between;border-top:1px solid var(--line2);padding-top:10px}
+.fx-foot span{color:var(--faint);font-size:11px}
 .auth-session{display:flex;align-items:center;gap:11px;border:1px solid var(--mint-accent);background:var(--mint-wash);border-radius:12px;padding:10px 12px;margin-bottom:12px}
 .auth-avatar{width:42px;height:42px;flex:0 0 42px;border-radius:50%;display:grid;place-items:center;font-weight:800;color:var(--logo-text);background:linear-gradient(135deg,var(--mint),var(--mint2));font-size:17px}
 .auth-session b{display:block;font-size:13px}
@@ -462,18 +477,16 @@ body{overflow-x:clip}
 <header class="top">
   <div class="wrap top-in">
     <button class="burger" id="menuBtn" aria-label="Abrir menú"><span></span></button>
-    <div class="logo">G</div>
-    <div class="brand"><h1>Gestor Integral</h1><p>Clientes · Operaciones · Finanzas · Histórico · Bases de datos</p></div>
+    <button class="brand-btn" id="brandCurrencyBtn" type="button" aria-label="Ver el valor de las monedas en vivo" title="Ver el valor de las monedas en vivo">
+      <div class="logo">G</div>
+      <div class="brand"><h1>Gestor Integral</h1><p>Clientes · Operaciones · Finanzas · Histórico · Bases de datos</p></div>
+    </button>
     <div class="top-sp"></div>
     <div class="gsearch">
       <input id="globalSearch" type="search" placeholder="Buscar…  Ctrl+K" autocomplete="off" aria-label="Buscador global" />
       <div id="globalResults" class="gresults hidden"></div>
     </div>
     <span class="pillstat" id="dbStatus"><span class="dot"></span> Guardado local</span>
-    <button class="btn btn-g btn-s theme-toggle" id="themeToggle" type="button" aria-label="Cambiar a modo claro" title="Cambiar a modo claro"><span id="themeIcon">☀️</span><span class="theme-label" id="themeLabel">Claro</span></button>
-    <button class="btn btn-g btn-s" id="topAccountBtn" type="button" title="Entrar a tu cuenta" aria-label="Entrar a tu cuenta"><span id="accountBtnIcon">👤</span> <span id="accountBtnLabel">Entrar</span></button>
-    <button class="btn btn-p btn-s" id="topSaldo" title="Abrir Operaciones: recibo, transferencia y saldo">🔁 <span id="opsLbl">Operaciones</span></button>
-    <button class="btn btn-g btn-s" id="topReset">↺ <span id="resetLbl">Reiniciar</span></button>
   </div>
 </header>
 
@@ -556,8 +569,9 @@ body{overflow-x:clip}
   </div>
 
   <section id="finanzas" class="panel app-view" aria-label="Finanzas">
-    <div class="shead"><div class="stitle"><span class="sico c">05</span><div><h2>Finanzas manual</h2><p>Saldo base + movimientos que puedes editar o eliminar.</p></div></div></div>
+    <div class="shead"><div class="stitle"><span class="sico c">05</span><div><h2>Finanzas manual</h2><p>Tu libro: registra y edita movimientos. Nada más.</p></div></div></div>
     <p class="note">Este módulo es <b>solo tu libro manual</b>: no tiene relación con recibos, transferencias ni saldos de clientes. Ningún movimiento de aquí cambia el saldo de un cliente.</p>
+    <div id="financeAux" hidden aria-hidden="true">
     <div class="kpis">
       <div class="kpi"><span>Saldo del libro manual</span><strong class="mintx" id="financeBalance">$0,00</strong><small id="financeCount">0 movimientos</small></div>
       <div class="kpi"><span>Ingresos</span><strong class="mintx" id="financeIncome">$0,00</strong><small>Entradas y ajustes +</small></div>
@@ -599,6 +613,7 @@ body{overflow-x:clip}
       <div class="field"><label for="calcDirection">Registrar como</label><select id="calcDirection"><option value="egreso">Egreso / costo (−)</option><option value="ingreso">Ingreso (+)</option></select></div>
       <div class="calc-result" id="calcResult">Total: <strong>$0,00</strong></div>
       <button type="button" class="btn btn-g btn-s" id="calcRegisterBtn">Registrar en finanzas</button>
+    </div>
     </div>
     <div class="thead"><h3 id="financeFormTitle">Registrar movimiento manual</h3><button type="button" id="financeCancel" class="btn btn-g btn-s hidden">Cancelar edición</button></div>
     <form id="financeForm" class="grid4 finbox" autocomplete="off">
@@ -840,6 +855,15 @@ body{overflow-x:clip}
     <div class="macts"><button type="button" class="btn btn-g" id="cloudCloseBtn" style="flex:1">Cerrar</button></div>
   </div>
 </div>
+<div id="currencyModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="currencyModalTitle">
+  <div class="mback" id="currencyModalBack"></div>
+  <div class="mcard" style="max-width:440px">
+    <div class="mhead"><h3 id="currencyModalTitle">Monedas · en vivo</h3><button class="icobtn" id="currencyModalX" aria-label="Cerrar">✕</button></div>
+    <p class="hintline" style="margin:0 0 10px">Referencia de mercado (open.er-api.com) · <b>no oficial</b> · actualización automática cada 60 s con esta ventana abierta.</p>
+    <div class="fx-list" id="fxList"><p class="hintline" style="margin:8px 4px">Toca «Actualizar» para traer la cotización.</p></div>
+    <div class="fx-foot"><span id="fxUpdated">Sin datos todavía</span><button type="button" class="btn btn-g btn-s" id="fxRefreshBtn">↻ Actualizar</button></div>
+  </div>
+</div>
 <div id="toast" class="toast"></div>
 
 <div id="lockScreen" class="lockscreen hidden" role="dialog" aria-modal="true" aria-labelledby="lockTitle">
@@ -1005,14 +1029,7 @@ function deleteProfile(pid){var p=findProfile(pid);if(!p)return;var ok=window.co
  toast('Cuenta borrada','ok');location.reload();}
 function lockNow(){try{sessionStorage.removeItem('gestor_unlocked');}catch(e){}location.reload();}
 function renderAccountBtn(){
- var ap=unlockedProfile(),cloud=isSignedIn(),unlocked=!!ap||cloud;
- var btn=$('topAccountBtn');
- if(btn){
-  $('accountBtnIcon').textContent=unlocked?'🔒':'👤';
-  $('accountBtnLabel').textContent=unlocked?'Salir':'Entrar';
-  var t=cloud?'Cerrar sesión de tu cuenta en este dispositivo · tus datos en la nube quedan intactos':(ap?('Salir de la cuenta «'+(ap.name||'')+'» · vuelve al inicio; necesitarás tu PIN para entrar de nuevo'):'Entrar a tu cuenta · PIN, crear una cuenta o la nube');
-  btn.title=t;btn.setAttribute('aria-label',t);
- }
+ var ap=unlockedProfile(),cloud=isSignedIn();
  var d=$('drawerAccountBtn');if(d){d.textContent=cloud?'🔒 Cerrar sesión (nube)':(ap?'🔒 Salir de la cuenta':'👤 Entrar a una cuenta');d.title=cloud?'Cerrar sesión en este dispositivo · tu copia en la nube queda intacta':(ap?'Salir de la cuenta y volver al inicio':'Abrir Mi cuenta: PIN, cuenta nueva o la nube');}
 }
 function accountToggle(){
@@ -1068,6 +1085,39 @@ function cuentaLogout(){
  else if(cc.ap){if(confirm('¿Salir de la cuenta «'+(cc.ap.name||'esta cuenta')+'»?\n\nTus datos quedan guardados; para entrar de nuevo necesitarás tu PIN.'))lockNow();}
  else{closeCuenta();openCloud();}
 }
+/* ===== Monedas en vivo (al tocar «Gestor Integral») ===== */
+var FX_CACHE_KEY='gestor_fx_cache',fxTimer=null;
+var FX_PAIRS=[['USD','🇺🇸','Dólar estadounidense'],['EUR','🇪🇺','Euro'],['ARS','🇦🇷','Peso argentino'],['BRL','🇧🇷','Real brasileño']];
+function fxRead(){return load(FX_CACHE_KEY,null);}
+function fxSave(j){try{save(FX_CACHE_KEY,j);}catch(e){}}
+function fxNum(v){return new Intl.NumberFormat('es-UY',{minimumFractionDigits:2,maximumFractionDigits:(v>=1?2:4)}).format(v);}
+function fxRender(j){
+ var list=$('fxList');if(!list)return;
+ if(!j||!j.rates){list.innerHTML='<p class="hintline" style="margin:8px 4px">Sin datos todavía. Toca «Actualizar».</p>';$('fxUpdated').textContent='Sin datos todavía';return;}
+ var rows=FX_PAIRS.map(function(p){var code=p[0],r=Number(j.rates[code]);var inv=(isFinite(r)&&r>0)?1/r:null;
+  return '<div class="fx-row"><span class="fx-flag">'+p[1]+'</span><div class="fx-main"><b>'+code+'</b><small>'+p[2]+'</small></div><div class="fx-num"><b>'+(inv?('$ '+fxNum(inv)):'—')+'</b><small>por 1 '+code+'</small></div></div>';}).join('');
+ list.innerHTML=rows;
+ var t=j.time?new Date(j.time):null;
+ $('fxUpdated').textContent=(t?('Actualizado '+t.toLocaleTimeString('es-UY',{hour:'2-digit',minute:'2-digit'})):'Actualizado')+' · mercado (no oficial)';
+}
+function fxFail(msg){
+ var j=fxRead();
+ if(j&&j.rates){fxRender(j);}else{var l=$('fxList');if(l)l.innerHTML='<p class="hintline" style="margin:8px 4px">'+esc(msg||'No se pudo obtener la cotización.')+'</p>';}
+ var u=$('fxUpdated');
+ if(u)u.textContent=(msg||'Error')+(j&&j.time?(' · último '+new Date(j.time).toLocaleTimeString('es-UY',{hour:'2-digit',minute:'2-digit'})):'');
+}
+function fxFetch(){
+ var u=$('fxUpdated');if(u)u.textContent='Actualizando…';
+ if(typeof fetch!=='function'){fxFail('Sin conexión con el proveedor.');return;}
+ var ctl=null;try{ctl=new AbortController();}catch(e){ctl=null;}
+ var timer=ctl?setTimeout(function(){try{ctl.abort();}catch(e){}},8000):null;
+ fetch('https://open.er-api.com/v6/latest/UYU',ctl?{signal:ctl.signal}:undefined)
+  .then(function(res){if(!res.ok)throw new Error('HTTP '+res.status);return res.json();})
+  .then(function(data){if(timer)clearTimeout(timer);var rates=(data&&data.rates)||{};fxSave({rates:rates,time:Date.now()});fxRender(fxRead());})
+  .catch(function(){if(timer)clearTimeout(timer);fxFail('No se pudo actualizar.');});
+}
+function openCurrency(){var m=$('currencyModal');fxRender(fxRead());if(m)m.classList.remove('hidden');setMenu(false);fxFetch();if(fxTimer)clearInterval(fxTimer);fxTimer=setInterval(fxFetch,60000);setTimeout(function(){var b=$('fxRefreshBtn');if(b)b.focus();},60);}
+function closeCurrency(){var m=$('currencyModal');if(m)m.classList.add('hidden');if(fxTimer){clearInterval(fxTimer);fxTimer=null;}}
 function isFreshCorpus(){
  /* corpus "de fábrica": sin operaciones y clientes = seeds o cero (típico tras el primer login) */
  if(receipts.length||transfers.length||fin.length)return false;
@@ -1832,7 +1882,7 @@ function resetApp(){if(!confirm('¿Reiniciar todos los datos? Se borrarán clien
 
 /* ===== eventos ===== */
 applyTheme(currentTheme(),false,false);
-$('themeToggle').addEventListener('click',function(){applyTheme(currentTheme()==='light'?'dark':'light',true,true);});
+
 ['themeLight','themeDark'].forEach(function(id){$(id).addEventListener('click',function(){var c=$(id).getAttribute('data-theme-choice');if(c!==currentTheme())applyTheme(c,true,true);});});
 $('menuBtn').addEventListener('click',function(){setMenu(!document.body.classList.contains('menu-open'));});$('closeMenu').addEventListener('click',function(){setMenu(false);});$('overlay').addEventListener('click',function(){setMenu(false);});
 $('dbMenuBtn').addEventListener('click',function(e){e.preventDefault();e.stopPropagation();var l=$('dbMenuList'),shouldOpen=l.classList.contains('hidden');l.classList.toggle('hidden',!shouldOpen);this.setAttribute('aria-expanded',shouldOpen?'true':'false');});
@@ -1877,7 +1927,7 @@ $('financeCancel').addEventListener('click',cancelFinanceEdit);$('financeSearch'
 ['historySearch','historyModule','historyRange','historyClient','historySort'].forEach(function(id){$(id).addEventListener('input',renderHistory);$(id).addEventListener('change',renderHistory);});
 ['receiptRange','receiptSearch','transferRange','transferSearch'].forEach(function(id){$(id).addEventListener('input',function(){if(id.indexOf('receipt')===0)renderReceiptH();else renderTransferH();});$(id).addEventListener('change',function(){if(id.indexOf('receipt')===0)renderReceiptH();else renderTransferH();});});
 $('exportBtn').addEventListener('click',exportCSV);$('drawerExport').addEventListener('click',function(){setMenu(false);exportCSV();});
-$('topReset').addEventListener('click',resetApp);$('drawerReset').addEventListener('click',function(){setMenu(false);resetApp();});$('topSaldo').addEventListener('click',function(){showView('saldo',true);});$('topAccountBtn').addEventListener('click',accountToggle);$('drawerAccountBtn').addEventListener('click',accountToggle);$('drawerCuentaBtn').addEventListener('click',function(){setMenu(false);openCuenta();});
+$('drawerReset').addEventListener('click',function(){setMenu(false);resetApp();});$('drawerAccountBtn').addEventListener('click',accountToggle);$('drawerCuentaBtn').addEventListener('click',function(){setMenu(false);openCuenta();});
 $('dbPickBtn').addEventListener('click',function(){$('dbFileInput').click();});$('drawerImportDB').addEventListener('click',function(){setMenu(false);$('dbFileInput').click();});
 $('dbFileInput').addEventListener('change',function(){var f=this.files&&this.files[0];if(f)handleDbFile(f);this.value='';});
 var drop=$('dbDrop');['dragenter','dragover'].forEach(function(ev){drop.addEventListener(ev,function(e){e.preventDefault();drop.classList.add('over');});});['dragleave','drop'].forEach(function(ev){drop.addEventListener(ev,function(e){e.preventDefault();drop.classList.remove('over');if(ev==='drop'){var f=e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0];if(f)handleDbFile(f);}});});
@@ -1887,7 +1937,7 @@ $('dbCancelBtn').addEventListener('click',closeDbModal);$('dbModalX').addEventLi
 $('dbExportBtn').addEventListener('click',exportDatabase);$('drawerExportDB').addEventListener('click',function(){setMenu(false);exportDatabase();});
 $('drawerCloudSync').addEventListener('click',function(){setMenu(false);openCloud();});
 $('cloudModalX').addEventListener('click',closeCloud);$('cloudModalBack').addEventListener('click',closeCloud);$('cloudCloseBtn').addEventListener('click',closeCloud);
-$('cuentaModalX').addEventListener('click',closeCuenta);$('cuentaModalBack').addEventListener('click',closeCuenta);$('personaSaveBtn').addEventListener('click',personaSave);$('cuentaLogoutBtn').addEventListener('click',cuentaLogout);$('cuentaSyncBtn').addEventListener('click',function(){closeCuenta();openCloud();});
+$('brandCurrencyBtn').addEventListener('click',openCurrency);$('currencyModalX').addEventListener('click',closeCurrency);$('currencyModalBack').addEventListener('click',closeCurrency);$('fxRefreshBtn').addEventListener('click',fxFetch);$('cuentaModalX').addEventListener('click',closeCuenta);$('cuentaModalBack').addEventListener('click',closeCuenta);$('personaSaveBtn').addEventListener('click',personaSave);$('cuentaLogoutBtn').addEventListener('click',cuentaLogout);$('cuentaSyncBtn').addEventListener('click',function(){closeCuenta();openCloud();});
 $('authTabLogin').addEventListener('click',function(){setAuthMode('login');});$('authTabSignup').addEventListener('click',function(){setAuthMode('signup');});
 $('cloudForm').addEventListener('submit',cloudLogin);
 $('cloudSignupBtn').addEventListener('click',cloudSignup);
