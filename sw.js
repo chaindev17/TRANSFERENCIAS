@@ -5,7 +5,7 @@
    - Los datos de la app NUNCA tocan este worker: viven en localStorage del navegador.
    Para publicar una nueva versión del shell, basta con volver a desplegar:
    el SWR actualiza los archivos en segundo plano; subir VERSION limpia cachés viejas. */
-var VERSION = 'gestor-v16-2026-11-23';
+var VERSION = 'gestor-v17-2026-11-23';
 var CORE = [
   './',
   './index.html',

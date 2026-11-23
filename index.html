@@ -260,7 +260,7 @@ tbody tr:hover{background:var(--surface3)}
 .tag-a{color:var(--amber-text);background:var(--amber-bg);border-color:var(--amber-line)}
 .detail{max-width:320px}.detail small{display:block;color:var(--faint);font-size:11px;margin-top:3px;line-height:1.4}
 .pos{color:var(--mint-text);font-weight:700}.neg{color:var(--coral-text);font-weight:700}
-.hstats{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;margin-bottom:14px}
+.hstats{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin-bottom:14px}
 .stat{background:var(--surface3);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
 .stat span{display:block;color:var(--faint);font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
 .stat strong{display:block;font-size:20px;margin-top:4px}
@@ -483,7 +483,7 @@ body{overflow-x:clip}
     <button class="mlink active" data-go="clientes"><span class="ico" style="background:linear-gradient(135deg,#a78bfa,#7c3aed)">👥</span><span><b>Clientes</b><small>Ingresar · comisión · editar</small></span><span class="go">›</span></button>
     <button class="mlink" data-go="operaciones"><span class="ico" style="background:linear-gradient(135deg,#7dd3fc,#7c3aed)">🔁</span><span><b>Operaciones</b><small>Recibo · Transferencia · Saldo</small></span><span class="go">›</span></button>
     <button class="mlink" data-go="finanzas"><span class="ico" style="background:linear-gradient(135deg,#fb9a6c,#c2410c)">💰</span><span><b>Finanzas manual</b><small>Ingresos, egresos y ajustes</small></span><span class="go">›</span></button>
-    <button class="mlink" data-go="historico"><span class="ico" style="background:linear-gradient(135deg,#c4b5fd,#6d28d9)">🕘</span><span><b>Histórico general</b><small>Todas las operaciones</small></span><span class="go">›</span></button>
+    <button class="mlink" data-go="historico"><span class="ico" style="background:linear-gradient(135deg,#c4b5fd,#6d28d9)">🕘</span><span><b>Histórico general</b><small>Clientes, recibos y transferencias</small></span><span class="go">›</span></button>
     <button class="mlink" id="drawerCuentaBtn" type="button" data-go="cuenta"><span class="ico" style="background:linear-gradient(135deg,#f0abfc,#be185d)">👤</span><span><b>Cuenta</b><small>Tus datos personales · conectar y desconectar</small></span><span class="go">›</span></button>
     <button class="mlink" type="button" data-go="basedatos"><span class="ico" style="background:linear-gradient(135deg,#67e8f9,#0891b2)">💾</span><span><b>Base de datos</b><small>Importar · exportar · CSV · respaldos</small></span><span class="go">›</span></button>
     </div>
@@ -612,7 +612,7 @@ body{overflow-x:clip}
 
   <section id="finanzas" class="panel app-view" aria-label="Finanzas">
     <div class="shead"><div class="stitle"><span class="sico c">05</span><div><h2>Finanzas manual</h2><p>Tu libro: registra y edita movimientos. Nada más.</p></div></div></div>
-    <p class="note">Este módulo es <b>solo tu libro manual</b>: no tiene relación con recibos, transferencias ni saldos de clientes. Ningún movimiento de aquí cambia el saldo de un cliente.</p>
+    <p class="note">Este módulo es <b>solo tu libro manual</b>: no tiene relación con recibos, transferencias ni clientes (no los referencia ni toca sus saldos) y no aparece en el Histórico general. Es tu libreta personal.</p>
     <div id="financeAux" hidden aria-hidden="true">
     <div class="kpis">
       <div class="kpi"><span>Saldo del libro manual</span><strong class="mintx" id="financeBalance">$0,00</strong><small id="financeCount">0 movimientos</small></div>
@@ -665,27 +665,25 @@ body{overflow-x:clip}
       <div class="field"><label for="financeAmount">Monto</label><input id="financeAmount" type="number" step="0.01" min="0.01" placeholder="0.00" required /></div>
       <div class="field"><label for="financeConcept">Concepto</label><input id="financeConcept" type="text" placeholder="Ej: Depósito en efectivo" required /></div>
       <div class="field"><label for="financeCategory">Categoría</label><select id="financeCategory"><option>Efectivo</option><option>Banco</option><option>Comisión</option><option>Gasto operativo</option><option>Capital</option><option>Otros</option></select></div>
-      <div class="field"><label for="financeClient">Cliente (solo referencia, no cambia su saldo)</label><select id="financeClient"><option value="">Sin vincular</option></select></div>
       <div class="field"><label for="financeDate">Fecha y hora</label><input id="financeDate" type="datetime-local" required /></div>
       <div class="field s2"><label for="financeNote">Nota</label><textarea id="financeNote" rows="2" placeholder="Detalle opcional"></textarea></div>
       <div class="field s4 acts"><button type="submit" id="financeSubmit" class="btn btn-p">Registrar movimiento</button></div>
     </form>
     <div class="thead"><h3>Libro de finanzas</h3><div class="finline"><input id="financeSearch" type="search" placeholder="Buscar concepto, OP…" /><select id="financeFilter"><option value="todos">Todos</option><option value="ingreso">Ingresos</option><option value="egreso">Egresos</option><option value="ajuste">Ajustes</option></select></div></div>
-    <div class="twrap"><table><thead><tr><th>Fecha</th><th>Nº op.</th><th>Tipo</th><th>Concepto</th><th>Categoría</th><th>Cliente</th><th>Monto</th><th>Saldo posterior</th><th>Acciones</th></tr></thead><tbody id="financeHistoryBody"></tbody></table></div>
+    <div class="twrap"><table><thead><tr><th>Fecha</th><th>Nº op.</th><th>Tipo</th><th>Concepto</th><th>Categoría</th><th>Monto</th><th>Saldo posterior</th><th>Acciones</th></tr></thead><tbody id="financeHistoryBody"></tbody></table></div>
   </section>
 
   <section id="historico" class="panel app-view" aria-label="Histórico">
-    <div class="shead"><div class="stitle"><span class="sico v">06</span><div><h2>Histórico general</h2><p>Todas las operaciones existentes y futuras en un solo libro.</p></div></div>
+    <div class="shead"><div class="stitle"><span class="sico v">06</span><div><h2>Histórico general</h2><p>Clientes, recibos, transferencias y sistema en un solo libro. Finanzas va aparte: es tu libro manual.</p></div></div>
       <button class="btn btn-g" id="exportBtn">⬇ Exportar CSV</button></div>
     <div class="hstats">
       <div class="stat"><span>Total registros</span><strong id="historyTotal">0</strong></div>
       <div class="stat"><span>Recibos</span><strong class="amberx" id="historyReceipts">0</strong></div>
       <div class="stat"><span>Transferencias</span><strong class="skyx" id="historyTransfers">0</strong></div>
-      <div class="stat"><span>Finanzas</span><strong style="color:var(--vio-text)" id="historyFinance">0</strong></div>
-    </div>
+      </div>
     <div class="fbar">
       <input id="historySearch" type="search" placeholder="Buscar cliente, OP, concepto…" />
-      <select id="historyModule"><option value="todos">Todos los módulos</option><option>Clientes</option><option>Recibo</option><option>Transferencia</option><option>Finanzas</option><option>Sistema</option></select>
+      <select id="historyModule"><option value="todos">Todos los módulos</option><option>Clientes</option><option>Recibo</option><option>Transferencia</option><option>Sistema</option></select>
       <select id="historyRange"><option value="all">Todas las fechas</option><option value="today">Hoy</option><option value="7">Últimos 7 días</option><option value="30">Últimos 30 días</option></select>
       <select id="historyClient"><option value="">Todos los clientes</option></select>
       <select id="historySort"><option value="desc">Más recientes</option><option value="asc">Más antiguos</option></select>
@@ -1037,7 +1035,7 @@ function analyze(raw){var c=String(raw==null?'':raw).replace(/\D/g,''),k='descon
  var b=k==='tarjeta'?'Tarjeta':(k==='monedero'?'Monedero':'—');
  if(k==='tarjeta'&&c.length>=6)b=BANKS[c.slice(4,6)]||'Banco no identificado';
  return{clean:c,kind:k,req:req,len:c.length,bank:b,valid:k!=='desconocido'&&c.length===req};}
-function countDb(d){return{clients:arr(d.clients).length,receipts:arr(d.receipts).length,transfers:arr(d.transfers).length,fin:arr(d.fin).length,hist:arr(d.hist).length,prices:Object.keys((d.fconf&&d.fconf.prices)||{}).length,balance:r2(arr(d.clients).reduce(function(s,c){return s+(Number(c.balance)||0);},0))};}
+function countDb(d){return{clients:arr(d.clients).length,receipts:arr(d.receipts).length,transfers:arr(d.transfers).length,fin:arr(d.fin).length,hist:arr(d.hist).filter(function(h){return !h||h.module!=='Finanzas';}).length,prices:Object.keys((d.fconf&&d.fconf.prices)||{}).length,balance:r2(arr(d.clients).reduce(function(s,c){return s+(Number(c.balance)||0);},0))};}
 function computeOpeningBalances(d){
  var calc={};arr(d.receipts).forEach(function(r){calc[r.clientId]=r2((calc[r.clientId]||0)+(Number(r.net)||0));});
  arr(d.transfers).forEach(function(t){calc[t.clientId]=r2((calc[t.clientId]||0)-(Number(t.amount)||0));});
@@ -1393,7 +1391,6 @@ function syncOperationHistory(){
  function ensure(key,data){var h=by[key];if(!h){h={id:uid('h'),sourceKey:key};hist.push(h);by[key]=h;}Object.keys(data).forEach(function(k){h[k]=data[k];});}
  receipts.forEach(function(r){ensure('rec:'+r.id,{date:r.date,module:'Recibo',operation:'Recibo',opNumber:r.opNumber,clientId:r.clientId,clientName:r.clientName,description:'Monto '+fmt(r.amount)+' · recibe '+fmt(r.net),detail:'Comisión '+r.commission+'% ('+fmt(r.fee)+')',amount:r.amount,impact:r.net,balanceAfter:r.balanceAfter});});
  transfers.forEach(function(t){ensure('tr:'+t.id,{date:t.date,module:'Transferencia',operation:'Transferencia',opNumber:t.opNumber,clientId:t.clientId,clientName:t.clientName,description:t.bankName+' · '+t.account,detail:'Cuenta '+(t.kind||''),amount:t.amount,impact:-t.amount,balanceAfter:t.balanceAfter});});
- fin.forEach(function(m){ensure('fi:'+m.id,{date:m.date,module:'Finanzas',operation:({ingreso:'Ingreso',egreso:'Egreso',ajuste:'Ajuste'})[m.kind]||'Movimiento',opNumber:m.opNumber,clientId:m.clientId,clientName:m.clientName,description:m.concept+(m.category?' · '+m.category:''),detail:m.note||'',amount:m.amount,impact:m.signedAmount,balanceAfter:m.balanceAfter});});
 }
 function recalcBalances(){
  var byH={};hist.forEach(function(h){if(h.sourceKey)byH[h.sourceKey]=h;});
@@ -1417,6 +1414,7 @@ function recalcFinance(doPersist){
 }
 function normalize(){
  receipts=arr(receipts);transfers=arr(transfers);fin=arr(fin);hist=arr(hist);
+ hist=hist.filter(function(h){return h&&h.module!=='Finanzas';});
  if(!fconf||typeof fconf!=='object')fconf={openingBalance:0,prices:defaultPrices()};fconf.openingBalance=r2(Number(fconf.openingBalance)||0);fconf.prices=normalizePrices(fconf.prices);
  if(!meta||typeof meta!=='object')meta={};
  if(!Array.isArray(meta.importedSignatures))meta.importedSignatures=[];
@@ -1508,8 +1506,8 @@ function buildExportObject(){
   clientes:clients.map(function(c){return{id:c.id,nombre:c.name,comision:c.commission,saldo:c.balance,saldoInicial:c.openingBalance,saldoMinimo:c.minBalance,creado:c.createdAt};}),
   recibos:receipts.map(function(r){return{id:r.id,clienteId:r.clientId,clienteNombre:r.clientName,monto:r.amount,comision:r.fee,comisionCliente:r.commission,neto:r.net,saldoDespues:r.balanceAfter,fecha:exportDate(r.date),fechaISO:r.date,numeroOp:opToNumber(r.opNumber,0)};}),
   transferencias:transfers.map(function(t){return{id:t.id,clienteId:t.clientId,clienteNombre:t.clientName,monto:t.amount,saldoAntes:r2((Number(t.balanceAfter)||0)+(Number(t.amount)||0)),saldoDespues:t.balanceAfter,tipoDestino:t.kind,numeroDestino:t.account,banco:t.bankName,bancoColor:t.legacyBancoColor||null,fecha:exportDate(t.date),fechaISO:t.date,numeroOp:opToNumber(t.opNumber,0)};}),
-  finanzas:fin.map(function(m){return{id:m.id,tipo:m.legacyTipo||(m.kind==='egreso'?'gasto':(m.category==='Comisión'?'comision':m.kind)),monto:m.amount,signo:m.signedAmount<0?'-':'+',signedAmount:m.signedAmount,descripcion:m.concept,categoria:m.category,clienteId:m.clientId,clienteNombre:m.clientName,reciboId:m.legacyReciboId||null,nota:m.note,fecha:exportDate(m.date),fechaISO:m.date,numeroFin:opToNumber(m.opNumber,0),numeroOp:opToNumber(m.opNumber,0)};}),
-  interno:{clients:clone(clients),receipts:clone(receipts),transfers:clone(transfers),fin:clone(fin),fconf:clone(fconf),hist:clone(hist),meta:clone(meta)}};
+  finanzas:fin.map(function(m){return{id:m.id,tipo:m.legacyTipo||(m.kind==='egreso'?'gasto':(m.category==='Comisión'?'comision':m.kind)),monto:m.amount,signo:m.signedAmount<0?'-':'+',signedAmount:m.signedAmount,descripcion:m.concept,categoria:m.category,nota:m.note,fecha:exportDate(m.date),fechaISO:m.date,numeroFin:opToNumber(m.opNumber,0),numeroOp:opToNumber(m.opNumber,0)};}),
+  interno:{clients:clone(clients),receipts:clone(receipts),transfers:clone(transfers),fin:clone(fin).map(function(m){var c=Object.assign({},m,{clientId:'',clientName:'',appliesToClient:false});delete c.legacyClientId;delete c.legacyReciboId;return c;}),fconf:clone(fconf),hist:clone(hist).filter(function(h){return h&&h.module!=='Finanzas';}),meta:clone(meta)}};
 }
 function exportDatabase(){
  var obj=buildExportObject(),name='gestor_'+fileSafe((meta.db&&meta.db.user)||'base')+'_'+todayK()+'.json';
@@ -1518,9 +1516,10 @@ function exportDatabase(){
  pushH({sourceKey:'db-export:'+Date.now(),date:new Date().toISOString(),module:'Sistema',operation:'Base exportada',opNumber:'',clientId:'',clientName:'',description:name,detail:countDb({clients:clients,receipts:receipts,transfers:transfers,fin:fin,hist:hist}).clients+' clientes · JSON completo',amount:0,impact:0,balanceAfter:null});
  persist();renderDatabaseInfo();renderHistory();toast('Base exportada: '+name);
 }
+function ledHist(){return hist.filter(function(h){return h.module!=='Finanzas';});}
 function filteredHistory(){
  var q=($('historySearch').value||'').trim().toLowerCase(),mod=$('historyModule').value||'todos',rg=$('historyRange').value||'all',cid=$('historyClient').value||'',sort=$('historySort').value||'desc';
- var list=hist.filter(function(h){if(mod!=='todos'&&h.module!==mod)return false;if(cid&&h.clientId!==cid)return false;if(!inRange(h.date,rg))return false;
+ var list=ledHist().filter(function(h){if(mod!=='todos'&&h.module!==mod)return false;if(cid&&h.clientId!==cid)return false;if(!inRange(h.date,rg))return false;
   if(q){var s=((h.clientName||'')+' '+(h.opNumber||'')+' '+(h.operation||'')+' '+(h.description||'')+' '+(h.detail||'')).toLowerCase();if(s.indexOf(q)<0)return false;}return true;});
  list.sort(function(a,b){var d=new Date(a.date)-new Date(b.date);return sort==='asc'?d:-d;});return list;
 }
@@ -1529,7 +1528,7 @@ function exportModuleCSV(kind){
  if(kind==='clientes'){head=['ID','Nombre','Comisión %','Saldo','Saldo inicial','Saldo mínimo','Creado'];rows=clients.map(function(c){return[c.id,c.name,c.commission,c.balance,c.openingBalance,c.minBalance,fmtDT(c.createdAt)];});name='clientes_'+todayK()+'.csv';}
  else if(kind==='recibos'){head=['Fecha','Nº operación','Cliente','Monto','Tasa %','Comisión','Neto','Saldo después'];rows=receipts.slice().sort(descDate).map(function(r){return[fmtDT(r.date),r.opNumber,r.clientName,r.amount,r.commission,r.fee,r.net,r.balanceAfter];});name='recibos_'+todayK()+'.csv';}
  else if(kind==='transferencias'){head=['Fecha','Nº operación','Cliente','Cuenta','Tipo','Banco','Monto','Saldo después'];rows=transfers.slice().sort(descDate).map(function(t){return[fmtDT(t.date),t.opNumber,t.clientName,t.account,t.kind,t.bankName,t.amount,t.balanceAfter];});name='transferencias_'+todayK()+'.csv';}
- else if(kind==='finanzas'){head=['Fecha','Nº operación','Tipo','Concepto','Categoría','Cliente','Monto','Saldo'];rows=fin.slice().sort(descDate).map(function(m){return[fmtDT(m.date),m.opNumber,({ingreso:'Ingreso',egreso:'Egreso',ajuste:'Ajuste'})[m.kind]||m.kind,m.concept,m.category,m.clientName,m.signedAmount,m.balanceAfter];});name='finanzas_'+todayK()+'.csv';}
+ else if(kind==='finanzas'){head=['Fecha','Nº operación','Tipo','Concepto','Categoría','Monto','Saldo'];rows=fin.slice().sort(descDate).map(function(m){return[fmtDT(m.date),m.opNumber,({ingreso:'Ingreso',egreso:'Egreso',ajuste:'Ajuste'})[m.kind]||m.kind,m.concept,m.category,m.signedAmount,m.balanceAfter];});name='finanzas_'+todayK()+'.csv';}
  else{head=['Fecha','Módulo','Operación','Nº operación','Cliente','Detalle','Monto','Efecto','Saldo posterior'];rows=filteredHistory().map(function(h){return[fmtDT(h.date),h.module,h.operation,h.opNumber||'',h.clientName||'',h.description+(h.detail?' · '+h.detail:''),h.amount,h.impact,h.balanceAfter==null?'':h.balanceAfter];});name='historico_gestor.csv';}
  downloadCSV(name,head,rows);toast('CSV exportado: '+name);
 }
@@ -1568,11 +1567,11 @@ function convertSpanish(raw){
   var bank=String(first(t,['banco','bankName'],''));if(bank==='Metropolitano')bank='Banco Metropolitano';if(!bank||bank==='null'||bank==='undefined')bank=(kind==='tarjeta'?'Tarjeta':kind==='monedero'?'Monedero':'Sin banco');
   var before=r2(first(t,['saldoAntes','balanceBefore'],0)),n=Number(first(t,['numeroOp','numeroOperacion'],i+1));
   d.transfers.push({id:String(first(t,['id'],'t_'+i)),opNumber:numToOp(n||i+1),type:'transferencia',clientId:cid,clientName:String(first(t,['clienteNombre','clientName'],(cMap[cid]||{}).name||'Cliente eliminado')),account:clean||'—',kind:kind,bankName:bank,amount:a,balanceAfter:r2(first(t,['saldoDespues','balanceAfter'],before-a)),date:importDate(first(t,['fechaISO','fecha','date'],Date.now())),legacySaldoAntes:before,legacyBancoColor:first(t,['bancoColor'],null)});});
- arr(raw.finanzas).forEach(function(f,i){var rawCid=String(first(f,['clienteId','clientId'],'')),desc=String(first(f,['descripcion','concept'],'Movimiento')),cid=resolve(rawCid,desc,false);
+ arr(raw.finanzas).forEach(function(f,i){var rawCid=String(first(f,['clienteId','clientId'],'')),desc=String(first(f,['descripcion','concept'],'Movimiento'));
   var a=r2(Math.abs(Number(first(f,['monto','amount'],0))||0)),typ=String(first(f,['tipo','legacyTipo'],'')).toLowerCase(),rawSign=first(f,['signedAmount','signo'],null),sg;
   if(typeof rawSign==='number')sg=rawSign;else if(rawSign==='-'||rawSign==='neg')sg=-a;else sg=(typ==='gasto'||typ==='egreso'||typ==='salida')?-a:a;sg=r2(sg);
   var kind=sg<0?'egreso':(typ==='ajuste'?'ajuste':'ingreso'),cat=String(first(f,['categoria','category'],typ==='comision'?'Comisión':typ==='gasto'?'Gasto operativo':'Otros')),n=first(f,['numeroFin','numeroOp'],null);
-  d.fin.push({id:String(first(f,['id'],'f_'+i)),opNumber:'FIN-'+String(Number(n)||i+1).padStart(6,'0'),kind:kind,direction:sg<0?'restar':'sumar',amount:a,signedAmount:sg,concept:desc,category:cat,clientId:cid,clientName:cid?(cMap[cid]||{}).name:(guessName(desc)||'Sin cliente'),appliesToClient:false,note:String(first(f,['nota','note'],'')),date:importDate(first(f,['fechaISO','fecha','date'],Date.now())),createdAt:importDate(first(f,['fechaISO','fecha','date'],Date.now())),balanceAfter:0,legacyTipo:typ||null,legacyReciboId:first(f,['reciboId'],null),legacyClientId:rawCid||null});});
+  d.fin.push({id:String(first(f,['id'],'f_'+i)),opNumber:'FIN-'+String(Number(n)||i+1).padStart(6,'0'),kind:kind,direction:sg<0?'restar':'sumar',amount:a,signedAmount:sg,concept:desc,category:cat,clientId:'',clientName:'',appliesToClient:false,note:String(first(f,['nota','note'],'')),date:importDate(first(f,['fechaISO','fecha','date'],Date.now())),createdAt:importDate(first(f,['fechaISO','fecha','date'],Date.now())),balanceAfter:0,legacyTipo:typ||null});});
  computeOpeningBalances(d);return d;
 }
 function convertDatabase(raw){
@@ -1609,9 +1608,10 @@ function mergeInternal(cur,inc){
  mergeRec(out.receipts,inc.receipts,sigR,'receipts');mergeRec(out.transfers,inc.transfers,sigT,'transfers');mergeRec(out.fin,inc.fin,sigF,'fin');
  out.fconf.openingBalance=r2((Number(out.fconf.openingBalance)||0)+(Number(inc.fconf.openingBalance)||0));
  out.fconf.prices=mergePrices(out.fconf.prices,inc.fconf&&inc.fconf.prices);
- var valid={},seen={};out.receipts.forEach(function(r){valid['rec:'+r.id]=1;});out.transfers.forEach(function(t){valid['tr:'+t.id]=1;});out.fin.forEach(function(m){valid['fi:'+m.id]=1;});
+ out.hist=out.hist.filter(function(h){return h&&h.module!=='Finanzas';});
+ var valid={},seen={};out.receipts.forEach(function(r){valid['rec:'+r.id]=1;});out.transfers.forEach(function(t){valid['tr:'+t.id]=1;});
  out.hist.forEach(function(h){seen[h.sourceKey||('h:'+h.id)]=1;});
- inc.hist.forEach(function(h){var k=h.sourceKey||('h:'+h.id);if(/^(rec|tr|fi):/.test(k)&&!valid[k])return;if(seen[k])return;out.hist.push(clone(h));seen[k]=1;added.hist++;});
+ inc.hist.forEach(function(h){if(!h||h.module==='Finanzas')return;var k=h.sourceKey||('h:'+h.id);if(/^(rec|tr):/.test(k)&&!valid[k])return;if(seen[k])return;out.hist.push(clone(h));seen[k]=1;added.hist++;});
  if(!out.meta.settings)out.meta.settings=clone(inc.meta&&inc.meta.settings)||{defaultMinBalance:0,lowBalanceAlerts:true};
  return{data:out,added:added};
 }
@@ -1842,7 +1842,7 @@ window.deleteTransfer=function(id){var t=transfers.filter(function(x){return x.i
 
 /* ===== finanzas ===== */
 function cancelFinanceEdit(){$('financeEditId').value='';$('financeFormTitle').textContent='Registrar movimiento manual';$('financeSubmit').textContent='Registrar movimiento';$('financeCancel').classList.add('hidden');$('financeDate').value=dtLocal(new Date());}
-window.editFinance=function(id){var m=fin.filter(function(x){return x.id===id;})[0];if(!m)return;$('financeEditId').value=m.id;$('financeKind').value=m.kind;$('financeDirection').value=m.direction||'sumar';$('financeDirectionGroup').classList.toggle('hidden',m.kind!=='ajuste');$('financeAmount').value=m.amount;$('financeConcept').value=m.concept;$('financeCategory').value=m.category;$('financeClient').value=m.clientId||'';$('financeDate').value=dtLocal(new Date(m.date));$('financeNote').value=m.note||'';$('financeFormTitle').textContent='Editar movimiento '+m.opNumber;$('financeSubmit').textContent='Guardar cambios';$('financeCancel').classList.remove('hidden');$('finanzas').scrollIntoView({behavior:'smooth'});};
+window.editFinance=function(id){var m=fin.filter(function(x){return x.id===id;})[0];if(!m)return;$('financeEditId').value=m.id;$('financeKind').value=m.kind;$('financeDirection').value=m.direction||'sumar';$('financeDirectionGroup').classList.toggle('hidden',m.kind!=='ajuste');$('financeAmount').value=m.amount;$('financeConcept').value=m.concept;$('financeCategory').value=m.category;$('financeDate').value=dtLocal(new Date(m.date));$('financeNote').value=m.note||'';$('financeFormTitle').textContent='Editar movimiento '+m.opNumber;$('financeSubmit').textContent='Guardar cambios';$('financeCancel').classList.remove('hidden');$('finanzas').scrollIntoView({behavior:'smooth'});};
 window.deleteFinance=function(id){var m=fin.filter(function(x){return x.id===id;})[0];if(!m)return;if(!confirm('¿Eliminar '+m.opNumber+' · '+m.concept+'?'))return;fin=fin.filter(function(x){return x.id!==id;});hist=hist.filter(function(h){return h.sourceKey!=='fi:'+id;});recalcFinance();renderAll();if($('financeEditId').value===id)cancelFinanceEdit();toast('Movimiento eliminado.');};
 
 /* ===== render ===== */
@@ -1863,7 +1863,7 @@ function renderClients(){var box=$('clientsList');if(!clients.length){box.innerH
  '<div class="cm"><div><span>Comisión</span><strong class="coralx">'+c.commission+'%</strong></div><div><span>Saldo</span><strong class="mintx">'+fmt(c.balance)+'</strong></div></div>'+
  '<p class="cops">'+ops+' operaciones · Mín. '+fmt(c.minBalance||0)+(low?' <span class="lowbadge">Bajo mínimo</span>':'')+'</p></div>';}).join('');}
 function renderSelects(){var o='<option value="">Seleccionar cliente</option>'+clients.map(function(c){return'<option value="'+esc(c.id)+'">'+esc(c.name)+' — '+fmt(c.balance)+'</option>';}).join('');
- setSelect('receiptClient',o,true);setSelect('transferClient',o,true);setSelect('financeClient','<option value="">Sin vincular</option>'+clients.map(function(c){return'<option value="'+esc(c.id)+'">'+esc(c.name)+'</option>';}).join(''),true);setSelect('historyClient','<option value="">Todos los clientes</option>'+clients.map(function(c){return'<option value="'+esc(c.id)+'">'+esc(c.name)+'</option>';}).join(''),true);}
+ setSelect('receiptClient',o,true);setSelect('transferClient',o,true);setSelect('historyClient','<option value="">Todos los clientes</option>'+clients.map(function(c){return'<option value="'+esc(c.id)+'">'+esc(c.name)+'</option>';}).join(''),true);}
 function renderReceiptH(){
  var rg=$('receiptRange').value||'today',q=($('receiptSearch').value||'').trim().toLowerCase(),tb=$('receiptHistoryBody');
  var title=$('receiptDayTitle');if(title)title.textContent=rg==='today'?'RECIBOS DEL DÍA':'HISTORIAL DE RECIBOS';
@@ -1910,11 +1910,11 @@ function renderTransferH(){
 function renderFinance(){var bal=r2(fconf.openingBalance+fin.reduce(function(s,m){return s+(Number(m.signedAmount)||0);},0)),inc=fin.reduce(function(s,m){return s+(m.signedAmount>0?m.signedAmount:0);},0),exp=fin.reduce(function(s,m){return s+(m.signedAmount<0?-m.signedAmount:0);},0);
  $('financeBalance').textContent=fmt(bal);$('financeIncome').textContent=fmt(inc);$('financeExpense').textContent=fmt(exp);$('financeClientTotal').textContent=fmt(clients.reduce(function(s,c){return s+(Number(c.balance)||0);},0));$('financeCount').textContent=fin.length+' movimientos';
  if(document.activeElement!==$('financeOpening'))$('financeOpening').value=fconf.openingBalance?String(fconf.openingBalance):'';
- var q=($('financeSearch').value||'').trim().toLowerCase(),f=$('financeFilter').value||'todos',list=fin.slice().sort(descDate).filter(function(m){if(f!=='todos'&&m.kind!==f)return false;if(q){var s=(m.concept+' '+m.opNumber+' '+(m.clientName||'')+' '+m.category).toLowerCase();if(s.indexOf(q)<0)return false;}return true;}),tb=$('financeHistoryBody');
- if(!list.length){tb.innerHTML='<tr><td colspan="9" class="empty">Sin movimientos.</td></tr>';return;}
+ var q=($('financeSearch').value||'').trim().toLowerCase(),f=$('financeFilter').value||'todos',list=fin.slice().sort(descDate).filter(function(m){if(f!=='todos'&&m.kind!==f)return false;if(q){var s=(m.concept+' '+m.opNumber+' '+m.category).toLowerCase();if(s.indexOf(q)<0)return false;}return true;}),tb=$('financeHistoryBody');
+ if(!list.length){tb.innerHTML='<tr><td colspan="8" class="empty">Sin movimientos.</td></tr>';return;}
  var lbl={ingreso:['Ingreso','tag-m'],egreso:['Egreso','tag-c'],ajuste:['Ajuste','tag-a']};
- tb.innerHTML=list.map(function(m){var L=lbl[m.kind]||['Movimiento',''];return'<tr><td class="mut">'+fmtD(m.date)+'<br><span class="mono">'+fmtT(m.date)+'</span></td><td>'+opCell(m.opNumber)+'</td><td><span class="tag '+L[1]+'">'+L[0]+'</span></td><td><b>'+esc(m.concept)+'</b>'+(m.note?'<div class="detail"><small>'+esc(m.note)+'</small></div>':'')+'</td><td class="mut">'+esc(m.category)+'</td><td>'+(m.clientName?esc(m.clientName):'<span class="mut">—</span>')+'</td><td class="'+(m.signedAmount<0?'neg':'pos')+'">'+fmtImp(m.signedAmount)+'</td><td>'+fmt(m.balanceAfter)+'</td><td><button type="button" class="icobtn" onclick="editFinance(\''+esc(m.id)+'\')" title="Editar">✎</button> <button type="button" class="icobtn danger" onclick="deleteFinance(\''+esc(m.id)+'\')" title="Eliminar">🗑</button></td></tr>';}).join('');}
-function renderHistory(){var list=filteredHistory();$('historyTotal').textContent=hist.length.toLocaleString('es-UY');$('historyReceipts').textContent=hist.filter(function(h){return h.module==='Recibo';}).length.toLocaleString('es-UY');$('historyTransfers').textContent=hist.filter(function(h){return h.module==='Transferencia';}).length.toLocaleString('es-UY');$('historyFinance').textContent=hist.filter(function(h){return h.module==='Finanzas';}).length.toLocaleString('es-UY');$('historyShown').textContent=list.length.toLocaleString('es-UY');
+ tb.innerHTML=list.map(function(m){var L=lbl[m.kind]||['Movimiento',''];return'<tr><td class="mut">'+fmtD(m.date)+'<br><span class="mono">'+fmtT(m.date)+'</span></td><td>'+opCell(m.opNumber)+'</td><td><span class="tag '+L[1]+'">'+L[0]+'</span></td><td><b>'+esc(m.concept)+'</b>'+(m.note?'<div class="detail"><small>'+esc(m.note)+'</small></div>':'')+'</td><td class="mut">'+esc(m.category)+'</td><td class="'+(m.signedAmount<0?'neg':'pos')+'">'+fmtImp(m.signedAmount)+'</td><td>'+fmt(m.balanceAfter)+'</td><td><button type="button" class="icobtn" onclick="editFinance(\''+esc(m.id)+'\')" title="Editar">✎</button> <button type="button" class="icobtn danger" onclick="deleteFinance(\''+esc(m.id)+'\')" title="Eliminar">🗑</button></td></tr>';}).join('');}
+function renderHistory(){var list=filteredHistory(),led=ledHist();$('historyTotal').textContent=led.length.toLocaleString('es-UY');$('historyReceipts').textContent=led.filter(function(h){return h.module==='Recibo';}).length.toLocaleString('es-UY');$('historyTransfers').textContent=led.filter(function(h){return h.module==='Transferencia';}).length.toLocaleString('es-UY');$('historyShown').textContent=list.length.toLocaleString('es-UY');
  var tb=$('historyBody');if(!list.length){tb.innerHTML='<tr><td colspan="9" class="empty">Sin registros con esos filtros.</td></tr>';return;}
  tb.innerHTML=list.slice(0,600).map(function(h){return'<tr><td class="mut">'+fmtD(h.date)+'<br><span class="mono">'+fmtT(h.date)+'</span></td><td><span class="mod '+(MCLS[h.module]||'ms')+'">'+esc(h.module)+'</span></td><td>'+esc(h.operation)+'</td><td>'+opCell(h.opNumber)+'</td><td>'+(h.clientName?esc(h.clientName):'<span class="mut">—</span>')+'</td><td class="detail">'+esc(h.description||'')+(h.detail?'<small>'+esc(h.detail)+'</small>':'')+'</td><td>'+(h.amount?fmt(h.amount):'—')+'</td><td class="'+(h.impact<0?'neg':(h.impact>0?'pos':''))+'">'+fmtImp(h.impact)+'</td><td>'+(h.balanceAfter==null?'<span class="mut">—</span>':fmt(h.balanceAfter))+'</td></tr>';}).join('')+(list.length>600?'<tr><td colspan="9" class="empty">Mostrando 600 de '+list.length.toLocaleString('es-UY')+'. Usa filtros o exporta el CSV.</td></tr>':'');}
 function renderSaldo(){var total=r2(clients.reduce(function(s,c){return s+r2(c.balance);},0));countUp($('saldoTotal'),total,fmt);countUp($('homeBalance'),total,fmt);var hb=$('homeBalanceSub');if(hb)hb.textContent=clients.length+' '+(clients.length===1?'cliente':'clientes')+' · suma de saldos';$('saldoCount').textContent=clients.length;$('saldoTotalSub').textContent=clients.length+' '+(clients.length===1?'cliente registrado':'clientes registrados');
@@ -1971,7 +1971,7 @@ $('transferForm').addEventListener('submit',function(e){e.preventDefault();var c
 $('financeKind').addEventListener('change',function(){$('financeDirectionGroup').classList.toggle('hidden',$('financeKind').value!=='ajuste');});
 $('openingForm').addEventListener('submit',function(e){e.preventDefault();var v=parseFloat($('financeOpening').value);if(isNaN(v)){toast('Ingresa un saldo base válido.',false);return;}fconf.openingBalance=r2(v);recalcFinance();renderAll();toast('Saldo base guardado: '+fmt(v)+'.');});
 $('financeForm').addEventListener('submit',function(e){e.preventDefault();var kind=$('financeKind').value,dir=$('financeDirection').value,amt=parseFloat($('financeAmount').value),con=$('financeConcept').value.trim();
- if(isNaN(amt)||amt<=0||!con){toast('Completa monto y concepto.',false);return;}amt=r2(amt);var signed=kind==='egreso'?-amt:((kind==='ajuste'&&dir==='restar')?-amt:amt),cid=$('financeClient').value,cnm=cid?cname(cid):'',dv=$('financeDate').value,iso=dv?new Date(dv).toISOString():new Date().toISOString(),editId=$('financeEditId').value;
+ if(isNaN(amt)||amt<=0||!con){toast('Completa monto y concepto.',false);return;}amt=r2(amt);var signed=kind==='egreso'?-amt:((kind==='ajuste'&&dir==='restar')?-amt:amt),cid='',cnm='',dv=$('financeDate').value,iso=dv?new Date(dv).toISOString():new Date().toISOString(),editId=$('financeEditId').value;
  if(editId){var m=fin.filter(function(x){return x.id===editId;})[0];if(!m)return;m.kind=kind;m.direction=dir;m.amount=amt;m.signedAmount=signed;m.concept=con;m.category=$('financeCategory').value;m.clientId=cid;m.clientName=cnm;m.note=$('financeNote').value.trim();m.date=iso;m.appliesToClient=false;recalcFinance();renderAll();cancelFinanceEdit();toast('Movimiento actualizado.');return;}
  var nm={id:uid('f'),opNumber:nextFin(),kind:kind,direction:dir,amount:amt,signedAmount:signed,concept:con,category:$('financeCategory').value,clientId:cid,clientName:cnm,appliesToClient:false,note:$('financeNote').value.trim(),date:iso,createdAt:new Date().toISOString(),balanceAfter:0};fin.push(nm);recalcFinance();renderAll();try{celebrate($('financeSubmit'));}catch(e){}$('financeAmount').value='';$('financeConcept').value='';$('financeNote').value='';toast('Movimiento registrado: '+fmtImp(signed)+'.');});
 $('financeCancel').addEventListener('click',cancelFinanceEdit);$('financeSearch').addEventListener('input',renderFinance);$('financeFilter').addEventListener('change',renderFinance);

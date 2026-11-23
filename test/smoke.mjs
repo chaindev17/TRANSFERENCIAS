@@ -210,4 +210,38 @@ assert.equal(doc6.querySelector('#saldo').classList.contains('active'), true, 'b
 assert.equal(doc6.querySelector('#bottomBar .bb-item[data-go="saldo"]').classList.contains('active'), true, 'barra: resaltado en Saldo');
 assert.equal(errors6.length, 0, 'errores de ventana en barra inferior: ' + errors6.join(' | '));
 console.log('prex bottom OK: barra inferior presente, navega y resalta');
+// El importador Ale desvincula las finanzas de clientes
+assert.equal((get('gestor_finanzas') || [])[0].clientId, '', 'las finanzas importadas no vinculan clientes');
+assert.equal((get('gestor_historial') || []).some((h) => h && h.module === 'Finanzas'), false, 'el histórico importado no contiene finanzas');
+console.log('desacople OK: importación sin relación finanzas ↔ clientes/recibos/transferencias');
+
+// ---- 9) Finanzas es 100% manual: sin clientes ni aparición en el Histórico ----
+const dom7 = new JSDOM(html, {
+  url: 'https://gestor.local/',
+  runScripts: 'dangerously',
+  pretendToBeVisual: true,
+  beforeParse(window) {
+    try { window.crypto = webcrypto; } catch { /* jsdom ya trae crypto */ }
+    window.confirm = () => true;
+    window.alert = () => {};
+  },
+});
+const errors7 = [];
+dom7.window.addEventListener('error', (e) => errors7.push(e.message));
+const doc7 = dom7.window.document;
+assert.equal(doc7.querySelector('#financeClient'), null, 'el formulario de finanzas no vincula clientes');
+assert.equal([...doc7.querySelectorAll('#historyModule option')].some((o) => o.textContent === 'Finanzas'), false, 'Finanzas no es un módulo filtrable del Histórico');
+assert.equal(doc7.querySelector('#historyFinance'), null, 'el Histórico ya no cuenta finanzas');
+doc7.querySelector('#drawerNav [data-go="finanzas"]').click();
+doc7.querySelector('#financeKind').value = 'ingreso';
+doc7.querySelector('#financeAmount').value = '1234.5';
+doc7.querySelector('#financeConcept').value = 'Prueba desacople';
+doc7.querySelector('#financeDate').value = '2026-11-20T10:00';
+doc7.querySelector('#financeForm').dispatchEvent(new dom7.window.Event('submit', { bubbles: true, cancelable: true }));
+await sleep(100);
+assert.match(doc7.querySelector('#financeHistoryBody').textContent || '', /Prueba desacople/, 'el movimiento queda en el Libro de finanzas');
+doc7.querySelector('#drawerNav [data-go="historico"]').click();
+assert.doesNotMatch(doc7.querySelector('#historyBody').textContent || '', /Prueba desacople/, 'la finanzas no aparece en el Histórico');
+assert.equal(errors7.length, 0, 'errores de ventana en el desacople finanzas: ' + errors7.join(' | '));
+console.log('finanzas OK: libro manual sin clientes, sin rastro en el Histórico');
 process.exit(0);

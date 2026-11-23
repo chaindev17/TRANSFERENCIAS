@@ -19,9 +19,11 @@ negocio de transferencias del día a día. Sin backend propio y sin dependencias
   «Confirm email» desactivado, la entrada es directa. **Cerrar sesión**: el botón 🔒 de la
   barra superior (o del menú) cierra la sesión de la nube en este dispositivo — tus datos
   locales y los de la nube quedan intactos; también desde 👤 Mi cuenta → «Desconectar».
-- **Finanzas**: tu libro, simplificado — registra **ingresos, egresos y ajustes** y gestiónalos en el
-  **Libro de finanzas** (editar/eliminar). Lo demás (KPIs, saldo base, precios manuales
-  Toque/Abitab/Red Pagos, calculadora) quedó oculto y sus datos siguen guardados/exportables.
+- **Finanzas**: tu libro personal, simplificado y aislado — registra **ingresos, egresos y ajustes**
+  y gestiónalos en el **Libro de finanzas** (editar/eliminar). No referencia clientes, no toca
+  saldos ni recibos/transferencias y **no aparece en el Histórico general**. Lo demás (KPIs,
+  saldo base, precios manuales Toque/Abitab/Red Pagos, calculadora) quedó oculto y sus datos
+  siguen guardados/exportables.
 - **Apariencia Prex**: paleta violeta (degradado profundo en héroes y CTA), paneles blancos
   redondeados con sombras suaves; el modo oscuro es violeta profundo. En móvil aparece una
   **barra inferior fija** (Inicio · Operaciones · Saldo · Histórico · Cuenta) con la sección
@@ -35,7 +37,8 @@ negocio de transferencias del día a día. Sin backend propio y sin dependencias
 - **Compartir desde WhatsApp (Android)**: con la app instalada, comparte un mensaje
   desde WhatsApp → Gestor Integral y se abre en **Transferencia** con la tarjeta/monedero
   y el monto detectados. En iOS no existe esta integración; usa pegar, que detecta lo mismo.
-- **Histórico general**: todo en un solo libro, con buscador, filtros, export CSV/JSON.
+- **Histórico general**: clientes, recibos, transferencias y sistema en un solo libro, con
+  buscador, filtros y export CSV/JSON. **Finanzas queda fuera** del Histórico (libro propio).
 - **Cuenta** (página 👤 del menú): idéntica en funcionamiento al resto de secciones (navega a
   su página, hash `#cuenta`). Tus **datos personales** (nombre, teléfono/WhatsApp, correo y una
   nota) guardados en el espacio de tu cuenta, y **conectar/desconectar** desde el mismo lugar —
