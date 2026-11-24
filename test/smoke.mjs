@@ -268,12 +268,25 @@ assert.equal(doc8.querySelector('#cloudOAuthAppleBtn'), null, '«Mi cuenta» ya 
 assert.equal(doc8.querySelector('#cloudMagicBtn'), null, 'sin enlace mágico: solo correo y contraseña');
 assert.ok(doc8.querySelector('#cloudEmail') && doc8.querySelector('#cloudPassword'), 'correo y contraseña presentes');
 assert.equal(errors8.length, 0, 'errores de ventana en la entrada recuperada: ' + errors8.join(' | '));
-console.log('acceso OK: vuelta a correo + PIN (sin Google/Apple/enlace mágico)');
+// la puerta exige credenciales en la nube: visible sin sesión
+const gate=doc8.querySelector('#lockScreen');
+assert.ok(gate, 'existe la puerta de acceso');
+assert.equal(gate.classList.contains('hidden'), false, 'sin sesión en la nube la puerta está visible (no se navega sin acceder)');
+assert.ok(doc8.querySelector('#lockEmail') && doc8.querySelector('#lockPassword'), 'puerta: usuario o email + contraseña');
+assert.ok(doc8.querySelector('#lockLoginForm') && doc8.querySelector('#lockSignupForm'), 'puerta: formulario de entrada y de registro');
+assert.equal(doc8.querySelector('#lockSignupForm').classList.contains('hidden'), true, 'registro oculto por defecto');
+assert.equal(doc8.querySelector('#lockLocalBtn'), null, 'sin «Continuar sin cuenta»: no se navega sin acceder');
+assert.equal(doc8.querySelector('#lockPinInput'), null, 'el PIN local ya no es un acceso directo: la entrada es con la nube');
+doc8.querySelector('#lockToSignup').click();
+assert.equal(doc8.querySelector('#lockSignupForm').classList.contains('hidden'), false, '«Regístrate aquí» muestra el registro');
+assert.equal(doc8.querySelector('#lockLoginForm').classList.contains('hidden'), true, '«Regístrate aquí» oculta la entrada');
+doc8.querySelector('#lockToLogin').click();
+assert.equal(doc8.querySelector('#lockLoginForm').classList.contains('hidden'), false, '«Inicia sesión aquí» vuelve a la entrada');
+console.log('acceso OK: puerta con credenciales en la nube (sin modo local, sin Google/Apple/enlace mágico)');
 
-// ---- 13) Face ID (WebAuthn opcional) + copia de seguridad cada 1 minuto ----
-assert.ok(doc8.querySelector('#lockFaceBtn'), 'pantalla de entrada: botón Face ID presente (oculto hasta registrar)');
-assert.equal(doc8.querySelector('#lockFaceBtn').classList.contains('hidden'), true, 'Face ID oculto si el perfil no lo tiene');
+// ---- 13) Face ID (WebAuthn opcional, dentro de «Mi cuenta») + copia de seguridad cada 1 minuto ----
 assert.ok(doc8.querySelector('#profileFaceBtn'), '«Mi cuenta»: interruptor Face ID');
+assert.ok(doc8.querySelector('#profileFaceUnlockBtn'), '«Mi cuenta»: desbloqueo de perfil con Face ID');
 assert.ok(doc8.querySelector('#cloudBackupMin'), '«Mi cuenta»: copia de seguridad cada 1 minuto');
 assert.equal(doc8.querySelector('#cloudBackupMin').checked, false, 'la copia cada 1 minuto viene desactivada por defecto');
 console.log('faceid/backup OK: Face ID (opcional, WebAuthn) y copia en la nube cada 1 min presentes');
