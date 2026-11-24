@@ -19,6 +19,14 @@ negocio de transferencias del día a día. Sin backend propio y sin dependencias
   «Confirm email» desactivado, la entrada es directa. **Cerrar sesión**: el botón 🔒 de la
   barra superior (o del menú) cierra la sesión de la nube en este dispositivo — tus datos
   locales y los de la nube quedan intactos; también desde 👤 Mi cuenta → «Desconectar».
+- **Face ID (opcional, WebAuthn)**: en «👤 Mi cuenta» activá **Face ID** para tu perfil local; la
+  próxima vez, la pantalla de entrada ofrece **🔓 Desbloquear con Face ID** (Touch ID / Face ID /
+  huella según el dispositivo) en vez del PIN. El PIN sigue como alternativa y Face ID es un
+  desbloqueo local del perfil — la cuenta en la nube sigue con correo y contraseña.
+- **Copia de seguridad cada 1 minuto**: en «☁️ Nube opcional», con la sesión iniciada, la casilla
+  **«Copia de seguridad automática en la nube cada 1 minuto (mientras la app esté abierta)»**
+  sube una copia a Supabase cada 60 s (no sobrescribe la nube si esa copia es más nueva: primero
+  recomienda «⬇ Traer copia»).
 - **Finanzas**: tu libro personal, simplificado y aislado — registra **ingresos, egresos y ajustes**
   y gestiónalos en el **Libro de finanzas** (editar/eliminar). No referencia clientes, no toca
   saldos ni recibos/transferencias y **no aparece en el Histórico general**. Lo demás (KPIs,

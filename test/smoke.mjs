@@ -270,6 +270,14 @@ assert.ok(doc8.querySelector('#cloudEmail') && doc8.querySelector('#cloudPasswor
 assert.equal(errors8.length, 0, 'errores de ventana en la entrada recuperada: ' + errors8.join(' | '));
 console.log('acceso OK: vuelta a correo + PIN (sin Google/Apple/enlace mágico)');
 
+// ---- 13) Face ID (WebAuthn opcional) + copia de seguridad cada 1 minuto ----
+assert.ok(doc8.querySelector('#lockFaceBtn'), 'pantalla de entrada: botón Face ID presente (oculto hasta registrar)');
+assert.equal(doc8.querySelector('#lockFaceBtn').classList.contains('hidden'), true, 'Face ID oculto si el perfil no lo tiene');
+assert.ok(doc8.querySelector('#profileFaceBtn'), '«Mi cuenta»: interruptor Face ID');
+assert.ok(doc8.querySelector('#cloudBackupMin'), '«Mi cuenta»: copia de seguridad cada 1 minuto');
+assert.equal(doc8.querySelector('#cloudBackupMin').checked, false, 'la copia cada 1 minuto viene desactivada por defecto');
+console.log('faceid/backup OK: Face ID (opcional, WebAuthn) y copia en la nube cada 1 min presentes');
+
 // ---- 11) retorno OAuth: #access_token en la URL guarda la sesión y limpia el hash ----
 const dom9 = new JSDOM(html, {
   url: 'https://gestor.local/#access_token=tok123abc&refresh_token=ref456def&expires_in=3600&token_type=bearer&type=signup',

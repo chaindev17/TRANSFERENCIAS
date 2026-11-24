@@ -814,7 +814,8 @@ body{overflow-x:clip}
     <div class="auth-session hidden" id="profileSessionPane">
       <div class="auth-avatar" id="profileAvatar">A</div>
       <div><b id="profileActiveName">Cuenta</b><small>Perfil local · este dispositivo</small><small>Tu información está separada; se pide el PIN al entrar</small></div>
-      <button type="button" class="btn btn-g btn-s" id="profileLockBtn" style="margin-left:auto;white-space:nowrap" title="Salir de la cuenta y volver al inicio">🔒 Salir</button>
+      <button type="button" class="btn btn-g btn-s" id="profileFaceBtn" style="white-space:nowrap" title="Registrar o quitar Face ID de este dispositivo">🔓 Face ID</button>
+      <button type="button" class="btn btn-g btn-s" id="profileLockBtn" style="white-space:nowrap" title="Salir de la cuenta y volver al inicio">🔒 Salir</button>
     </div>
 
     <div class="auth-session hidden" id="authSessionPane">
@@ -887,6 +888,7 @@ body{overflow-x:clip}
         <button type="button" class="btn btn-g" id="cloudPullBtn">⬇ Traer copia de la nube</button>
       </div>
       <label class="check" for="cloudAuto" style="margin-top:10px"><input id="cloudAuto" type="checkbox" /> Subir automáticamente tras cada cambio (8 s de silencio)</label>
+      <label class="check" for="cloudBackupMin" style="margin-top:6px"><input id="cloudBackupMin" type="checkbox" /> Copia de seguridad automática en la nube cada 1 minuto (mientras la app esté abierta)</label>
     </div>
     <p class="hintline" id="cloudStatus">Modo local: tus datos viven en este dispositivo. Para verlos en todos tus dispositivos: <b>☁️ Nube opcional → Iniciar sesión</b>.</p>
     <div class="macts"><button type="button" class="btn btn-g" id="cloudCloseBtn" style="flex:1">Cerrar</button></div>
@@ -921,6 +923,7 @@ body{overflow-x:clip}
       <input id="lockPinInput" type="password" inputmode="numeric" autocomplete="off" placeholder="••••" maxlength="8" aria-label="PIN de la cuenta seleccionada" />
       <button type="button" class="btn btn-p" id="lockUnlockBtn">Entrar</button>
     </div>
+    <button type="button" class="btn btn-g hidden" id="lockFaceBtn" style="width:100%;margin-bottom:10px">🔓 Desbloquear con Face ID</button>
     <button type="button" class="lock-secondary" id="lockCreateBtn">＋ Crear una cuenta nueva</button>
     <button type="button" class="lock-secondary" id="lockLocalBtn">Continuar sin cuenta (modo local)</button>
   </div>
@@ -1054,10 +1057,12 @@ function profileIni(name){name=String(name||'?').trim();return (name.charAt(0)||
 function currentLockError(){var el=$('lockError');return el;}
 function renderLockList(){var box=$('lockList');if(!box)return;var list=profilesRead();
  box.innerHTML=list.length?list.map(function(p){return '<button type="button" class="profilerow lockitem'+(SELECTED_LOCK_ID===p.id?' active':'')+'" data-pid="'+esc(p.id)+'"><span class="pavatar">'+esc(profileIni(p.name))+'</span><span class="grow"><b>'+esc(p.name)+'</b><small>Creada '+esc(new Date(p.createdAt||Date.now()).toLocaleDateString('es-UY'))+'</small></span><span style="font-size:16px">🔒</span></button>';}).join(''):'<p class="hintline" style="text-align:center">No hay cuentas todavía.</p>';
- $('lockPinRow').classList.toggle('hidden',!SELECTED_LOCK_ID);}
+ $('lockPinRow').classList.toggle('hidden',!SELECTED_LOCK_ID);
+ var fb=$('lockFaceBtn');if(fb){var fp=SELECTED_LOCK_ID?findProfile(SELECTED_LOCK_ID):null;fb.classList.toggle('hidden',!(fp&&fp.faceId));}}
 function renderProfileUI(){var ap=unlockedProfile();renderAccountBtn();var list=profilesRead();
  var pPane=$('profileSessionPane');if(pPane)pPane.classList.toggle('hidden',!ap);
- if(ap){$('profileAvatar').textContent=profileIni(ap.name);$('profileActiveName').textContent=ap.name;}
+ if(ap){$('profileAvatar').textContent=profileIni(ap.name);$('profileActiveName').textContent=ap.name;
+  var fbb=$('profileFaceBtn');if(fbb){if(!webauthnOK()){fbb.classList.add('hidden');}else{fbb.classList.remove('hidden');fbb.textContent=ap.faceId?'🔓 Quitar Face ID':'🔓 Activar Face ID';fbb.title=ap.faceId?'Este dispositivo ya tiene Face ID registrado para esta cuenta. Toca para quitarlo.':'Registra Face ID de este dispositivo para esta cuenta';}}}
  var box=$('profileList');if(!box)return;
  $('profileEmptyHint').style.display=list.length?'none':'block';
  box.innerHTML=list.map(function(p){return '<div class="profilerow'+((ap&&ap.id===p.id)||SELECTED_MODAL_ID===p.id?' active':'')+'" data-pid="'+esc(p.id)+'" role="button" tabindex="0"><span class="pavatar">'+esc(profileIni(p.name))+'</span><span class="grow"><b>'+esc(p.name)+'</b><small>'+((ap&&ap.id===p.id)?'Sesión activa en este dispositivo':'Creada '+esc(new Date(p.createdAt||Date.now()).toLocaleDateString('es-UY')))+'</small></span><button type="button" class="icobtn danger profiledel" data-pid="'+esc(p.id)+'" aria-label="Borrar cuenta '+esc(p.name)+'" title="Borrar cuenta y sus datos">🗑</button></div>';}).join('');
@@ -1207,6 +1212,52 @@ function exportNudge(){
   setTimeout(function(){try{toast('💡 Hace más de 7 días que no exportás tu base. Base de datos → ⬇ Exportar base JSON.');}catch(e){}},1200);
  }catch(e){}
 }
+/* ===== Face ID / biometría del dispositivo para desbloquear un perfil local (WebAuthn) ===== */
+function bufToB64url(buf){var b=new Uint8Array(buf),s='';for(var i=0;i<b.length;i++)s+=String.fromCharCode(b[i]);return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');}
+function b64urlToBuf(s){s=String(s||'').replace(/-/g,'+').replace(/_/g,'/');while(s.length%4)s+='=';var raw=atob(s),b=new Uint8Array(raw.length);for(var i=0;i<raw.length;i++)b[i]=raw.charCodeAt(i);return b.buffer;}
+function webauthnOK(){try{return !!(window.PublicKeyCredential&&navigator.credentials&&typeof navigator.credentials.create==='function'&&typeof navigator.credentials.get==='function');}catch(e){return false;}}
+function randomChallenge(){var a=new Uint8Array(32);window.crypto.getRandomValues(a);return a.buffer;}
+function unlockProfileStored(pid){try{sessionStorage.setItem('gestor_unlocked',pid);sessionStorage.removeItem('gestor_local_ok');}catch(e){}location.reload();}
+function registerFaceId(pid){
+ var p=findProfile(pid);if(!p)return Promise.reject(new Error('Perfil no encontrado'));
+ if(!webauthnOK())return Promise.reject(new Error('Face ID no está disponible en este navegador o dispositivo'));
+ var uidBytes=new TextEncoder().encode(String(p.id||pid)).slice(0,64);
+ return navigator.credentials.create({publicKey:{
+  challenge:randomChallenge(),
+  rp:{name:'Gestor Integral'},
+  user:{id:uidBytes,name:p.name||'Cuenta',displayName:p.name||'Cuenta'},
+  pubKeyCredParams:[{type:'public-key',alg:-7},{type:'public-key',alg:-257}],
+  authenticatorSelection:{authenticatorAttachment:'platform',userVerification:'required',residentKey:'preferred'},
+  timeout:60000,
+  attestation:'none'
+ }}).then(function(cred){var list=profilesRead();for(var i=0;i<list.length;i++){if(list[i].id===pid){list[i].faceId=bufToB64url(cred.rawId);}}profilesWrite(list);return true;});
+}
+function removeFaceId(pid){var list=profilesRead();for(var i=0;i<list.length;i++){if(list[i].id===pid&&list[i].faceId){delete list[i].faceId;}}profilesWrite(list);}
+function unlockWithFaceId(pid){
+ var p=findProfile(pid);var e=currentLockError();
+ if(!p||!p.faceId){if(e)e.textContent='Este perfil todavía no tiene Face ID registrado.';return Promise.resolve(false);}
+ if(!webauthnOK()){if(e)e.textContent='Face ID no está disponible en este navegador o dispositivo.';return Promise.resolve(false);}
+ return navigator.credentials.get({publicKey:{
+  challenge:randomChallenge(),
+  allowCredentials:[{type:'public-key',id:b64urlToBuf(p.faceId)}],
+  userVerification:'required',
+  timeout:60000
+ }}).then(function(){unlockProfileStored(pid);return true;})
+ .catch(function(err){var msg=err&&err.name==='NotAllowedError'?'Face ID cancelado. Usa tu PIN o inténtalo otra vez.':'No se pudo verificar Face ID: '+(err&&err.message?err.message:'error desconocido');if(e)e.textContent=msg;return false;});
+}
+/* ===== Copia de seguridad automática en la nube cada 1 minuto ===== */
+var cloudBackupTimer=null,cloudBackupBusy=false;
+function cloudBackupApply(){
+ if(cloudBackupTimer){clearInterval(cloudBackupTimer);cloudBackupTimer=null;}
+ var c=cloudCfg();
+ if(c.autoBackupMinute&&c.accessToken){cloudBackupTimer=setInterval(cloudBackupTick,60000);}
+}
+async function cloudBackupTick(){
+ if(cloudBackupBusy)return;
+ var c=cloudCfg();if(!c.autoBackupMinute||!c.accessToken){cloudBackupApply();return;}
+ cloudBackupBusy=true;
+ try{await cloudPush({auto:true});}finally{cloudBackupBusy=false;}
+}
 function tryShowLock(){var mustLock=profilesRead().length>0&&!unlockedProfile();if(!mustLock)return;if(NS.indexOf('local:')!==0)return;try{if(sessionStorage.getItem('gestor_local_ok')==='1')return;}catch(e){}
  renderLockList();var ls=$('lockScreen');if(ls)ls.classList.remove('hidden');}
 
@@ -1249,6 +1300,7 @@ function renderSession(){
   $('authName').textContent=nm;$('authEmail').textContent=c.email||'';
   $('authAvatar').textContent=(String(nm).trim().charAt(0)||'A').toUpperCase();
   $('cloudAuto').checked=!!c.auto;
+  $('cloudBackupMin').checked=!!c.autoBackupMinute;
   cloudStatus(sessionLabel()+' Tus datos están aislados de otras cuentas.',true);
  }
 }
@@ -2021,6 +2073,7 @@ $('cloudResendBtn').addEventListener('click',cloudResend);$('cloudRecoverBtn').a
 $('cloudPushBtn').addEventListener('click',cloudPush);$('cloudPullBtn').addEventListener('click',cloudPull);
 $('cloudLogoutBtn').addEventListener('click',function(){if(confirm('¿Desconectar tu cuenta en esta app? Tus datos locales quedan intactos; podrás volver a entrar.'))cloudLogout();});
 $('cloudAuto').addEventListener('change',function(){var c=cloudCfg();c.auto=$('cloudAuto').checked;cloudSave(c);cloudStatus(c.auto?'Auto-sincronía activada: se sube una copia 8 s tras cada cambio.':'Auto-sincronía desactivada.');});
+$('cloudBackupMin').addEventListener('change',function(){var c=cloudCfg();c.autoBackupMinute=$('cloudBackupMin').checked;cloudSave(c);cloudBackupApply();cloudStatus(c.autoBackupMinute?'Copia de seguridad cada 1 minuto activada (mientras la app esté abierta).':'Copia de seguridad cada 1 minuto desactivada.');});
 $('bannerSignIn').addEventListener('click',openCloud);
 $('bannerAdopt').addEventListener('click',function(){if(!confirm('¿Copiar los datos guardados en este navegador al modo local?\n\nLa copia original se conserva; podrás borrarla luego desde «Reiniciar datos» si quieres.'))return;var seen={};Object.keys(K).forEach(function(ok){var k=K[ok];if(seen[k])return;seen[k]=1;var l=sget(k);if(l!=null&&sget(nsKey(k))==null)sset(nsKey(k),l);});location.reload();});
 $('bannerDismiss').addEventListener('click',function(){try{sessionStorage.setItem('gestor_banner','1');}catch(e){}$('localBanner').classList.add('hidden');});
@@ -2030,9 +2083,15 @@ $('profileList').addEventListener('keydown',function(ev){if(ev.key==='Enter'||ev
 $('profileUnlockBtn').addEventListener('click',function(){var pin=$('profilePinInput').value||'';if(!SELECTED_MODAL_ID)return;unlockWithPin(SELECTED_MODAL_ID,pin).then(function(ok){if(ok){try{sessionStorage.setItem('gestor_unlocked',SELECTED_MODAL_ID);sessionStorage.removeItem('gestor_local_ok');}catch(e){}toast('Bienvenido de nuevo','ok');setTimeout(function(){location.reload();},400);}else{toast('PIN incorrecto','err');$('profilePinInput').select();}});});
 $('profilePinInput').addEventListener('keydown',function(ev){if(ev.key==='Enter'){ev.preventDefault();$('profileUnlockBtn').click();}});
 $('profileLockBtn').addEventListener('click',lockNow);
+$('profileFaceBtn').addEventListener('click',function(){
+ var ap=unlockedProfile();if(!ap)return;
+ if(ap.faceId){if(confirm('¿Quitar Face ID de este dispositivo para «'+(ap.name||'la cuenta')+'»?\n\nSeguirás entrando con tu PIN.')){removeFaceId(ap.id);renderProfileUI();toast('Face ID quitado de este dispositivo','ok');}return;}
+ registerFaceId(ap.id).then(function(){renderProfileUI();toast('Face ID activado en este dispositivo','ok');}).catch(function(err){toast(err&&err.name==='NotAllowedError'?'Face ID cancelado o no disponible.':'No se pudo activar Face ID: '+(err&&err.message?err.message:'error desconocido'),false);});
+});
 $('lockList').addEventListener('click',function(ev){var row=ev.target.closest('.lockitem');if(row)selectLockProfile(row.getAttribute('data-pid'));});
 $('lockUnlockBtn').addEventListener('click',function(){var pin=$('lockPinInput').value||'';if(!SELECTED_LOCK_ID)return;unlockWithPin(SELECTED_LOCK_ID,pin).then(function(ok){if(ok){try{sessionStorage.setItem('gestor_unlocked',SELECTED_LOCK_ID);sessionStorage.removeItem('gestor_local_ok');}catch(e){}location.reload();}else{var e=currentLockError();if(e)e.textContent='PIN incorrecto. Inténtalo de nuevo.';$('lockPinInput').select();}});});
 $('lockPinInput').addEventListener('keydown',function(ev){if(ev.key==='Enter'){ev.preventDefault();$('lockUnlockBtn').click();}});
+$('lockFaceBtn').addEventListener('click',function(){if(!SELECTED_LOCK_ID)return;var e=currentLockError();if(e)e.textContent='';unlockWithFaceId(SELECTED_LOCK_ID);});
 $('lockCreateBtn').addEventListener('click',function(){openCloud();var pb=$('profileCreateBox');if(pb)pb.setAttribute('open','open');setTimeout(function(){var n=$('profileName');if(n)n.focus();},120);});
 $('lockLocalBtn').addEventListener('click',function(){try{sessionStorage.setItem('gestor_local_ok','1');}catch(e){}location.reload();});
 $('receiptSortBtn').addEventListener('click',function(){receiptAsc=!receiptAsc;this.textContent=receiptAsc?'↑ Antiguos':'↓ Recientes';renderReceiptH();});
@@ -2083,7 +2142,7 @@ var lb=$('localBanner');if(lb&&!hideBanner){
  if(NS==='local:'){lb.classList.remove('hidden');if(legacy&&targetEmpty){var ba=$('bannerAdopt');if(ba)ba.classList.remove('hidden');}}
  else if(legacy&&targetEmpty){lb.classList.remove('hidden');var bt=$('bannerText');if(bt)bt.innerHTML='<b>Cuenta nueva en este dispositivo.</b> ¿Copiar los datos ya guardados en este navegador a tu cuenta?';var ba2=$('bannerAdopt');if(ba2)ba2.classList.remove('hidden');var bs=$('bannerSignIn');if(bs)bs.classList.add('hidden');}
 }
-try{if(localStorage.getItem('gestor_privacy')==='1'){document.documentElement.classList.add('privacy');var pb=$('togglePrivacyEye');if(pb){pb.textContent='🙈';pb.setAttribute('aria-pressed','true');}}}catch(e){}maybeAuthCallback();tryShowLock();renderAccountBtn();exportNudge();maybeAutoPull();maybeSignedOut();})();
+try{if(localStorage.getItem('gestor_privacy')==='1'){document.documentElement.classList.add('privacy');var pb=$('togglePrivacyEye');if(pb){pb.textContent='🙈';pb.setAttribute('aria-pressed','true');}}}catch(e){}maybeAuthCallback();tryShowLock();renderAccountBtn();exportNudge();maybeAutoPull();maybeSignedOut();cloudBackupApply();})();
 })();
 </script>
 <script>/* PWA: cachea la app para uso sin conexión (los datos siguen en localStorage) */
