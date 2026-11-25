@@ -13,16 +13,18 @@ negocio de transferencias del día a día. Sin backend propio y sin dependencias
 - **Historial en tarjetas**: recibos y transferencias con badge por tipo, cliente, `#op`, monto grande,
   saldo restante (o comisión · neto), chip 💳 Tarjeta/👛 Monedero con el número **enmascarado**
   (toca para verlo u ocultarlo; 📋 copia el número o el resumen) y fecha + acciones ✎ 📋 🗑.
-- **Cuentas sin verificación**: crea tu cuenta con solo un nombre y un PIN — cada persona ve únicamente
-  su información en este dispositivo (espacio separado `p:<id>:gestor_*` + bloqueo con PIN).
-  Sin correo ni contraseña. La nube (Supabase) sincroniza entre dispositivos; con
-  «Confirm email» desactivado, la entrada es directa. **Cerrar sesión**: el botón 🔒 de la
-  barra superior (o del menú) cierra la sesión de la nube en este dispositivo — tus datos
-  locales y los de la nube quedan intactos; también desde 👤 Mi cuenta → «Desconectar».
-- **Face ID (opcional, WebAuthn)**: en «👤 Mi cuenta» activá **Face ID** para tu perfil local; la
-  próxima vez, la pantalla de entrada ofrece **🔓 Desbloquear con Face ID** (Touch ID / Face ID /
-  huella según el dispositivo) en vez del PIN. El PIN sigue como alternativa y Face ID es un
-  desbloqueo local del perfil — la cuenta en la nube sigue con correo y contraseña.
+- **Entrada con credenciales (obligatoria)**: la app abre en una pantalla de acceso (tarjeta clara
+  sobre fondo violeta claro): **👤 Usuario o Email** y **🔑 Contraseña** → **🚪 Iniciar Sesión**,
+  o **Regístrate aquí** para crear tu cuenta (correo + contraseña, mín. 8). La cuenta vive en
+  Supabase (correo+contraseña; con «Confirm email» desactivado, la entrada es directa) y **no hay
+  forma de navegar por la app sin acceder primero**: sin sesión, la puerta cubre toda la pantalla.
+  **Cerrar sesión** cierra el acceso en este dispositivo — tus datos en la nube quedan intactos.
+- **Perfiles locales como espacios**: dentro de la app, en «👤 Mi cuenta» podés crear/seleccionar
+  perfiles con PIN (espacios separados `p:<id>:gestor_*`) para organizar la información por persona.
+- **Face ID (opcional, WebAuthn)**: en «👤 Mi cuenta» activá **Face ID** para desbloquear un perfil
+  con Face ID / Touch ID / huella de este dispositivo (Touch ID / Face ID / huella según el
+  dispositivo), como alternativa al PIN. La entrada a la app sigue siendo con tu cuenta en la nube
+  (correo y contraseña).
 - **Copia de seguridad cada 1 minuto**: en «☁️ Nube opcional», con la sesión iniciada, la casilla
   **«Copia de seguridad automática en la nube cada 1 minuto (mientras la app esté abierta)»**
   sube una copia a Supabase cada 60 s (no sobrescribe la nube si esa copia es más nueva: primero

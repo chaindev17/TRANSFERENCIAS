@@ -436,17 +436,23 @@ details.db-help ul{margin:10px 0 0;padding-left:18px;color:var(--mut);font-size:
 .profilepin input{flex:1;min-width:0}
 .auth-divider{display:flex;align-items:center;gap:10px;color:var(--faint);font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;margin:2px 0 12px}
 .auth-divider::before,.auth-divider::after{content:"";flex:1;height:1px;background:var(--line2)}
-.lockscreen{position:fixed;inset:0;z-index:90;display:grid;place-items:center;background:var(--backdrop);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);padding:20px}
-.lockbox{width:min(430px,100%);background:var(--modal);border:1px solid var(--line-strong);border-radius:22px;padding:26px 22px;box-shadow:0 30px 90px var(--shadow-strong);text-align:center}
-.locklogo{width:52px;height:52px;border-radius:15px;display:grid;place-items:center;font-weight:800;font-size:22px;color:var(--logo-text);background:linear-gradient(135deg,var(--mint),var(--mint2));margin:0 auto 12px}
-.lockbox h2{margin:0;font-size:21px;letter-spacing:-.02em}
-.lock-sub{margin:4px 0 16px;color:var(--mut);font-size:12px}
-.locklist{display:grid;gap:8px;margin-bottom:12px}
-.lockpin-row{display:flex;gap:8px;margin-bottom:12px}
-.lockpin-row input{flex:1;min-width:0;text-align:center;letter-spacing:.25em;font-size:16px}
-.lock-secondary{display:block;width:100%;border:0;background:transparent;color:var(--mut);font-size:12px;font-weight:600;padding:8px;cursor:pointer;border-radius:10px;margin-top:4px}
-.lock-secondary:hover{background:var(--surface2);color:var(--tx)}
-.lock-error{color:var(--coral-text,#fda4af);font-size:12px;min-height:18px;margin:0 0 6px}
+.lockscreen{position:fixed;inset:0;z-index:120;display:grid;place-items:center;padding:24px 16px;overflow-y:auto;background-color:#eeedf4;background-image:radial-gradient(1200px 700px at 50% -10%,#f7f6fc,transparent 60%),radial-gradient(900px 600px at 50% 115%,#e4e0f2,transparent 65%)}
+.lock-card{width:min(430px,100%);background:#fff;border-radius:26px;box-shadow:0 32px 70px rgba(31,27,58,.20),inset 0 1px 0 #fff;padding:34px 26px 26px;text-align:center;margin:auto}
+.lock-badge{width:82px;height:82px;border-radius:23px;display:grid;place-items:center;font-size:39px;line-height:1;background:linear-gradient(150deg,#8b5cf6 0%,#6d28d9 60%,#4c1d95 100%);box-shadow:0 16px 36px rgba(109,40,217,.42),inset 0 1px 0 rgba(255,255,255,.5);margin:0 auto 18px}
+.lock-title{margin:0;font-size:27px;letter-spacing:-.02em;color:#211d3f;font-weight:800}
+.lock-sub2{margin:6px 0 18px;color:#71708b;font-size:13.5px}
+.lock-form{display:flex;flex-direction:column;gap:14px;text-align:left}
+.lock-flabel{font-size:13px;font-weight:800;color:#2b2743;display:flex;align-items:center;gap:7px}
+.lock-input{width:100%;border:2px solid #e6e4f0;background:#fcfcff;border-radius:15px;padding:14px 16px;font-size:15px;transition:border-color .15s,box-shadow .15s;color:#211d3f}
+.lock-input::placeholder{color:#b9b7cf}
+.lock-input:focus{outline:none;border-color:#7c5cfc;box-shadow:0 0 0 4px rgba(124,92,252,.18);background:#fff}
+.lock-cta{width:100%;border:none;border-radius:16px;padding:16px 18px;font-size:16.5px;font-weight:800;letter-spacing:.01em;color:#fff;cursor:pointer;background:linear-gradient(135deg,#7c5cfc 0%,#6248e8 100%);box-shadow:0 14px 30px rgba(109,40,217,.38),inset 0 1px 0 rgba(255,255,255,.35);transition:transform .12s,box-shadow .2s}
+.lock-cta:hover{transform:translateY(-1px);box-shadow:0 18px 38px rgba(109,40,217,.45),inset 0 1px 0 rgba(255,255,255,.35)}
+.lock-cta:active{transform:scale(.98)}
+.lock-cta:disabled{opacity:.7;cursor:default}
+.lock-error{color:#dc2f52;font-size:12.5px;min-height:18px;margin:12px 0 0;font-weight:700;text-align:center}
+.lock-switch{margin:20px 0 0;text-align:center;color:#71708b;font-size:14px}
+.lock-switch button{background:none;border:0;color:#6d28d9;font-weight:800;cursor:pointer;font-size:14px;padding:2px 2px}
 /* ===== Layout escritorio / móvil ===== */
 html{-webkit-text-size-adjust:100%;overflow-x:clip}
 body{overflow-x:clip}
@@ -831,6 +837,7 @@ body{overflow-x:clip}
       <div class="profilepin hidden" id="profilePinRow">
         <input id="profilePinInput" type="password" inputmode="numeric" autocomplete="off" placeholder="PIN de 4 a 8 dígitos" maxlength="8" aria-label="PIN del perfil seleccionado" />
         <button type="button" class="btn btn-p" id="profileUnlockBtn">Entrar</button>
+        <button type="button" class="btn btn-g hidden" id="profileFaceUnlockBtn" title="Usar Face ID de este dispositivo">🔓 Face ID</button>
       </div>
       <details class="auth-advanced" id="profileCreateBox">
         <summary>＋ Crear una cuenta nueva</summary>
@@ -913,19 +920,43 @@ body{overflow-x:clip}
 <div id="toast" class="toast"></div>
 
 <div id="lockScreen" class="lockscreen hidden" role="dialog" aria-modal="true" aria-labelledby="lockTitle">
-  <div class="lockbox">
-    <div class="locklogo">G</div>
-    <h2 id="lockTitle">Gestor Integral</h2>
-    <p class="lock-sub">Elige tu cuenta y entra con tu PIN</p>
+  <div class="lock-card">
+    <div class="lock-badge" aria-hidden="true">🔑</div>
+    <h2 id="lockTitle" class="lock-title">Gestor Integral</h2>
+    <p class="lock-sub2">Inicia sesión para acceder a tus datos</p>
+    <form id="lockLoginForm" class="lock-form" autocomplete="on">
+      <div class="field">
+        <label class="lock-flabel" for="lockEmail">👤 Usuario o Email</label>
+        <input class="lock-input" id="lockEmail" type="email" inputmode="email" autocomplete="email" placeholder="Ej: juan@correo.com" required />
+      </div>
+      <div class="field">
+        <label class="lock-flabel" for="lockPassword">🔑 Contraseña</label>
+        <input class="lock-input" id="lockPassword" type="password" autocomplete="current-password" placeholder="••••••••" required />
+      </div>
+      <button type="submit" class="lock-cta" id="lockLoginBtn">🚪 Iniciar Sesión</button>
+    </form>
+    <form id="lockSignupForm" class="lock-form hidden" autocomplete="on">
+      <div class="field">
+        <label class="lock-flabel" for="lockName">👤 Nombre</label>
+        <input class="lock-input" id="lockName" type="text" autocomplete="name" placeholder="¿Cómo te llamas?" />
+      </div>
+      <div class="field">
+        <label class="lock-flabel" for="lockEmail2">👤 Correo</label>
+        <input class="lock-input" id="lockEmail2" type="email" inputmode="email" autocomplete="email" placeholder="Ej: juan@correo.com" required />
+      </div>
+      <div class="field">
+        <label class="lock-flabel" for="lockPassword2">🔑 Contraseña (mín. 8)</label>
+        <input class="lock-input" id="lockPassword2" type="password" autocomplete="new-password" placeholder="Algo difícil de adivinar" required />
+      </div>
+      <div class="field">
+        <label class="lock-flabel" for="lockPassword2b">🔑 Repetir contraseña</label>
+        <input class="lock-input" id="lockPassword2b" type="password" autocomplete="new-password" placeholder="Repítela" required />
+      </div>
+      <button type="submit" class="lock-cta" id="lockSignupBtn">🚪 Crear cuenta y entrar</button>
+    </form>
     <p class="lock-error" id="lockError"></p>
-    <div class="locklist" id="lockList"></div>
-    <div class="lockpin-row hidden" id="lockPinRow">
-      <input id="lockPinInput" type="password" inputmode="numeric" autocomplete="off" placeholder="••••" maxlength="8" aria-label="PIN de la cuenta seleccionada" />
-      <button type="button" class="btn btn-p" id="lockUnlockBtn">Entrar</button>
-    </div>
-    <button type="button" class="btn btn-g hidden" id="lockFaceBtn" style="width:100%;margin-bottom:10px">🔓 Desbloquear con Face ID</button>
-    <button type="button" class="lock-secondary" id="lockCreateBtn">＋ Crear una cuenta nueva</button>
-    <button type="button" class="lock-secondary" id="lockLocalBtn">Continuar sin cuenta (modo local)</button>
+    <p class="lock-switch" id="lockLoginSwitch">¿No tienes cuenta? <button type="button" id="lockToSignup">Regístrate aquí</button></p>
+    <p class="lock-switch hidden" id="lockSignupSwitch">¿Ya tienes cuenta? <button type="button" id="lockToLogin">Inicia sesión aquí</button></p>
   </div>
 </div>
 <script>
@@ -1045,7 +1076,7 @@ function computeOpeningBalances(d){
  arr(d.clients).forEach(function(c){var v=first(c,['openingBalance','saldoInicial'],null);c.openingBalance=(v==null||!isFinite(Number(v)))?r2((Number(c.balance)||0)-(calc[c.id]||0)):r2(v);});
 }
 /* ===== perfiles locales (cuentas con PIN, sin verificación) ===== */
-var SELECTED_LOCK_ID=null,SELECTED_MODAL_ID=null;
+var SELECTED_MODAL_ID=null;
 function bufToHex(buf){return Array.prototype.map.call(new Uint8Array(buf),function(b){return ('0'+b.toString(16)).slice(-2);}).join('');}
 function simpleHash(str){var h1=0xdeadbeef,h2=0x41c6ce57;for(var i=0;i<str.length;i++){var ch=str.charCodeAt(i);h1=Math.imul(h1^ch,2654435761);h2=Math.imul(h2^ch,1597334677);}h1=Math.imul(h1^(h1>>>16),2246822507)^Math.imul(h2^(h2>>>13),3266489909);h2=Math.imul(h2^(h2>>>16),2246822507)^Math.imul(h1^(h1>>>13),3266489909);return (h2>>>0).toString(16)+(h1>>>0).toString(16);}
 function profileHash(salt,pin){var material='gestor-perfil:'+salt+':'+pin;
@@ -1054,11 +1085,9 @@ function profileHash(salt,pin){var material='gestor-perfil:'+salt+':'+pin;
 function randomSalt(){var a=new Uint8Array(16);try{window.crypto.getRandomValues(a);}catch(e){for(var i=0;i<16;i++)a[i]=Math.floor(Math.random()*256);}return bufToHex(a.buffer?a.buffer:a);}
 function findProfile(id){var list=profilesRead();for(var i=0;i<list.length;i++){if(list[i].id===id)return list[i];}return null;}
 function profileIni(name){name=String(name||'?').trim();return (name.charAt(0)||'?').toUpperCase();}
-function currentLockError(){var el=$('lockError');return el;}
-function renderLockList(){var box=$('lockList');if(!box)return;var list=profilesRead();
- box.innerHTML=list.length?list.map(function(p){return '<button type="button" class="profilerow lockitem'+(SELECTED_LOCK_ID===p.id?' active':'')+'" data-pid="'+esc(p.id)+'"><span class="pavatar">'+esc(profileIni(p.name))+'</span><span class="grow"><b>'+esc(p.name)+'</b><small>Creada '+esc(new Date(p.createdAt||Date.now()).toLocaleDateString('es-UY'))+'</small></span><span style="font-size:16px">🔒</span></button>';}).join(''):'<p class="hintline" style="text-align:center">No hay cuentas todavía.</p>';
- $('lockPinRow').classList.toggle('hidden',!SELECTED_LOCK_ID);
- var fb=$('lockFaceBtn');if(fb){var fp=SELECTED_LOCK_ID?findProfile(SELECTED_LOCK_ID):null;fb.classList.toggle('hidden',!(fp&&fp.faceId));}}
+
+
+function selectModalProfile(id){SELECTED_MODAL_ID=SELECTED_MODAL_ID===id?null:id;renderProfileUI();var pin=$('profilePinInput');if(pin&&SELECTED_MODAL_ID){pin.value='';setTimeout(function(){pin.focus();},30);}}
 function renderProfileUI(){var ap=unlockedProfile();renderAccountBtn();var list=profilesRead();
  var pPane=$('profileSessionPane');if(pPane)pPane.classList.toggle('hidden',!ap);
  if(ap){$('profileAvatar').textContent=profileIni(ap.name);$('profileActiveName').textContent=ap.name;
@@ -1067,9 +1096,13 @@ function renderProfileUI(){var ap=unlockedProfile();renderAccountBtn();var list=
  $('profileEmptyHint').style.display=list.length?'none':'block';
  box.innerHTML=list.map(function(p){return '<div class="profilerow'+((ap&&ap.id===p.id)||SELECTED_MODAL_ID===p.id?' active':'')+'" data-pid="'+esc(p.id)+'" role="button" tabindex="0"><span class="pavatar">'+esc(profileIni(p.name))+'</span><span class="grow"><b>'+esc(p.name)+'</b><small>'+((ap&&ap.id===p.id)?'Sesión activa en este dispositivo':'Creada '+esc(new Date(p.createdAt||Date.now()).toLocaleDateString('es-UY')))+'</small></span><button type="button" class="icobtn danger profiledel" data-pid="'+esc(p.id)+'" aria-label="Borrar cuenta '+esc(p.name)+'" title="Borrar cuenta y sus datos">🗑</button></div>';}).join('');
  $('profilePinRow').classList.toggle('hidden',!SELECTED_MODAL_ID);
- if(SELECTED_MODAL_ID){var sp=findProfile(SELECTED_MODAL_ID);if(!sp){SELECTED_MODAL_ID=null;$('profilePinRow').classList.add('hidden');}}}
-function selectLockProfile(id){SELECTED_LOCK_ID=id;var e=currentLockError();if(e)e.textContent='';renderLockList();var pin=$('lockPinInput');if(pin){pin.value='';setTimeout(function(){pin.focus();},30);}}
-function selectModalProfile(id){SELECTED_MODAL_ID=SELECTED_MODAL_ID===id?null:id;renderProfileUI();var pin=$('profilePinInput');if(pin&&SELECTED_MODAL_ID){pin.value='';setTimeout(function(){pin.focus();},30);}}
+ var fu=$('profileFaceUnlockBtn');
+ if(fu){var sp=SELECTED_MODAL_ID?findProfile(SELECTED_MODAL_ID):null;fu.classList.toggle('hidden',!(sp&&sp.faceId&&webauthnOK()));}
+ if(SELECTED_MODAL_ID){var sp2=findProfile(SELECTED_MODAL_ID);if(!sp2){SELECTED_MODAL_ID=null;$('profilePinRow').classList.add('hidden');}}}
+
+
+
+
 function unlockWithPin(pid,pin){var p=findProfile(pid);if(!p)return Promise.resolve(false);return profileHash(p.salt,pin).then(function(h){return h===p.hash;});}
 function createProfile(name,pin){var salt=randomSalt();return profileHash(salt,pin).then(function(hash){var list=profilesRead();var id=uid('p');list.push({id:id,name:name,salt:salt,hash:hash,createdAt:Date.now()});profilesWrite(list);return id;});}
 function deleteProfile(pid){var p=findProfile(pid);if(!p)return;var ok=window.confirm('¿Borrar la cuenta «'+(p.name||'sin nombre')+'» y TODOS sus datos en este dispositivo?\n\nNo se puede deshacer.');if(!ok)return;var prefix='p:'+profileNsId(pid)+':';try{var keys=[];for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(k&&k.indexOf(prefix)===0)keys.push(k);}keys.forEach(function(k){localStorage.removeItem(k);});}catch(e){}
@@ -1233,17 +1266,18 @@ function registerFaceId(pid){
  }}).then(function(cred){var list=profilesRead();for(var i=0;i<list.length;i++){if(list[i].id===pid){list[i].faceId=bufToB64url(cred.rawId);}}profilesWrite(list);return true;});
 }
 function removeFaceId(pid){var list=profilesRead();for(var i=0;i<list.length;i++){if(list[i].id===pid&&list[i].faceId){delete list[i].faceId;}}profilesWrite(list);}
-function unlockWithFaceId(pid){
- var p=findProfile(pid);var e=currentLockError();
- if(!p||!p.faceId){if(e)e.textContent='Este perfil todavía no tiene Face ID registrado.';return Promise.resolve(false);}
- if(!webauthnOK()){if(e)e.textContent='Face ID no está disponible en este navegador o dispositivo.';return Promise.resolve(false);}
+function unlockWithFaceId(pid,report){
+ report=report||function(){};
+ var p=findProfile(pid);
+ if(!p||!p.faceId){report('Este perfil todavía no tiene Face ID registrado.');return Promise.resolve(false);}
+ if(!webauthnOK()){report('Face ID no está disponible en este navegador o dispositivo.');return Promise.resolve(false);}
  return navigator.credentials.get({publicKey:{
   challenge:randomChallenge(),
   allowCredentials:[{type:'public-key',id:b64urlToBuf(p.faceId)}],
   userVerification:'required',
   timeout:60000
  }}).then(function(){unlockProfileStored(pid);return true;})
- .catch(function(err){var msg=err&&err.name==='NotAllowedError'?'Face ID cancelado. Usa tu PIN o inténtalo otra vez.':'No se pudo verificar Face ID: '+(err&&err.message?err.message:'error desconocido');if(e)e.textContent=msg;return false;});
+ .catch(function(err){var msg=err&&err.name==='NotAllowedError'?'Face ID cancelado. Intenta de nuevo.':'No se pudo verificar Face ID: '+(err&&err.message?err.message:'error desconocido');report(msg);return false;});
 }
 /* ===== Copia de seguridad automática en la nube cada 1 minuto ===== */
 var cloudBackupTimer=null,cloudBackupBusy=false;
@@ -1258,8 +1292,42 @@ async function cloudBackupTick(){
  cloudBackupBusy=true;
  try{await cloudPush({auto:true});}finally{cloudBackupBusy=false;}
 }
-function tryShowLock(){var mustLock=profilesRead().length>0&&!unlockedProfile();if(!mustLock)return;if(NS.indexOf('local:')!==0)return;try{if(sessionStorage.getItem('gestor_local_ok')==='1')return;}catch(e){}
- renderLockList();var ls=$('lockScreen');if(ls)ls.classList.remove('hidden');}
+function lockGate(show){var ls=$('lockScreen');if(!ls)return;ls.classList.toggle('hidden',!show);if(show){var f=$('lockEmail');if(f)setTimeout(function(){try{f.focus();}catch(e){}},80);}}
+function tryShowLock(){lockGate(!isSignedIn());}
+function lockError(msg){var e=$('lockError');if(e)e.textContent=msg||'';}
+function lockSetBusy(busy){var a=$('lockLoginBtn'),b=$('lockSignupBtn');if(a)a.disabled=busy;if(b)b.disabled=busy;}
+function lockShowSignup(on){$('lockLoginForm').classList.toggle('hidden',on);$('lockSignupForm').classList.toggle('hidden',!on);$('lockLoginSwitch').classList.toggle('hidden',on);$('lockSignupSwitch').classList.toggle('hidden',!on);lockError('');}
+async function lockCloudLogin(ev){
+ if(ev)ev.preventDefault();
+ var url=cloudCfg().url,key=cloudCfg().key,email=($('lockEmail').value||'').trim(),pass=$('lockPassword').value;
+ if(!email||!pass){lockError('Escribe correo y contraseña.');return;}
+ lockSetBusy(true);lockError('Entrando…');
+ try{
+  var res=await fetch(url+'/auth/v1/token?grant_type=password',{method:'POST',headers:{'apikey':key,'Content-Type':'application/json'},body:JSON.stringify({email:email,password:pass})});
+  var data={};try{data=await res.json();}catch(e){}
+  if(!res.ok){lockError('Supabase: '+authErr(data,res.status));lockSetBusy(false);return;}
+  saveAuthSession(data);
+  lockError('Bienvenido. Cargando tus datos…');
+  setTimeout(function(){location.reload();},500);
+ }catch(e){lockError('No pude conectar: '+e.message);lockSetBusy(false);}
+}
+async function lockCloudSignup(ev){
+ if(ev)ev.preventDefault();
+ var url=cloudCfg().url,key=cloudCfg().key,name=($('lockName').value||'').trim(),email=($('lockEmail2').value||'').trim(),pass=$('lockPassword2').value,pass2=$('lockPassword2b').value;
+ if(!email){lockError('Escribe el correo de tu cuenta.');return;}
+ if(String(pass).length<8){lockError('La contraseña debe tener al menos 8 caracteres.');return;}
+ if(pass!==pass2){lockError('Las contraseñas no coinciden.');return;}
+ lockSetBusy(true);lockError('Creando cuenta…');
+ try{
+  var body={email:email,password:pass};if(name)body.data={name:name};
+  var res=await fetch(url+'/auth/v1/signup',{method:'POST',headers:{'apikey':key,'Content-Type':'application/json'},body:JSON.stringify(body)});
+  var data={};try{data=await res.json();}catch(e){}
+  if(!res.ok){lockError('Supabase: '+authErr(data,res.status));lockSetBusy(false);return;}
+  if(data.access_token){saveAuthSession(data,name);lockError('Cuenta creada. Cargando tus datos…');setTimeout(function(){location.reload();},500);return;}
+  lockShowSignup(false);$('lockEmail').value=email;$('lockPassword').value='';
+  lockError('Cuenta creada. Si el proyecto exige confirmar el correo, confírmalo y vuelve a iniciar sesión.');lockSetBusy(false);
+ }catch(e){lockError('No pude conectar: '+e.message);lockSetBusy(false);}
+}
 
 /* ===== cuenta y nube (Supabase) ===== */
 /* Proyecto público precargado (zero-config): la publishable key es pública por diseño;
@@ -2083,17 +2151,16 @@ $('profileList').addEventListener('keydown',function(ev){if(ev.key==='Enter'||ev
 $('profileUnlockBtn').addEventListener('click',function(){var pin=$('profilePinInput').value||'';if(!SELECTED_MODAL_ID)return;unlockWithPin(SELECTED_MODAL_ID,pin).then(function(ok){if(ok){try{sessionStorage.setItem('gestor_unlocked',SELECTED_MODAL_ID);sessionStorage.removeItem('gestor_local_ok');}catch(e){}toast('Bienvenido de nuevo','ok');setTimeout(function(){location.reload();},400);}else{toast('PIN incorrecto','err');$('profilePinInput').select();}});});
 $('profilePinInput').addEventListener('keydown',function(ev){if(ev.key==='Enter'){ev.preventDefault();$('profileUnlockBtn').click();}});
 $('profileLockBtn').addEventListener('click',lockNow);
+$('lockLoginForm').addEventListener('submit',lockCloudLogin);
+$('lockSignupForm').addEventListener('submit',lockCloudSignup);
+$('lockToSignup').addEventListener('click',function(){lockShowSignup(true);var f=$('lockEmail2');if(f)setTimeout(function(){try{f.focus();}catch(e){}},60);});
+$('lockToLogin').addEventListener('click',function(){lockShowSignup(false);var f=$('lockEmail');if(f)setTimeout(function(){try{f.focus();}catch(e){}},60);});
+$('profileFaceUnlockBtn').addEventListener('click',function(){if(!SELECTED_MODAL_ID)return;unlockWithFaceId(SELECTED_MODAL_ID,function(msg){toast(msg,false);});});
 $('profileFaceBtn').addEventListener('click',function(){
  var ap=unlockedProfile();if(!ap)return;
  if(ap.faceId){if(confirm('¿Quitar Face ID de este dispositivo para «'+(ap.name||'la cuenta')+'»?\n\nSeguirás entrando con tu PIN.')){removeFaceId(ap.id);renderProfileUI();toast('Face ID quitado de este dispositivo','ok');}return;}
  registerFaceId(ap.id).then(function(){renderProfileUI();toast('Face ID activado en este dispositivo','ok');}).catch(function(err){toast(err&&err.name==='NotAllowedError'?'Face ID cancelado o no disponible.':'No se pudo activar Face ID: '+(err&&err.message?err.message:'error desconocido'),false);});
 });
-$('lockList').addEventListener('click',function(ev){var row=ev.target.closest('.lockitem');if(row)selectLockProfile(row.getAttribute('data-pid'));});
-$('lockUnlockBtn').addEventListener('click',function(){var pin=$('lockPinInput').value||'';if(!SELECTED_LOCK_ID)return;unlockWithPin(SELECTED_LOCK_ID,pin).then(function(ok){if(ok){try{sessionStorage.setItem('gestor_unlocked',SELECTED_LOCK_ID);sessionStorage.removeItem('gestor_local_ok');}catch(e){}location.reload();}else{var e=currentLockError();if(e)e.textContent='PIN incorrecto. Inténtalo de nuevo.';$('lockPinInput').select();}});});
-$('lockPinInput').addEventListener('keydown',function(ev){if(ev.key==='Enter'){ev.preventDefault();$('lockUnlockBtn').click();}});
-$('lockFaceBtn').addEventListener('click',function(){if(!SELECTED_LOCK_ID)return;var e=currentLockError();if(e)e.textContent='';unlockWithFaceId(SELECTED_LOCK_ID);});
-$('lockCreateBtn').addEventListener('click',function(){openCloud();var pb=$('profileCreateBox');if(pb)pb.setAttribute('open','open');setTimeout(function(){var n=$('profileName');if(n)n.focus();},120);});
-$('lockLocalBtn').addEventListener('click',function(){try{sessionStorage.setItem('gestor_local_ok','1');}catch(e){}location.reload();});
 $('receiptSortBtn').addEventListener('click',function(){receiptAsc=!receiptAsc;this.textContent=receiptAsc?'↑ Antiguos':'↓ Recientes';renderReceiptH();});
 $('transferSortBtn').addEventListener('click',function(){transferAsc=!transferAsc;this.textContent=transferAsc?'↑ Antiguos':'↓ Recientes';renderTransferH();});
 $('exportCsvModuleBtn').addEventListener('click',function(){exportModuleCSV($('csvModule').value);});$('restoreBackupBtn').addEventListener('click',restoreLatestBackup);$('saveSettingsBtn').addEventListener('click',saveSettings);
